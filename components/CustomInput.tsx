@@ -67,7 +67,6 @@ export class CustomInput extends React.Component<Props, State> {
 const styles = StyleSheet.create({
     mainView: {
         width: '80%',
-        height: 100,
         flex: 0.7,
         justifyContent: 'center',
         alignContent: 'center',
