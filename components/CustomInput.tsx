@@ -52,7 +52,16 @@ export class CustomInput extends React.Component<Props, State> {
                         onPress={() => this.removeExitement()}/>
                 </View>
 
+                <Text style={styles.textInpts}>
+                    DIFFERENT INPUTS
+                </Text>
+
                 <InputKeyboard type={'default'}/>
+                <InputKeyboard
+                    type={'default'}
+                    minlength={4}
+                    isRequired={false}
+                />
                 <InputKeyboard type={'email-address'}/>
                 <InputKeyboard type={'number-pad'}/>
                 <InputKeyboard type={'decimal-pad'}/>
@@ -65,6 +74,10 @@ export class CustomInput extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+    textInpts: {
+        paddingTop: 30,
+        fontSize: 20,
+    },
     mainView: {
         width: '80%',
         flex: 0.7,

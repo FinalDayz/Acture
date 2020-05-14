@@ -5,7 +5,8 @@ import {Alert, Button, KeyboardTypeOptions, StyleSheet, Text, TextInput, TextInp
 export interface Props {
     isRequired?: boolean,
     isValid?: boolean,
-    type: KeyboardTypeOptions
+    type: KeyboardTypeOptions,
+    minlength?: number
 }
 
 interface State {
@@ -13,11 +14,11 @@ interface State {
     text: string,
     isRequired: boolean,
     error: string,
+    minLength: number,
 }
 
 export class InputKeyboard extends React.Component<Props, State> {
     state: State;
-
 
     constructor(props: Props, state: State) {
         super(props, state);
@@ -26,6 +27,7 @@ export class InputKeyboard extends React.Component<Props, State> {
             ...state,
             isRequired: props.isRequired == undefined ? true : props.isRequired,
             text: '',
+            minLength: props.minlength === undefined ? 0 : props.minlength,
         };
 
 
@@ -59,20 +61,22 @@ export class InputKeyboard extends React.Component<Props, State> {
     isValid(): boolean {
         let isValidHelper = true;
         let inputText = this.state.text;
-        console.log(inputText);
         if (this.state.isRequired) {
             isValidHelper = !(this.state.text.trim() === '');
+
+            isValidHelper = isValidHelper && inputText.length >= this.state.minLength;
+
             switch (this.props.type) {
                 case 'email-address':
                     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                    isValidHelper = re.test(String(inputText).toLowerCase());
+                    isValidHelper = isValidHelper && re.test(String(inputText).toLowerCase());
                     break;
                 case 'number-pad':
-                    isValidHelper = +inputText == Math.round(+inputText);
+                    isValidHelper = isValidHelper && +inputText == Math.round(+inputText);
                     break;
                 case 'decimal-pad':
                 case 'numeric':
-                    isValidHelper = !isNaN(Number(inputText));
+                    isValidHelper = isValidHelper && !isNaN(Number(inputText));
                     break;
             }
         }
