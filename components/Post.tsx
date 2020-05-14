@@ -19,8 +19,7 @@ const styles = StyleSheet.create ({
     postContainer: {
         flex: 1,
         margin: 10,
-        width: '85%',
-        maxHeight: '30%'
+        width: '100%'
     }
 });
 

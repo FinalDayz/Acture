@@ -17,19 +17,19 @@ const styles = StyleSheet.create ({
         flex: 1,
         backgroundColor: '#F4F4F4',
         width: '100%',
-        height: 300,
         borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20
+        borderBottomRightRadius: 20,
+        paddingBottom: 30
     },
     title: {
-        paddingHorizontal: 15,
-        paddingVertical: 10,
+        marginHorizontal: 15,
+        marginVertical: 10,
         fontSize: 20,
         fontWeight: 'bold',
         color: '#434343'
     },
     bodyText: {
-        paddingHorizontal: 15,
+        marginHorizontal: 15,
         fontSize: 15,
         color: '#434343'
     }
