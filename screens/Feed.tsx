@@ -3,9 +3,9 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 
 import Post from '../components/Post';
 
-export interface Props {}
 
-const Feed = (props: Props) => {
+
+const Feed = (props:any) => {
     return(
         <View style={styles.screen}>
             <ScrollView style={styles.scrollable}>

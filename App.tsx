@@ -1,21 +1,12 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import Feed from './screens/Feed';
+import LoginScreen from './screens/LoginScreen';
 
 export default function App() {
     return (
-        <View style={styles.screen}>
-            <Feed/>
+        <View style={{flex: 1,}}>
+            <LoginScreen />
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-});
