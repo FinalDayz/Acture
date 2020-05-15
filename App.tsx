@@ -1,20 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import {CustomInput} from "./components/CustomInput";
+import { StyleSheet, View } from 'react-native';
+
+import Feed from './screens/Feed';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <CustomInput/>
-    </View>
-  );
+    return (
+        <View style={styles.screen}>
+            <Feed/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    screen: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 });
