@@ -7,6 +7,10 @@ export default {
     favoriteStarActive: '#7AACFB',
     favoriteStarInactive: '#C4C4C4',
 
+    //Inputfields
+    inputfieldLight: '#F2F2F2',
+    inputfieldGrey: '#E3E8EB',
+
     //Text colors
     textLight: '#FFFFFF',
     textGrey: '#818181',
