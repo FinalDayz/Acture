@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
+import colors from '../../constants/colors';
+
 export interface Props {}
 
 const PostHeader = (props: Props) => {
@@ -29,14 +31,14 @@ const PostHeader = (props: Props) => {
 
 const styles = StyleSheet.create ({
     headerBackground: {
-        backgroundColor: '#F4F4F4',
+        backgroundColor: colors.postBody,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20
     },
     header: {
         height: 60,
         width: '100%',
-        backgroundColor: '#A0A7F9',
+        backgroundColor: colors.postHeaderBlue,
         padding: 10,
         borderRadius: 20
     },
@@ -49,7 +51,7 @@ const styles = StyleSheet.create ({
         justifyContent: 'space-between'
     },
     profileImage: {
-        backgroundColor: 'white',
+        backgroundColor: colors.backgroundPrimary,
         height: 36,
         width: 36,
         borderRadius: 18,
@@ -57,7 +59,7 @@ const styles = StyleSheet.create ({
     },
     textContainer: {
         alignSelf: 'flex-end',
-        backgroundColor: '#6C72EE',
+        backgroundColor: colors.postHeaderTypeBlue,
         borderRadius: 20,
         width: '70%',
         justifyContent: 'center',
@@ -65,7 +67,7 @@ const styles = StyleSheet.create ({
     },
     name: {
         marginLeft: 10,
-        color: '#fff',
+        color: colors.textLight,
         fontSize: 19
     },
     topic: {
@@ -78,11 +80,11 @@ const styles = StyleSheet.create ({
         marginRight: 10,
         fontSize: 16,
         fontStyle: 'italic',
-        color: '#fff'
+        color: colors.textLight
     },
     date: {
         marginRight: 10,
-        color: '#fff',
+        color: colors.textLight,
         textAlign: 'right',
         fontSize: 16
     }
