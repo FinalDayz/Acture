@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, View} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {User} from "../../models/User";
 
 
@@ -14,18 +14,18 @@ interface State {
 
 export class UserToActivate extends React.Component<Props, State> {
 
-    // private user: User;
+    private user: User;
 
     constructor(props: Props, state: State) {
         super(props, state);
 
-        // this.user = props.user;
+        this.user = props.user;
     }
 
     render() {
         return (
             <View>
-                {/*<Text>{ this.user.firstname + ' ' + this.user.lastname}</Text>*/}
+                <Text>{ this.user.firstname + ' ' + this.user.lastname}</Text>
             </View>
         );
     }
