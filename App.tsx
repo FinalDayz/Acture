@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import Feed from './screens/FeedScreen';
 import MainNavigation from './navigation/MainNavigation';
 
 export default function App() {
