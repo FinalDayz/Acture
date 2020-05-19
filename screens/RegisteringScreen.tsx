@@ -5,6 +5,12 @@ import Image from 'react-native-scalable-image';
 
 const windowWidth = Dimensions.get('window').width;
 
+const [firstName, onChangeText] = React.useState('');
+
+function _handlePress(){
+    console.log(firstName)
+}
+
 export default function LoginScreen() {
     
         return (
@@ -22,7 +28,35 @@ export default function LoginScreen() {
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
-                                    placeholder="Email..."
+                                    placeholder="Voornaam.."
+                                    placeholderTextColor="#003f5c"
+                                    onChangeText={text => onChangeText(text)}
+                                    value={firstName}
+                                    />
+                            </View>
+
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    style={styles.inputText}
+                                    placeholder="Tussenvoegsel.."
+                                    placeholderTextColor="#003f5c"
+                                    //onChangeText={text => this.setState({insertion:text})}
+                                    />
+                            </View>
+
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    style={styles.inputText}
+                                    placeholder="Achternaam.."
+                                    placeholderTextColor="#003f5c"
+                                    //onChangeText={text => this.setState({lastName:text})}
+                                    />
+                            </View>
+
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    style={styles.inputText}
+                                    placeholder="Email.."
                                     placeholderTextColor="#003f5c"
                                     //onChangeText={text => this.setState({email:text})}
                                     />
@@ -32,24 +66,27 @@ export default function LoginScreen() {
                                 <TextInput
                                     secureTextEntry
                                     style={styles.inputText}
-                                    placeholder="Password..."
+                                    placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
                                     //onChangeText={text => this.setState({password:text})}
                                     />
                             </View>
 
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    secureTextEntry
+                                    style={styles.inputText}
+                                    placeholder="Herhaal wachtwoord..."
+                                    placeholderTextColor="#003f5c"
+                                    //onChangeText={text => this.setState({repeatPassword:text})}
+                                    />
+                            </View>
+
                             <TouchableOpacity
                                 style={styles.loginBtn}
-                                //onPress={this._attemptLogin}
+                                onPress={() => _handlePress()}
                                 >
-                                <Text style={styles.loginText}>Log in</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity>
-                                <Text style={styles.RegisterText}>Account aanmaken</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Text style={styles.forgot}>Wachtwoord vergeten</Text>
+                                <Text style={styles.loginText}>Registreer</Text>
                             </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
@@ -80,7 +117,7 @@ export default function LoginScreen() {
         },
         inputText:{
             height:50,
-            color:"white"
+            color:"black"
         },
          textInput: {
             height: 40,

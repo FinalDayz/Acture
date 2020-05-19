@@ -45,7 +45,9 @@ export default function LoginScreen() {
                                 <Text style={styles.loginText}>Log in</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                //onPress={}
+                                >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>
                             <TouchableOpacity>
