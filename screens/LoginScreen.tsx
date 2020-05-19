@@ -1,12 +1,36 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
+import { useSelector, useDispatch } from 'react-redux';
+import * as loginActions from '../store/actions/login';
 
 const windowWidth = Dimensions.get('window').width;
+const [isLoading, setIsLoading] = useState(false);
+const dispatch = useDispatch();
 
-export default function LoginScreen() {
-    
+useEffect(() => {
+    setIsLoading(true);
+    dispatch(loginActions.fetchLogin()).then(() => {
+      setIsLoading(false);
+    });
+  }, [dispatch]);
+
+export default class LoginScreen extends React.Component {
+
+
+    login() {
+    }
+
+    render() {
+        if (isLoading) {
+            return (
+                <View style={styles.contentContainer}>
+                    <ActivityIndicator size="large" color={colors.primary} />
+                </View>
+            );
+        }
+
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
@@ -32,7 +56,7 @@ export default function LoginScreen() {
                                 <TextInput
                                     secureTextEntry
                                     style={styles.inputText}
-                                    placeholder="Password..."
+                                    placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
                                     //onChangeText={text => this.setState({password:text})}
                                     />
@@ -57,58 +81,58 @@ export default function LoginScreen() {
             </ScrollView>
         )
     }
+}
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: colors.primary,
-        },
-        contentContainer: {
-            flex: 1,
-            alignItems: "center",
-            justifyContent: 'center',
-        },
-
-        inputView:{
-            width:"80%",
-            backgroundColor:colors.inputfieldLight,
-            borderRadius:3,
-            height:50,
-            marginBottom:25,
-            justifyContent:"center",
-            padding: 24,
-        },
-        inputText:{
-            height:50,
-            color:"white"
-        },
-         textInput: {
-            height: 40,
-            borderColor: "#000000",
-            borderBottomWidth: 1,
-            marginBottom: 36
-          },
-        forgot:{
-            color:"white",
-            fontSize:11,
-            textDecorationLine: "underline"
-        },
-        loginBtn:{
-            width:"50%",
-            backgroundColor: colors.primaryLight,
-            borderRadius:8,
-            height:40,
-            alignItems:"center",
-            justifyContent:"center",
-            marginBottom:60
-        },
-        loginText:{
-            color:"white"
-        },
-        RegisterText:{
-            color:"white",
-            marginBottom: 20,
-            textDecorationLine: "underline"
-        },
-    });
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: colors.primary
+    },
+    contentContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: 'center'
+    },
+    inputView:{
+        width:"80%",
+        backgroundColor:colors.inputfieldLight,
+        borderRadius:3,
+        height:50,
+        marginBottom:25,
+        justifyContent:"center",
+        padding: 24
+    },
+    inputText:{
+        height:50,
+        color:"black"
+    },
+        textInput: {
+        height: 40,
+        borderColor: "#000000",
+        borderBottomWidth: 1,
+        marginBottom: 36
+    },
+    forgot:{
+        color:"white",
+        fontSize:11,
+        textDecorationLine: "underline"
+    },
+    loginBtn:{
+        width:"50%",
+        backgroundColor: colors.primaryLight,
+        borderRadius:8,
+        height:40,
+        alignItems:"center",
+        justifyContent:"center",
+        marginBottom:60
+    },
+    loginText:{
+        color:"white"
+    },
+    RegisterText:{
+        color:"white",
+        marginBottom: 20,
+        textDecorationLine: "underline"
+    },
+});
     

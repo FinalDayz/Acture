@@ -23,6 +23,7 @@
     "@types/node": "9.6.7",
     "@types/react": "^16.9.0",
     "@types/react-native": "^0.61.23",
+    "@types/react-redux": "^7.1.8",
     "@types/react-test-renderer": "^16.9.2",
     "babel-preset-expo": "~8.1.0",
     "typescript": "^3.8.3"
