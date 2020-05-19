@@ -2,7 +2,7 @@ export default {
     //Main colors
     primary: '#3A3FAC', //header, footer, drawer, login screen
     primaryLight: '#555AE4', //login & logout buttons
-    backgroundPrimary: '#F2F2F2',
+    backgroundPrimary: '#FFFFFF',
     backgroundSecondary: '#E3E8EB',
     favoriteStarActive: '#7AACFB',
     favoriteStarInactive: '#C4C4C4',

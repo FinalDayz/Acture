@@ -2,10 +2,12 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import Post from '../components/Post';
+import colors from '../constants/colors';
+import FeedScreenNavigation from '../navigation/FeedScreenNavigation';
 
 export interface Props {}
 
-const Feed = (props: Props) => {
+const FeedScreen = (props: Props) => {
     return(
         <View style={styles.screen}>
             <ScrollView style={styles.scrollable}>
@@ -35,11 +37,21 @@ const Feed = (props: Props) => {
     );
 };
 
+//options for header bar
+FeedScreen.navigationOptions = {
+    headerTitle: 'Feed',
+    headerStyle: {
+        backgroundColor: colors.primary
+    },
+    headerTintColor: colors.textLight
+};
+
 const styles = StyleSheet.create ({
     screen: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: colors.backgroundPrimary
     },
     scrollable: {
         flex: 1,
@@ -55,4 +67,4 @@ const styles = StyleSheet.create ({
     }
 });
 
-export default Feed;
+export default FeedScreen;
