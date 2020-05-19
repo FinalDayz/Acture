@@ -39,10 +39,10 @@ export class ActivateUsers extends React.Component<Props, State> {
         dummyUser3.lastname = 'van eikeren';
 
         let dummyUser4 = {...dummyUser};
-        dummyUser4.userId = 3;
+        dummyUser4.userId = 4;
         dummyUser4.email = 'Michiel@gmail.com';
         dummyUser4.firstname = 'Michiel';
-        dummyUser4.lastname = 'Vergeten';
+        dummyUser4.lastname = 'Boere';
 
         this.state = {
             ...state,
