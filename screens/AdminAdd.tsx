@@ -6,21 +6,34 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
 import Constants from 'expo-constants';
+export interface Props {
+}
 
-export default class AdminAddScreen extends React.Component {
-    state = {
-        text: '',
-        textareaHeight: 200,
-      image: "",
-        hasError: "false"
-    };
-    // constructor(props){
-    //     super(props);
-    //     this.state = {
-    //         text: '',
-    //         textareaHeight: 200,
-    //         image: ""}
-    // }
+interface State {
+    text: string,
+    textareaHeight: number,
+    image: string,
+    hasError: boolean
+}
+export class AdminAddScreen extends React.Component<Props, State> {
+    state: State;
+
+    // state = {
+    //     text: '',
+    //     textareaHeight: 200,
+    //   image: "",
+    //     hasError: "false"
+    // };
+    constructor(props: Props, state: State){
+        super(props);
+        this.state = {
+            text: "",
+            textareaHeight: 200,
+            image: "",
+            hasError: false
+        }
+
+    }
 
     componentDidMount() {
         this.getPermissionAsync();
@@ -53,16 +66,16 @@ export default class AdminAddScreen extends React.Component {
         }
     };
 
-    static getDerivedStateFromError(error) {
-        // Update state so the next render will show the fallback UI.
-        return { hasError: true };
-    }
+    // static getDerivedStateFromError(error) {
+    //     // Update state so the next render will show the fallback UI.
+    //     return { hasError: true };
+    // }
 
 
 
     render(){
-        const { text, textareaHeight} = this.state;
-        let{image} = this.state;
+        // const { text, textareaHeight} = this.state;
+        // let{image} = this.state;
 
         if (this.state.hasError) {
             // You can render any custom fallback UI
@@ -81,22 +94,19 @@ export default class AdminAddScreen extends React.Component {
                         width:'100%',
                         borderRadius:3,
                         padding: 10,
-                        height: textareaHeight}}
+                        height: this.state.textareaHeight}}
                     placeholder="Beschrijving..."
                     placeholderTextColor="#003f5c"
                     // style={{height: textareaHeight}}
-                    value={text}
+                    value={this.state.text}
                     onChangeText={text => this.setState({ text })}
                     // onContentSizeChange={this._onContentSizeChange}
                     multiline/>
-
-
-
                 <View>
                     <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
                         <Text style={{color:  colors.primary, justifyContent: "center"}}> Foto </Text>
                     </ TouchableOpacity>
-                    {image && <Image source={{ uri: image }} style={{ width: 25, height: 25 }} />}
+                     <Image source={{ uri: this.state.image }} style={{ width: 25, height: 25 }} />
                 </View>
 
             </InputScrollView>
@@ -105,14 +115,7 @@ export default class AdminAddScreen extends React.Component {
     // _onContentSizeChange = ({nativeEvent:event}) => {
     //     this.setState({ textareaHeight: event.contentSize.height });
     // };
-}
-
-
-
-
-
-
-
+    }
 
 
 const styles = StyleSheet.create({
