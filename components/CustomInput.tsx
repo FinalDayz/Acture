@@ -1,6 +1,6 @@
 import React from 'react';
 import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
-import {InputKeyboard} from "./InputKeyboard";
+import {Input} from "./input/standardInput";
 
 export interface Props {
 }
@@ -52,12 +52,12 @@ export class CustomInput extends React.Component<Props, State> {
                         onPress={() => this.removeExitement()}/>
                 </View>
 
-                <InputKeyboard type={'default'}/>
-                <InputKeyboard type={'email-address'}/>
-                <InputKeyboard type={'number-pad'}/>
-                <InputKeyboard type={'decimal-pad'}/>
-                <InputKeyboard type={'numeric'}/>
-                <InputKeyboard type={'phone-pad'}/>
+                <Input type={'default'} isRequired={true}/>
+                <Input type={'email-address'}/>
+                <Input type={'number-pad'}/>
+                <Input type={'decimal-pad'}/>
+                <Input type={'numeric'}/>
+                <Input type={'phone-pad'}/>
 
             </View>
         );

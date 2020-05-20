@@ -1,6 +1,5 @@
 import React from 'react';
-import {Alert, Button, KeyboardTypeOptions, StyleSheet, Text, TextInput, TextInputProps, View} from 'react-native';
-
+import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View} from 'react-native';
 
 export interface Props {
     isRequired?: boolean,
@@ -15,9 +14,14 @@ interface State {
     error: string,
 }
 
-export class InputKeyboard extends React.Component<Props, State> {
-    state: State;
+/*
+Example usage:
+<Input type={'email-address'}/>
+<Input type={'numeric'} isRequired={true}/>
 
+ */
+export class Input extends React.Component<Props, State> {
+    state: State;
 
     constructor(props: Props, state: State) {
         super(props, state);
@@ -27,7 +31,6 @@ export class InputKeyboard extends React.Component<Props, State> {
             isRequired: props.isRequired == undefined ? true : props.isRequired,
             text: '',
         };
-
 
         if (props.isValid !== undefined) {
             this.setState({
@@ -40,13 +43,11 @@ export class InputKeyboard extends React.Component<Props, State> {
         this.setState({text: text}, () => {
             this.finishText();
         });
-
     }
 
     finishText() {
-        console.log(this.isValid());
         var isValid = this.isValid();
-        if(!isValid) {
+        if (!isValid) {
             this.setState({
                 error: 'Please enter a valid value'
             });
@@ -59,7 +60,6 @@ export class InputKeyboard extends React.Component<Props, State> {
     isValid(): boolean {
         let isValidHelper = true;
         let inputText = this.state.text;
-        console.log(inputText);
         if (this.state.isRequired) {
             isValidHelper = !(this.state.text.trim() === '');
             switch (this.props.type) {
@@ -89,12 +89,12 @@ export class InputKeyboard extends React.Component<Props, State> {
                         {...this.props}
                         style={[styles.input]}
                         onChangeText={text => this.changeHandler(text)}
-                        value={ this.state.text }
+                        value={this.state.text}
                         onBlur={() => this.finishText}
                         keyboardType={this.props.type}/>
 
                     <Text style={styles.error}>
-                        { this.state.isValid ? '' : this.state.error }
+                        {this.state.isValid ? '' : this.state.error}
                     </Text>
                 </View>
 
@@ -105,8 +105,8 @@ export class InputKeyboard extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
     error: {
-      color: 'red',
-      fontSize: 12,
+        color: 'red',
+        fontSize: 12,
     },
     input: {
         borderBottomColor: '#000000',
