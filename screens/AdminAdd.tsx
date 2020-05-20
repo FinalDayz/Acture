@@ -1,17 +1,57 @@
 import React from "react";
-import {Button, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
+import {Button, StyleSheet, TextInput, TouchableOpacity, View, Text} from "react-native";
 import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import Image from "react-native-scalable-image";
+import Constants from 'expo-constants';
 
 export default class App extends React.Component {
     state = {
         text: '',
-        textareaHeight: 200
+        textareaHeight: 200,
+      image: null
     };
+
+    componentDidMount() {
+        this.getPermissionAsync();
+    }
+
+    getPermissionAsync = async () => {
+        if (Constants.platform.ios) {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    };
+
+    _pickImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+            if (!result.cancelled) {
+                this.setState({ image: result.uri });
+            }
+
+            console.log(result);
+        } catch (E) {
+            console.log(E);
+        }
+    };
+}
+
 
 
     render(){
-        const { text, textareaHeight } = this.state;
+        const { text, textareaHeight} = this.state;
+        let{image} = this.state;
+
         return (
             <InputScrollView style = {styles.screen}>
                 <TextInput
@@ -32,12 +72,14 @@ export default class App extends React.Component {
                     value={text}
                     onChangeText={text => this.setState({ text })}
                     // onContentSizeChange={this._onContentSizeChange}
-                    multiline />
-                    <View>
-                        {/*<TouchableOpacity style={styles.photoButton}>*/}
-                        {/*    <Text> </Text>*/}
-                        {/*</TouchableOpacity>*/}
-                        <Button title="Foto"/>
+                   multiline/>
+
+
+
+                        <View>
+                        <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
+                            <Text style={{color:  colors.primary, justifyContent: "center"}}> Foto </Text>
+                        </ TouchableOpacity>
                     </View>
 
             </InputScrollView>
@@ -69,7 +111,30 @@ const styles = StyleSheet.create({
         width: 176,
         height: 39,
         color: "white",
+        backgroundColor: "#DDDDDD",
         borderRadius: 10,
+    },
+
+    container: {
+        flex: 1,
+        padding: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fff'
+    },
+    button: {
+        width: 250,
+        height: 60,
+        backgroundColor: '#3740ff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 4,
+        marginBottom:12
+    },
+    buttonText: {
+        textAlign: 'center',
+        fontSize: 15,
+        color: '#fff'
     }
     // descriptionBox:{
     //     backgroundColor:colors.inputfieldLight
