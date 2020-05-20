@@ -4,7 +4,9 @@ import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View} from 'react-nati
 export interface Props {
     isRequired?: boolean,
     isValid?: boolean,
-    type: KeyboardTypeOptions
+    type: KeyboardTypeOptions,
+    changed?: (text: string, valid: boolean) => any,
+    errorText?: string,
 }
 
 interface State {
@@ -16,8 +18,22 @@ interface State {
 
 /*
 Example usage:
-<Input type={'email-address'}/>
-<Input type={'numeric'} isRequired={true}/>
+
+<Input type={'default'}/>
+
+<Input
+    type={'email-address'}
+    errorText={'Enter a valid email'
+    changed={(text, isValid) => {console.log(text + " is valid? " + isValid)}}
+/>
+
+
+<Input
+    type={'numeric'}
+    isRequired={true}
+    errorText={'Enter a valid number'}
+    changed={(text, isValid) => {console.log(text + " is valid? " + isValid)}}
+/>
 
  */
 export class Input extends React.Component<Props, State> {
@@ -49,12 +65,15 @@ export class Input extends React.Component<Props, State> {
         var isValid = this.isValid();
         if (!isValid) {
             this.setState({
-                error: 'Please enter a valid value'
+                error: this.props.errorText ? this.props.errorText : ''
             });
         }
         this.setState({
             isValid: isValid
         });
+        if (this.props.changed) {
+            this.props.changed(this.state.text, isValid);
+        }
     }
 
     isValid(): boolean {
