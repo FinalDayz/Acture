@@ -22,7 +22,7 @@ export default class App extends React.Component {
         if (Constants.platform.ios) {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
+                // alert('Sorry, we need camera roll permissions to make this work!');
             }
         }
     };
@@ -44,9 +44,6 @@ export default class App extends React.Component {
             console.log(E);
         }
     };
-}
-
-
 
     render(){
         const { text, textareaHeight} = this.state;
@@ -61,26 +58,26 @@ export default class App extends React.Component {
                 <TextInput />
                 <TextInput
                     // style={styles.descriptionBox}
-                   style={{backgroundColor:colors.inputfieldLight,
-                       width:'100%',
-                       borderRadius:3,
-                       padding: 10,
-                       height: textareaHeight}}
+                    style={{backgroundColor:colors.inputfieldLight,
+                        width:'100%',
+                        borderRadius:3,
+                        padding: 10,
+                        height: textareaHeight}}
                     placeholder="Beschrijving..."
                     placeholderTextColor="#003f5c"
                     // style={{height: textareaHeight}}
                     value={text}
                     onChangeText={text => this.setState({ text })}
                     // onContentSizeChange={this._onContentSizeChange}
-                   multiline/>
+                    multiline/>
 
 
 
-                        <View>
-                        <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
-                            <Text style={{color:  colors.primary, justifyContent: "center"}}> Foto </Text>
-                        </ TouchableOpacity>
-                    </View>
+                <View>
+                    <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
+                        <Text style={{color:  colors.primary, justifyContent: "center"}}> Foto </Text>
+                    </ TouchableOpacity>
+                </View>
 
             </InputScrollView>
         );
@@ -89,6 +86,11 @@ export default class App extends React.Component {
     //     this.setState({ textareaHeight: event.contentSize.height });
     // };
 }
+}
+
+
+
+
 
 
 
