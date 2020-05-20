@@ -1,18 +1,26 @@
 import React from "react";
-import {Button, StyleSheet, TextInput, TouchableOpacity, View, Text} from "react-native";
+import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text} from "react-native";
 import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import Image from "react-native-scalable-image";
+
 import Constants from 'expo-constants';
 
-export default class App extends React.Component {
+export default class AdminAddScreen extends React.Component {
     state = {
         text: '',
         textareaHeight: 200,
-      image: null
+      image: "",
+        hasError: "false"
     };
+    // constructor(props){
+    //     super(props);
+    //     this.state = {
+    //         text: '',
+    //         textareaHeight: 200,
+    //         image: ""}
+    // }
 
     componentDidMount() {
         this.getPermissionAsync();
@@ -45,10 +53,21 @@ export default class App extends React.Component {
         }
     };
 
+    static getDerivedStateFromError(error) {
+        // Update state so the next render will show the fallback UI.
+        return { hasError: true };
+    }
+
+
+
     render(){
         const { text, textareaHeight} = this.state;
         let{image} = this.state;
 
+        if (this.state.hasError) {
+            // You can render any custom fallback UI
+            return <h1>Something went wrong.</h1>;
+        }
         return (
             <InputScrollView style = {styles.screen}>
                 <TextInput
@@ -77,6 +96,7 @@ export default class App extends React.Component {
                     <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
                         <Text style={{color:  colors.primary, justifyContent: "center"}}> Foto </Text>
                     </ TouchableOpacity>
+                    {image && <Image source={{ uri: image }} style={{ width: 25, height: 25 }} />}
                 </View>
 
             </InputScrollView>
@@ -113,7 +133,7 @@ const styles = StyleSheet.create({
         width: 176,
         height: 39,
         color: "white",
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#1E90FF",
         borderRadius: 10,
     },
 
