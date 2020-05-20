@@ -6,6 +6,7 @@ import Post from '../components/Post';
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
 
+export interface Props {}
 
 const FeedScreen = (props: Props) => {
     return(
