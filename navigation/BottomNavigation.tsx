@@ -4,12 +4,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
-import FeedScreen from '../screens/FeedScreen';
-import EventsPlaceholderScreen from '../screens/EventsPlaceholderScreen';
-import ExplorePlaceholderScreen from '../screens/ExplorePlaceholderScreen';
-import HelpPlaceholderScreen from '../screens/HelpPlaceholderScreen';
-import MessagesPlaceholderScreen from '../screens/MessagesPlaceholderScreen';
-
 import FeedScreenNavigation from './FeedScreenNavigation';
 import EventsScreenNavigation from './EventsScreenNavigation';
 import MessagesScreenNavigation from './MessagesScreenNavigation';
@@ -20,7 +14,7 @@ import colors from '../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { View } from 'react-native';
 
-const MainNavigation = createMaterialBottomTabNavigator({
+const BottomNavigation = createMaterialBottomTabNavigator({
     Help: HelpScreenNavigation,
     Explore: ExploreScreenNavigation,
     Feed: FeedScreenNavigation,
@@ -47,4 +41,4 @@ const MainNavigation = createMaterialBottomTabNavigator({
 // }
 // );
 
-export default createAppContainer(MainNavigation);
+export default createAppContainer(BottomNavigation);

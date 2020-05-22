@@ -39,18 +39,31 @@ const FeedScreen = (props: Props) => {
 };
 
 //options for header bar. Default options are in the navigator.
-FeedScreen.navigationOptions = {
-    headerTitle: 'Feed',
-    headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item 
-            title='profile' 
-            iconName='md-person' //TODO: change to profile picture
-            onPress={() => {
-                console.log('Er is op de knop gedrukt'); //TODO: Change to navigate to profile
-            }}/>
-        </HeaderButtons>
-    )
+FeedScreen.navigationOptions = (navData:any) => {
+    return {
+        headerTitle: 'Feed',
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item 
+                    title='profile' 
+                    iconName='md-person' //TODO: change to profile picture
+                    onPress={() => {
+                        navData.navigation.navigate('Profile');
+                }}/>
+            </HeaderButtons>
+        ),
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item 
+                    title='menu'
+                    iconName='ios-menu'
+                    onPress={() => {
+                        navData.navigation.toggleDrawer();
+                    }} 
+                />
+            </HeaderButtons>
+        )
+    };
 };
 
 const styles = StyleSheet.create ({

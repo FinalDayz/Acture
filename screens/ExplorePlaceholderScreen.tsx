@@ -17,18 +17,31 @@ const ExplorePlaceholderScreen = (props: Props) => {
 };
 
 //Options for header bar. Default options are in the navigator.
-ExplorePlaceholderScreen.navigationOptions = {
-    headerTitle: 'Explore (Placeholder)',
-    headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item 
-            title='profile' 
-            iconName='md-person' //TODO: change to profile picture
-            onPress={() => {
-                //props.navigation.navigate('Profile'); //TODO: Change to navigate to profile
-            }}/>
-        </HeaderButtons>
-    )
+ExplorePlaceholderScreen.navigationOptions = (navData:any) => {
+    return {
+        headerTitle: 'Explore (Placeholder)',
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item 
+                title='profile' 
+                iconName='md-person' //TODO: change to profile picture
+                onPress={() => {
+                    navData.navigation.navigate('Profile');
+                }}/>
+            </HeaderButtons>
+        ),
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item 
+                    title='menu'
+                    iconName='ios-menu'
+                    onPress={() => {
+                        navData.navigation.toggleDrawer();
+                    }} 
+                />
+            </HeaderButtons>
+        )
+    }
 };
 
 const styles = StyleSheet.create ({
