@@ -56,7 +56,7 @@ FeedScreen.navigationOptions = (navData:any) => {
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item 
                     title='menu'
-                    iconName='ios-menu'
+                    iconName='md-menu'
                     onPress={() => {
                         navData.navigation.toggleDrawer();
                     }} 
