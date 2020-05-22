@@ -9,6 +9,7 @@ const windowWidth = Dimensions.get('window').width;
 const [isLoading, setIsLoading] = useState(false);
 const dispatch = useDispatch();
 
+
 useEffect(() => {
     setIsLoading(true);
     dispatch(loginActions.fetchLogin()).then(() => {
@@ -16,11 +17,8 @@ useEffect(() => {
     });
   }, [dispatch]);
 
+
 export default class LoginScreen extends React.Component {
-
-
-    login() {
-    }
 
     render() {
         if (isLoading) {
