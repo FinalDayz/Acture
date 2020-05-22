@@ -6,9 +6,9 @@ import colors from '../../constants/colors';
 export interface Props {}
 
 const PostHeader = (props: Props) => {
-    return (
+    return (    //gebruik om header kleur te veranderen: style={(setColor == true) ? styles.headerRed : styles.headerBlue}
         <View style={styles.headerBackground}>
-            <View style={styles.header}>
+            <View style={styles.headerBlue}> 
                 <View style={styles.horizontalFlex}>
                     <View>
                         <View style={styles.profileImage}/>
@@ -30,15 +30,22 @@ const PostHeader = (props: Props) => {
 }
 
 const styles = StyleSheet.create ({
-    headerBackground: {
+    headerBackground: { //the grey bottom corners of the header
         backgroundColor: colors.postBody,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20
     },
-    header: {
+    headerBlue: {
         height: 60,
         width: '100%',
         backgroundColor: colors.postHeaderBlue,
+        padding: 10,
+        borderRadius: 20
+    },
+    headerRed: {
+        height: 60,
+        width: '100%',
+        backgroundColor: colors.postHeaderRed,
         padding: 10,
         borderRadius: 20
     },
