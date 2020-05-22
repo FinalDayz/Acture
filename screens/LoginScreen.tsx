@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     },
     inputView:{
         width:"80%",
-        backgroundColor:colors.inputfieldLight,
+        backgroundColor:colors.postBody,
         borderRadius:3,
         height:50,
         marginBottom:25,
