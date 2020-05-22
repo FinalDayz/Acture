@@ -1,34 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
-import { useSelector, useDispatch } from 'react-redux';
-import * as loginActions from '../store/actions/login';
+import ApiDictionary from '../constants/ApiDictionary';
+import { bodyfull } from '../components/HttpClient';
 
 const windowWidth = Dimensions.get('window').width;
-const [isLoading, setIsLoading] = useState(false);
-const dispatch = useDispatch();
-
-
-useEffect(() => {
-    setIsLoading(true);
-    dispatch(loginActions.fetchLogin()).then(() => {
-      setIsLoading(false);
-    });
-  }, [dispatch]);
-
 
 export default class LoginScreen extends React.Component {
+    _isMounted: boolean;
+
+    constructor(props: Readonly<{}>) {
+        super(props);
+
+        this._isMounted = false;
+    }
+
+    state={
+        email:"",
+        password:"",
+        isLoading: false
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+
+    login = () => {
+        //TODO: fix that this clicks twice during the memory leak preventing
+        this.setState({isLoading:true})
+        bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+            if(data.success === 1) {
+
+            }
+            this.setState({isLoading:false})
+        });
+
+        this._isMounted && this.setState({
+            ready: true
+        })
+    }
 
     render() {
-        if (isLoading) {
+        if (this.state.isLoading) {
+            //TODO: add delay + make it overlay on the screen
             return (
-                <View style={styles.contentContainer}>
-                    <ActivityIndicator size="large" color={colors.primary} />
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={colors.textLight} style={styles.contentContainer}/>
                 </View>
             );
         }
-
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
@@ -46,7 +72,7 @@ export default class LoginScreen extends React.Component {
                                     style={styles.inputText}
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({email:text})}
+                                    onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
 
@@ -56,13 +82,13 @@ export default class LoginScreen extends React.Component {
                                     style={styles.inputText}
                                     placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({password:text})}
+                                    onChangeText={text => this.setState({password:text})}
                                     />
                             </View>
 
                             <TouchableOpacity
                                 style={styles.loginBtn}
-                                //onPress={this._attemptLogin}
+                                onPress={this.login}
                                 >
                                 <Text style={styles.loginText}>Log in</Text>
                             </TouchableOpacity>
@@ -85,6 +111,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.primary
+    },
+    loadingContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(52, 52, 52, 0.8)'
     },
     contentContainer: {
         flex: 1,
