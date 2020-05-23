@@ -13,6 +13,7 @@ export default {
     textDark: '#393939',
     textPostTitle: '#434343',
     textPostContent: '#7B7B7B',
+    textInactive: '#CCCCCC',
 
     //Post Body
     postBody: '#F4F4F4',
