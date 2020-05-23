@@ -13,4 +13,10 @@ export class User {
     telephone: number = 0;
     description: string = '';
     activivated: boolean = false;
+
+    public getFullName() {
+        return this.firstname +
+            (this.tussenvoegsel ? " "+this.tussenvoegsel : "")
+            + " " + this.lastname;
+    }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Alert, Picker} from 'react-native';
 import colors from "../constants/colors";
 import {User} from "../models/User";
+import RNPickerSelect from 'react-native-picker-select';
 
 export interface Props {
 
@@ -12,10 +13,11 @@ interface State {
 }
 
 
-export class ActivateUsers extends React.Component<Props, State> {
+export class ActivateUsersScreen extends React.Component<Props, State> {
     state: State;
 
     constructor(props: Props, state: State) {
+        console.log("ActivateUsersScreen");
         super(props, state);
         this.state = {
             ...state,
@@ -29,7 +31,8 @@ export class ActivateUsers extends React.Component<Props, State> {
         fetch("http://192.168.2.146:3000/api/users/inactiveUsers")
             .then(res => res.json())
             .then(
-                (result) => {
+                (result: {data: Array<User>}) => {
+                    console.log(result);
                     this.setState({
                         accounts: result.data
                     });
@@ -41,7 +44,6 @@ export class ActivateUsers extends React.Component<Props, State> {
     }
 
     sendActivate(id: number, callback: (error: any) => void) {
-        console.log("http://192.168.2.146:3000/api/users/activateUser/" + id);
         fetch("http://192.168.2.146:3000/api/users/activateUser/" + id,
             {
                 'method': 'PATCH'
@@ -52,6 +54,26 @@ export class ActivateUsers extends React.Component<Props, State> {
                 callback(error);
             });
 
+    }
+
+    confirmActivation(account: User) {
+        Alert.alert(
+            'Account activeren',
+            'Weet u zeker dat U' + account.getFullName(),
+            [
+                {
+                    text: 'Ask me later',
+                    onPress: () => console.log('Ask me later pressed')
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                { text: 'OK', onPress: () => console.log('OK Pressed') }
+            ],
+            { cancelable: false }
+        );
     }
 
     activateAccount(account: User) {
@@ -83,22 +105,34 @@ export class ActivateUsers extends React.Component<Props, State> {
 
                         <View style={styles.accountWrapper}>
                             <View style={styles.profilePicture}/>
-                            <Text
-                                style={styles.accountText}>
-                                {item.firstname} {item.lastname}
-                            </Text>
+                            <View
+                                style={styles.profileInfo}>
+                                <Text
+                                    style={styles.accountName}>
+                                    {console.log(item)}
+                                    {/*TODO: make this use getFullName() once working with User objects*/}
+                                    {item.firstname +
+                                    (item.tussenvoegsel ? " "+item.tussenvoegsel : "")
+                                    + " " + item.lastname}
+                                </Text>
+                                <Text
+                                    style={styles.accountEmail}>
+                                    {item.email}
+                                </Text>
+                            </View>
 
-                            <Picker
-                                selectedValue={'java'}
-                                style={{ height: 50, width: 150 }}
-
-                            >
-                                <Picker.Item label="Java" value="java" />
-                                <Picker.Item label="JavaScript" value="js" />
-                            </Picker>
+                            {/*<RNPickerSelect*/}
+                            {/*    style={styles}*/}
+                            {/*    onValueChange={(value) => console.log(value)}*/}
+                            {/*    items={[*/}
+                            {/*        { label: 'Footbalml', value: 'football' },*/}
+                            {/*        { label: 'Baseball', value: 'baseball' },*/}
+                            {/*        { label: 'Hockey', value: 'hockey' },*/}
+                            {/*    ]}*/}
+                            {/*/>*/}
 
                             <TouchableOpacity
-                                onPress={() => this.activateAccount(item)}
+                                onPress={() => this.confirmActivation(item)}
                                 style={styles.activateBtn}>
                                 <Text style={styles.activateBtnText}>Activeer</Text>
                             </TouchableOpacity>
@@ -113,6 +147,25 @@ export class ActivateUsers extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+    profileInfo: {
+        flexDirection: 'column',
+        width: '50%',
+        flex: 1,
+        paddingRight: 10,
+    },
+    accountEmail: {
+        color: colors.textGrey,
+        paddingLeft: 10,
+        fontWeight: 'bold',
+        fontSize: 12,
+        flexWrap: "wrap",
+    },
+    accountName: {
+        paddingLeft: 10,
+        color: colors.textDark,
+        fontWeight: 'bold',
+        fontSize: 15,
+    },
     activateBtnText: {
         color: colors.textLight,
     },
@@ -128,14 +181,6 @@ const styles = StyleSheet.create({
         height: 50,
         width: 50,
     },
-    accountText: {
-        width: '50%',
-        paddingLeft: 20,
-        color: colors.textGrey,
-        fontWeight: 'bold',
-        fontSize: 15,
-        flex: 1,
-    },
     accountWrapper: {
         alignItems: 'center',
         backgroundColor: colors.backgroundSecondary,
@@ -150,7 +195,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: '7%',
         marginTop: 50,
         flex: 1,
-
     },
     wrapper: {
         flex: 1,
