@@ -1,10 +1,10 @@
 import React from 'react';
-import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Alert} from 'react-native';
-import {User} from '../../models/User';
-import {UserToActivate} from "./UserToActivate";
-import colors from "../../constants/colors";
+import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Alert, Picker} from 'react-native';
+import colors from "../constants/colors";
+import {User} from "../models/User";
 
 export interface Props {
+
 }
 
 interface State {
@@ -87,6 +87,15 @@ export class ActivateUsers extends React.Component<Props, State> {
                                 style={styles.accountText}>
                                 {item.firstname} {item.lastname}
                             </Text>
+
+                            <Picker
+                                selectedValue={'java'}
+                                style={{ height: 50, width: 150 }}
+
+                            >
+                                <Picker.Item label="Java" value="java" />
+                                <Picker.Item label="JavaScript" value="js" />
+                            </Picker>
 
                             <TouchableOpacity
                                 onPress={() => this.activateAccount(item)}

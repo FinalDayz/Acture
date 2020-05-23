@@ -7,7 +7,7 @@ export class User {
     register: Date = new Date();
     unregister: Date = new Date();
     password: string = '';
-    role: string = '';
+    role: UserRole = UserRole.user;
     email: string = '';
     image: Blob = new Blob();
     telephone: number = 0;
