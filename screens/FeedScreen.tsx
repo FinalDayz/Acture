@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import Post from '../components/Post';
+import colors from '../constants/colors';
+import HeaderButton from '../components/HeaderButton';
 
+export interface Props {}
 
-
-const Feed = (props:any) => {
+const FeedScreen = (props: Props) => {
     return(
         <View style={styles.screen}>
             <ScrollView style={styles.scrollable}>
@@ -35,11 +38,27 @@ const Feed = (props:any) => {
     );
 };
 
+//options for header bar. Default options are in the navigator.
+FeedScreen.navigationOptions = {
+    headerTitle: 'Feed',
+    headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+            <Item 
+            title='profile' 
+            iconName='md-person' //TODO: change to profile picture
+            onPress={() => {
+                console.log('Er is op de knop gedrukt'); //TODO: Change to navigate to profile
+            }}/>
+        </HeaderButtons>
+    )
+};
+
 const styles = StyleSheet.create ({
     screen: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: colors.backgroundPrimary
     },
     scrollable: {
         flex: 1,
@@ -55,4 +74,4 @@ const styles = StyleSheet.create ({
     }
 });
 
-export default Feed;
+export default FeedScreen;

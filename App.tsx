@@ -1,16 +1,26 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import LoginScreen from './screens/LoginScreen';
-import Feed from './screens/Feed';
-import {ActivateUsers} from "./components/admin/ActivateUsers";
+import MainNavigation from './navigation/MainNavigation';
 
 export default function App() {
     return (
-        <View style={{flex: 1,}}>
-            {/*<LoginScreen/>*/}
-            {/*<Feed/>*/}
-            <ActivateUsers/>
-        </View>
+        // <View style={styles.screen}>
+            <MainNavigation/>
+        // </View>
+
+        //<MainNavigation style={styles.screen} />
+
+        // <View style={styles.screen}>
+        //     <Feed/>
+        // </View>
     );
 }
+
+const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});
