@@ -1,11 +1,12 @@
 import React from "react";
-import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text} from "react-native";
+import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text, Dimensions} from "react-native";
 import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
 import Constants from 'expo-constants';
+import {endianness} from "os";
 export interface Props {
 }
 
@@ -18,17 +19,12 @@ interface State {
 export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
 
-    // state = {
-    //     text: '',
-    //     textareaHeight: 200,
-    //   image: "",
-    //     hasError: "false"
-    // };
     constructor(props: Props, state: State){
         super(props);
         this.state = {
+            ...state,
             text: "",
-            textareaHeight: 200,
+            textareaHeight: 250,
             image: "",
             hasError: false
         }
@@ -48,7 +44,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
         }
     };
 
-    _pickImage = async () => {
+    _pickImage = async () => {3
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -89,7 +85,6 @@ export class AdminAddScreen extends React.Component<Props, State> {
                     placeholderTextColor="#003f5c"/>
                 <TextInput />
                 <TextInput
-                    // style={styles.descriptionBox}
                     style={{backgroundColor:colors.inputfieldLight,
                         width:'100%',
                         borderRadius:3,
@@ -97,17 +92,27 @@ export class AdminAddScreen extends React.Component<Props, State> {
                         height: this.state.textareaHeight}}
                     placeholder="Beschrijving..."
                     placeholderTextColor="#003f5c"
-                    // style={{height: textareaHeight}}
                     value={this.state.text}
                     onChangeText={text => this.setState({ text })}
-                    // onContentSizeChange={this._onContentSizeChange}
                     multiline/>
-                <View>
+                {/*<View style={styles.buttonFotoContainer}>*/}
                     <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
-                        <Text style={{color:  colors.primary, justifyContent: "center"}}> Foto </Text>
+                        {/*<Text style={styles.photoText}></Text>*/}
+                        <Image
+                            style={{width: '60%', height: '60%',marginRight:"7%", flexDirection: 'row', justifyContent: "center", alignItems:"center"}}
+                            source={require('../assets/add_photo.png')}
+                        />
                     </ TouchableOpacity>
-                     <Image source={{ uri: this.state.image }} style={{ width: 25, height: 25 }} />
-                </View>
+                     <Image source={{ uri: this.state.image }} style={{ width: 100, height: 100 }} />
+                {/*</View>*/}
+                <TouchableOpacity onPress={this._pickImage} style={styles.submitButton}>
+                    <Text style={styles.submitText}> Toevoegen </Text>
+
+                    <Image
+                        style={{width: 30, height: 30, marginTop:5, marginRight:15}}
+                        source={require('../assets/done.png')}
+                    />
+                </ TouchableOpacity>
 
             </InputScrollView>
         );
@@ -132,13 +137,47 @@ const styles = StyleSheet.create({
         padding: 10,
 
     },
+    buttonFotoContainer:{
+        flexDirection: 'row',
+        justifyContent:'space-between',
+
+    },
     photoButton:{
-        width: 176,
+        width: 50,
+        height: 45,
+        color: "white",
+        backgroundColor: colors.primaryLight,
+        borderRadius: 10,
+        marginTop:Dimensions.get('window').height > 600? 80 : -500,
+        flexDirection: 'row',
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    photoText:{
+     color: "white",
+        paddingTop:10,
+        paddingLeft: 10,
+        fontSize:20,
+        fontWeight: 'bold'
+    },
+    submitButton:{
+        width: 150,
         height: 39,
         color: "white",
-        backgroundColor: "#1E90FF",
+        backgroundColor: colors.primaryLight,
         borderRadius: 10,
+        marginTop:Dimensions.get('window').height > 600? 50 : -500,
+        marginLeft: 50,
     },
+    submitText:{color: "white",
+        justifyContent: "center",
+        paddingTop:10,
+        paddingLeft: "5%",
+        fontSize:20,
+        fontWeight:'bold',
+        marginLeft:"-0.5%"},
+
+
 
     container: {
         flex: 1,
