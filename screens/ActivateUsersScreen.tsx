@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Alert, Picker} from 'react-native';
+import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Alert, Picker, Image} from 'react-native';
 import colors from "../constants/colors";
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
@@ -28,7 +28,7 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     fetchInactive() {
-        fetch("http://192.168.2.146:3000/api/users/inactiveUsers")
+        fetch("http://192.168.2.146:3000/api/users/")
             .then(res => res.json())
             .then(
                 (result: {data: Array<User>}) => {
@@ -57,20 +57,22 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     confirmActivation(account: User) {
+        /*TODO: make this use getFullName() once working with User objects*/
+        const fullName = account.firstname +
+            (account.tussenvoegsel ? " "+account.tussenvoegsel : "")
+            + " " + account.lastname;
         Alert.alert(
             'Account activeren',
-            'Weet u zeker dat U' + account.getFullName(),
+            'Weet u zeker dat u het account van ' + fullName+" wilt activeren?",
             [
                 {
-                    text: 'Ask me later',
-                    onPress: () => console.log('Ask me later pressed')
+                    text: 'Activeren',
+                    onPress: () => this.activateAccount(account)
                 },
                 {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
+                    text: 'Annuleren',
                     style: 'cancel'
                 },
-                { text: 'OK', onPress: () => console.log('OK Pressed') }
             ],
             { cancelable: false }
         );
@@ -104,12 +106,14 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
                     renderItem={({item}) =>
 
                         <View style={styles.accountWrapper}>
-                            <View style={styles.profilePicture}/>
+                            <View style={styles.profilePicture}>
+                                <Image source={{uri: "data:image/png;base64," + item.image, scale: 1}}
+                                       style={{height: 30, width: 30}}/>
+                            </View>
                             <View
                                 style={styles.profileInfo}>
                                 <Text
                                     style={styles.accountName}>
-                                    {console.log(item)}
                                     {/*TODO: make this use getFullName() once working with User objects*/}
                                     {item.firstname +
                                     (item.tussenvoegsel ? " "+item.tussenvoegsel : "")
