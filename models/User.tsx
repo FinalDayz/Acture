@@ -9,7 +9,7 @@ export class User {
     password: string = '';
     role: UserRole = UserRole.user;
     email: string = '';
-    image: Blob = new Blob();
+    image: string = '';
     telephone: number = 0;
     description: string = '';
     activivated: boolean = false;

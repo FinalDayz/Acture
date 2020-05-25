@@ -17,7 +17,6 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     state: State;
 
     constructor(props: Props, state: State) {
-        console.log("ActivateUsersScreen");
         super(props, state);
         this.state = {
             ...state,
@@ -28,11 +27,11 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     fetchInactive() {
-        fetch("http://192.168.2.146:3000/api/users/")
+        fetch("http://192.168.2.146:3000/api/users/inactiveUsers")
             .then(res => res.json())
             .then(
-                (result: {data: Array<User>}) => {
-                    console.log(result);
+                (result: { data: Array<User> }) => {
+
                     this.setState({
                         accounts: result.data
                     });
@@ -59,11 +58,11 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     confirmActivation(account: User) {
         /*TODO: make this use getFullName() once working with User objects*/
         const fullName = account.firstname +
-            (account.tussenvoegsel ? " "+account.tussenvoegsel : "")
+            (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
             + " " + account.lastname;
         Alert.alert(
             'Account activeren',
-            'Weet u zeker dat u het account van ' + fullName+" wilt activeren?",
+            'Weet u zeker dat u het account van ' + fullName + " wilt activeren?",
             [
                 {
                     text: 'Activeren',
@@ -74,7 +73,7 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
                     style: 'cancel'
                 },
             ],
-            { cancelable: false }
+            {cancelable: false}
         );
     }
 
@@ -82,7 +81,7 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
 
         this.sendActivate(account.userId, (error) => {
             if (error === null) {
-                console.log("DONE WITH REQUEST, error is null");
+
                 let accounts = this.state.accounts;
                 accounts.splice(this.state.accounts.indexOf(account), 1);
 
@@ -108,7 +107,7 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
                         <View style={styles.accountWrapper}>
                             <View style={styles.profilePicture}>
                                 <Image source={{uri: "data:image/png;base64," + item.image, scale: 1}}
-                                       style={{height: 30, width: 30}}/>
+                                       style={styles.profilePicture}/>
                             </View>
                             <View
                                 style={styles.profileInfo}>
@@ -116,7 +115,7 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
                                     style={styles.accountName}>
                                     {/*TODO: make this use getFullName() once working with User objects*/}
                                     {item.firstname +
-                                    (item.tussenvoegsel ? " "+item.tussenvoegsel : "")
+                                    (item.tussenvoegsel ? " " + item.tussenvoegsel : "")
                                     + " " + item.lastname}
                                 </Text>
                                 <Text
