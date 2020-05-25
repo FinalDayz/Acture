@@ -8,10 +8,14 @@ import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import {endianness} from "os";
 import * as http from "http";
+import {bodyfull} from "../components/HttpClient";
+import ApiDictionary from "../constants/ApiDictionary";
 export interface Props {
 }
 
 interface State {
+
+    title: string,
     text: string,
     textareaHeight: number,
     image: string,
@@ -24,6 +28,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
         super(props);
         this.state = {
             ...state,
+            title: "",
             text: "",
             textareaHeight: 250,
             image: "",
@@ -37,15 +42,16 @@ export class AdminAddScreen extends React.Component<Props, State> {
     }
 
     getPermissionAsync = async () => {
+        // @ts-ignore
         if (Constants.platform.ios) {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                // alert('Sorry, we need camera roll permissions to make this work!');
+                alert('Sorry, we need camera roll permissions to make this work!');
             }
         }
     };
 
-    _pickImage = async () => {3
+    _pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -65,16 +71,12 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
     _addPost = () => {
         //TODO: fix that this clicks twice during the memory leak preventing
-
-        http://192.168.178.248:3000/api/feed/add/post, {'password': this.state.password, 'email': this.state.email}).then((data) => {
-            if(data.success === 1) {
-
-            }
-
+        bodyfull(ApiDictionary.addPost, {'text': this.state.text, 'title': this.state.title, 'image': this.state.image}).then((data) => {
         });
-
-
     }
+
+
+
 
 
     // static getDerivedStateFromError(error) {
@@ -88,19 +90,17 @@ export class AdminAddScreen extends React.Component<Props, State> {
         // const { text, textareaHeight} = this.state;
         // let{image} = this.state;
 
-        if (this.state.hasError) {
-            // You can render any custom fallback UI
-            return <h1>Something went wrong.</h1>;
-        }
         return (
             <InputScrollView style = {styles.screen}>
                 <TextInput
                     style={styles.titleBox}
                     placeholder="Titel..."
                     placeholderTextColor="#003f5c"/>
+                value={this.state.title}
+                onChangeText={(title: any) => this.setState({ title })}
                 <TextInput />
                 <TextInput
-                    style={{backgroundColor:colors.inputfieldLight,
+                    style={{backgroundColor:colors.textLight,
                         width:'100%',
                         borderRadius:3,
                         padding: 10,
@@ -136,10 +136,6 @@ export class AdminAddScreen extends React.Component<Props, State> {
             </InputScrollView>
         );
     }
-    // _onContentSizeChange = ({nativeEvent:event}) => {
-    //     this.setState({ textareaHeight: event.contentSize.height });
-    // };
-    }
 
 }
 
@@ -151,7 +147,7 @@ const styles = StyleSheet.create({
         paddingTop: 100
     },
     titleBox:{
-        backgroundColor:colors.inputfieldLight,
+        backgroundColor:colors.textLight,
         width:'100%',
         borderRadius:3,
         padding: 10,
