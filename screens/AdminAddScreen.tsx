@@ -21,7 +21,7 @@ interface State {
     image: string,
     hasError: boolean
 }
-export class AdminAddScreen extends React.Component<Props, State> {
+export default class AdminAddScreen extends React.Component<Props, State> {
     state: State;
 
     constructor(props: Props, state: State){
@@ -77,18 +77,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
 
 
-
-
-    // static getDerivedStateFromError(error) {
-    //     // Update state so the next render will show the fallback UI.
-    //     return { hasError: true };
-    // }
-
-
-
     render(){
-        // const { text, textareaHeight} = this.state;
-        // let{image} = this.state;
 
         return (
             <InputScrollView style = {styles.screen}>
