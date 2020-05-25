@@ -62,6 +62,22 @@ export class AdminAddScreen extends React.Component<Props, State> {
         }
     };
 
+    _addPost = () => {
+        //TODO: fix that this clicks twice during the memory leak preventing
+        this.setState({isLoading:true})
+        bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+            if(data.success === 1) {
+
+            }
+            this.setState({isLoading:false})
+        });
+
+        this._isMounted && this.setState({
+            ready: true
+        })
+    }
+
+
     // static getDerivedStateFromError(error) {
     //     // Update state so the next render will show the fallback UI.
     //     return { hasError: true };
@@ -95,7 +111,9 @@ export class AdminAddScreen extends React.Component<Props, State> {
                     value={this.state.text}
                     onChangeText={text => this.setState({ text })}
                     multiline/>
-                {/*<View style={styles.buttonFotoContainer}>*/}
+
+                <View style={styles.buttonFotoContainer}>
+
                     <TouchableOpacity onPress={this._pickImage} style={styles.photoButton}>
                         {/*<Text style={styles.photoText}></Text>*/}
                         <Image
@@ -104,8 +122,10 @@ export class AdminAddScreen extends React.Component<Props, State> {
                         />
                     </ TouchableOpacity>
                      <Image source={{ uri: this.state.image }} style={{ width: 100, height: 100 }} />
-                {/*</View>*/}
-                <TouchableOpacity onPress={this._pickImage} style={styles.submitButton}>
+
+                </View>
+                <TouchableOpacity onPress={this._addPost} style={styles.submitButton}>
+
                     <Text style={styles.submitText}> Toevoegen </Text>
 
                     <Image
