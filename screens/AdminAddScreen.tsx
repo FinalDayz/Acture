@@ -21,7 +21,7 @@ interface State {
     image: string,
     hasError: boolean
 }
-export default class AdminAddScreen extends React.Component<Props, State> {
+export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
 
     constructor(props: Props, state: State){
