@@ -2,18 +2,16 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import MainNavigation from './navigation/MainNavigation';
+import LoginScreen from './screens/LoginScreen';
+import  {AdminAddScreen} from "./screens/AdminAddScreen";
+import {Header} from "react-native/Libraries/NewAppScreen";
 
 export default function App() {
     return (
-        // <View style={styles.screen}>
-            <MainNavigation/>
+        // <View style={{flex: 1,}}>
+        //     <LoginScreen />
         // </View>
-
-        //<MainNavigation style={styles.screen} />
-
-        // <View style={styles.screen}>
-        //     <Feed/>
-        // </View>
+        <AdminAddScreen/>
     );
 }
 
@@ -24,3 +22,4 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     }
 });
+
