@@ -7,6 +7,7 @@ import * as Permissions from 'expo-permissions';
 
 import Constants from 'expo-constants';
 import {endianness} from "os";
+import * as http from "http";
 export interface Props {
 }
 
@@ -64,17 +65,15 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
     _addPost = () => {
         //TODO: fix that this clicks twice during the memory leak preventing
-        this.setState({isLoading:true})
-        bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+
+        http://192.168.178.248:3000/api/feed/add/post, {'password': this.state.password, 'email': this.state.email}).then((data) => {
             if(data.success === 1) {
 
             }
-            this.setState({isLoading:false})
+
         });
 
-        this._isMounted && this.setState({
-            ready: true
-        })
+
     }
 
 
@@ -142,6 +141,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
     // };
     }
 
+}
 
 const styles = StyleSheet.create({
     screen: {
