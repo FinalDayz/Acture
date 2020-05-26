@@ -2,11 +2,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import MainNavigation from './navigation/MainNavigation';
+import LoginScreen from './screens/LoginScreen';
 
 export default function App() {
     return (
         // <View style={styles.screen}>
-            <MainNavigation/>
+            <LoginScreen/>
         // </View>
 
         //<MainNavigation style={styles.screen} />
