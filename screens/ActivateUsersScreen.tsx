@@ -124,16 +124,6 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
                                 </Text>
                             </View>
 
-                            {/*<RNPickerSelect*/}
-                            {/*    style={styles}*/}
-                            {/*    onValueChange={(value) => console.log(value)}*/}
-                            {/*    items={[*/}
-                            {/*        { label: 'Footbalml', value: 'football' },*/}
-                            {/*        { label: 'Baseball', value: 'baseball' },*/}
-                            {/*        { label: 'Hockey', value: 'hockey' },*/}
-                            {/*    ]}*/}
-                            {/*/>*/}
-
                             <TouchableOpacity
                                 onPress={() => this.confirmActivation(item)}
                                 style={styles.activateBtn}>

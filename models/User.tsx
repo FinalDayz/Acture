@@ -1,3 +1,5 @@
+import {UserRole} from "./UserRole";
+
 export class User {
     firstname: string = '';
     lastname: string = '';
