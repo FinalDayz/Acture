@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import HamburgerNavigation from './navigation/HamburgerNavigation';
+import MainNavigation from './navigation/MainNavigation';
+import LoginScreen from './screens/LoginScreen';
+
 
 export default function App() {
-    return (
+    return ( 
         // <View style={styles.screen}>
-            <HamburgerNavigation/>
+            <LoginScreen/>
         // </View>
 
         //<MainNavigation style={styles.screen} />
