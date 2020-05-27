@@ -4,8 +4,9 @@ import { StyleSheet, View } from 'react-native';
 import MainNavigation from './navigation/MainNavigation';
 import LoginScreen from './screens/LoginScreen';
 
+
 export default function App() {
-    return (
+    return ( 
         // <View style={styles.screen}>
             <LoginScreen/>
         // </View>
