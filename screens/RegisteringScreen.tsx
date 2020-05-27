@@ -1,17 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 
-const windowWidth = Dimensions.get('window').width;
-
-const [firstName, onChangeText] = React.useState('');
-
-function _handlePress(){
-    console.log(firstName)
-}
-
 export default function LoginScreen() {
+
+    const windowWidth = Dimensions.get('window').width;
+
+    const [firstName, setFirstName] = useState('');
+
+    const firstNameInputHandler = (enteredText: React.SetStateAction<string>) => {
+        setFirstName(enteredText)
+    };
+
+    const saveFirstName = () => {
+        console.log(firstName)
+    };
     
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -30,7 +34,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={text => onChangeText(text)}
+                                    onChangeText={firstNameInputHandler}
                                     value={firstName}
                                     />
                             </View>
@@ -84,8 +88,7 @@ export default function LoginScreen() {
 
                             <TouchableOpacity
                                 style={styles.loginBtn}
-                                onPress={() => _handlePress()}
-                                >
+                                onPress={saveFirstName}>
                                 <Text style={styles.loginText}>Registreer</Text>
                             </TouchableOpacity>
                         </View>
