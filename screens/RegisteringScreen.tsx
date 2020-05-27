@@ -1,20 +1,31 @@
 import React, {useState} from 'react';
+import {User} from '../models/User'
 import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
+import { userInfo } from 'os';
+import { Input } from '../components/input/standardInput';
 
 export default function LoginScreen() {
 
     const windowWidth = Dimensions.get('window').width;
 
     const [firstName, setFirstName] = useState('');
+    const [insertion, setInsertion] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password1, setPassword1] = useState('');
+    const [password2, setPassword2] = useState('');
+    const [password, setPassword] = useState('');
 
-    const firstNameInputHandler = (enteredText: React.SetStateAction<string>) => {
-        setFirstName(enteredText)
+    const saveUserData = () => {
+        const user = new User(firstName, insertion, lastName, email, password);
+        console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password);
     };
 
-    const saveFirstName = () => {
-        console.log(firstName)
+
+    const verifyPassword = () => {
+        console.log(password1 + " " + password2)
     };
     
         return (
@@ -34,7 +45,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={firstNameInputHandler}
+                                    onChangeText={setFirstName}
                                     value={firstName}
                                     />
                             </View>
@@ -44,7 +55,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Tussenvoegsel.."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({insertion:text})}
+                                    onChangeText={setInsertion}
                                     />
                             </View>
 
@@ -53,7 +64,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Achternaam.."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({lastName:text})}
+                                    onChangeText={setLastName}
                                     />
                             </View>
 
@@ -62,7 +73,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Email.."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({email:text})}
+                                    onChangeText={setEmail}
                                     />
                             </View>
 
@@ -72,7 +83,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({password:text})}
+                                    onChangeText={setPassword}
                                     />
                             </View>
 
@@ -82,13 +93,13 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Herhaal wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    //onChangeText={text => this.setState({repeatPassword:text})}
+                                    onChangeText={setPassword2}
                                     />
                             </View>
 
                             <TouchableOpacity
                                 style={styles.loginBtn}
-                                onPress={saveFirstName}>
+                                onPress={saveUserData}>
                                 <Text style={styles.loginText}>Registreer</Text>
                             </TouchableOpacity>
                         </View>
@@ -111,7 +122,7 @@ export default function LoginScreen() {
 
         inputView:{
             width:"80%",
-            backgroundColor:colors.inputfieldLight,
+            backgroundColor:"#FFFFFF",
             borderRadius:3,
             height:50,
             marginBottom:25,
