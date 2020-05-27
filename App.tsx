@@ -4,9 +4,11 @@ import { StyleSheet, View } from 'react-native';
 import MainNavigation from './navigation/MainNavigation';
 
 export default function App() {
-    return (
+    return ( 
         // <View style={styles.screen}>
+
             <MainNavigation/>
+
         // </View>
 
         //<MainNavigation style={styles.screen} />
