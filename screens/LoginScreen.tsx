@@ -32,15 +32,18 @@ export default class LoginScreen extends React.Component {
 
 
     login = () => {
-        //TODO: fix that this clicks twice during the memory leak preventing
         this.setState({isLoading:true})
-        bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
-            if(data.success === 1) {
-
-            }
-            this.setState({isLoading:false})
-        });
-
+            bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+                if(!data.success) {
+                    //TODO: set login navigation logic
+                }
+                this.setState({isLoading:false})
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                this.setState({isLoading:false})
+            })
+    
+            
         this._isMounted && this.setState({
             ready: true
         })

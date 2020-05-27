@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import MainNavigation from './navigation/MainNavigation';
 import LoginScreen from './screens/LoginScreen';
 import RegisteringScreen from './screens/RegisteringScreen';
+
 
 export default function App() {
     return (
