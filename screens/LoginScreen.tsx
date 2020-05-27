@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { Props } from 'react';
 import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from '../components/HttpClient';
 
+
 const windowWidth = Dimensions.get('window').width;
 
-export default class LoginScreen extends React.Component {
+export default class LoginScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
-
+    
     constructor(props: Readonly<{}>) {
         super(props);
 
@@ -33,10 +34,11 @@ export default class LoginScreen extends React.Component {
 
     login = () => {
         //TODO: fix that this clicks twice during the memory leak preventing
+        
         this.setState({isLoading:true})
         bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
             if(data.success === 1) {
-
+                this.props.navigation.navigate('Home');
             }
             this.setState({isLoading:false})
         });
@@ -44,6 +46,8 @@ export default class LoginScreen extends React.Component {
         this._isMounted && this.setState({
             ready: true
         })
+
+        
     }
 
     render() {

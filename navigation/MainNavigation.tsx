@@ -8,9 +8,9 @@ import colors from '../constants/colors';
 const MainNavigation = createSwitchNavigator({
     Login: LoginNavigation,
     Home: HamburgerNavigation
-});
-
-
+    },{
+        initialRouteName: 'Home'
+    }
+);
 
 export default createAppContainer(MainNavigation);
-
