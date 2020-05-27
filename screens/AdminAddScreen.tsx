@@ -10,7 +10,7 @@ import {endianness} from "os";
 import * as http from "http";
 import {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
-import RNFetchBlob from 'react-native-fetch-blob';
+// import RNFetchBlob from 'react-native-fetch-blob';
 
 export interface Props {
 }
