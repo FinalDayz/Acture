@@ -5,6 +5,8 @@ import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import { userInfo } from 'os';
 import { Input } from '../components/input/standardInput';
+import { bodyfull } from '../components/HttpClient';
+import ApiDictionary from '../constants/ApiDictionary';
 
 export default function LoginScreen() {
 
@@ -14,19 +16,25 @@ export default function LoginScreen() {
     const [insertion, setInsertion] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [password1, setPassword1] = useState('');
-    const [password2, setPassword2] = useState('');
     const [password, setPassword] = useState('');
 
     const saveUserData = () => {
         const user = new User(firstName, insertion, lastName, email, password);
-        console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password);
+        //console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password);
+        register();
     };
 
+    const register = () => {
+        bodyfull(ApiDictionary.register, {'firstName': firstName, 'insertion': insertion, 'lastName': lastName, 'email': email, 'password': password}).then((data) => {
+            if(!data.success) {
+                //TODO: display succesfull and return to login.
+                console.log("data verstuurt naar de backend")
+            }
+        }).catch(err => {
+            console.log("fetch error" + err.message);
+        })
+    }
 
-    const verifyPassword = () => {
-        console.log(password1 + " " + password2)
-    };
     
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -93,7 +101,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Herhaal wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={setPassword2}
+                                    //onChangeText={setPassword2}
                                     />
                             </View>
 
