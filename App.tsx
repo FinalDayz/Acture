@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import LoginScreen from './screens/LoginScreen';
 import RegisteringScreen from './screens/RegisteringScreen';
@@ -11,3 +11,11 @@ export default function App() {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+});

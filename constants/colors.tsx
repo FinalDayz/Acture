@@ -2,14 +2,10 @@ export default {
     //Main colors
     primary: '#3A3FAC', //header, footer, drawer, login screen
     primaryLight: '#555AE4', //login & logout buttons
-    backgroundPrimary: '#F2F2F2',
+    backgroundPrimary: '#FFFFFF',
     backgroundSecondary: '#E3E8EB',
     favoriteStarActive: '#7AACFB',
     favoriteStarInactive: '#C4C4C4',
-
-    //Inputfields
-    inputfieldLight: '#F2F2F2',
-    inputfieldGrey: '#E3E8EB',
 
     //Text colors
     textLight: '#FFFFFF',
@@ -17,6 +13,7 @@ export default {
     textDark: '#393939',
     textPostTitle: '#434343',
     textPostContent: '#7B7B7B',
+    textInactive: '#CCCCCC',
 
     //Post Body
     postBody: '#F4F4F4',
