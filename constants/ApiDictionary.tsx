@@ -1,4 +1,4 @@
-import enviromentsVars from "./environmentVars";
+import environmentVars from "./environmentVars";
 
 export default {
     //hier een lijst van alle apidestinations, gebruikt dit incombinatie met de httpclient :)
@@ -12,6 +12,6 @@ export default {
     getAllCategories: {destination: 'api/feed/getAllCategories', type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
-    apiServer: enviromentsVars.address + ":" + enviromentsVars.port,
+    apiServer: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
 };
