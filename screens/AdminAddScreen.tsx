@@ -12,6 +12,7 @@ import {endianness} from "os";
 import * as http from "http";
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
+import {Category} from "../models/Category";
 // import RNFetchBlob from 'react-native-fetch-blob';
 
 export interface Props {
@@ -25,7 +26,7 @@ interface State {
     image: string,
     hasError: boolean,
     date: null,
-    categories : Array<Category>
+    categories : Array<Category>[]
 }
 export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
@@ -42,11 +43,11 @@ export class AdminAddScreen extends React.Component<Props, State> {
             textareaHeight: 250,
             image: "",
             hasError: false,
-            categories: this._getAllCategories
+            categories: []
 
         }
 
-
+        this._getAllCategories()
     }
 
 
@@ -114,7 +115,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
     _getAllCategories = () => {
         bodyless(ApiDictionary.getAllCategories).then((data) => {
         this.setState({
-            categories: data.name
+            categories: data
         })
             if(data.success === 1) {
                 console.log("INSERTED")
@@ -163,7 +164,9 @@ export class AdminAddScreen extends React.Component<Props, State> {
                                label: 'Categorie..'}}
                             onValueChange={(value) => console.log(value)}
                             items={
-                                label: 'foor'
+
+                            }
+                                fo
 
                             }/>
                     </View>
