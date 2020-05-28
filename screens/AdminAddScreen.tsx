@@ -10,7 +10,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Constants from 'expo-constants';
 import {endianness} from "os";
 import * as http from "http";
-import {bodyfull} from "../components/HttpClient";
+import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 // import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -29,6 +29,7 @@ interface State {
 export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
 
+
     // const fs = RNFetchBlob.fs
 
     constructor(props: Props, state: State){
@@ -44,6 +45,8 @@ export class AdminAddScreen extends React.Component<Props, State> {
         }
 
     }
+
+    categoryIds = {}
 
     // postToAdd = {
     //    text: this.state.text,
@@ -110,6 +113,16 @@ export class AdminAddScreen extends React.Component<Props, State> {
         });
     }
 
+    _getAllCategories = () => {
+        bodyless(ApiDictionary.getAllCategories).then((data) => {
+
+            if(data.success === 1) {
+                console.log("INSERTED")
+            }
+        });
+}
+
+
 
 
 
@@ -149,10 +162,8 @@ export class AdminAddScreen extends React.Component<Props, State> {
                            placeholder={{
                                label: 'Categorie..'}}
                             onValueChange={(value) => console.log(value)}
-                            items={[
-                                { label: 'Football', value: 'football' },
-                                { label: 'Baseball', value: 'baseball' },
-                                { label: 'Hockey', value: 'hockey' },
+                            items={
+                                this._getAllCategories
                             ]}/>
                     </View>
 
