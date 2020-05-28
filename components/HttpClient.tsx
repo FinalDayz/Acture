@@ -1,14 +1,14 @@
-import { Alert } from "react-native";
+import {Alert} from "react-native";
 import ApiDictionary from '../constants/ApiDictionary';
 
-const state={
-    jwt:"",
+const state = {
+    jwt: "",
 }
 
-export default async function bodyless(details: { destination: string; type: string;}) {
+export default async function bodyless(details: { destination: string; type: string; }) {
 
     const response = await Promise.race([
-        fetch(ApiDictionary.apiServer + details.destination , {
+        fetch(ApiDictionary.apiServer + details.destination, {
             method: details.type,
             headers: {
                 'Content-Type': 'application/json',
@@ -26,32 +26,31 @@ export default async function bodyless(details: { destination: string; type: str
     
         const resData = await response;
 
-        return resData;
-  }
+export async function bodyfull(details: { destination: string; type: string; }, bodyattributes: Object) {
 
-  export async function bodyfull(details: { destination: string; type: string;}, bodyattributes: Object) {
 
-        
     const response = await Promise.race([
-        fetch(ApiDictionary.apiServer + details.destination , {
-        method: details.type,
-        headers: {
-            'Content-Type': 'application/json',
-            'jwt': state.jwt,
-        },
-        body: JSON.stringify(bodyattributes)
+        fetch(ApiDictionary.apiServer + details.destination, {
+            method: details.type,
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt': state.jwt,
+            },
+            body: JSON.stringify(bodyattributes)
         })
-        .then(response => {
-          return response.json();})
-        .then(responseData => {
-            return responseData;}),
+            .then(response => {
+                return response.json();
+            })
+            .then(responseData => {
+                return responseData;
+            }),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
+            setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
         )
-      ]).catch(err => {
+    ]).catch(err => {
         alert(err.message);
     })
-        const resData = await response;
+    const resData = await response;
 
         if(resData.success === 1 && details.destination === '/api/users/login') {
             state.jwt = resData.token
@@ -61,6 +60,7 @@ export default async function bodyless(details: { destination: string; type: str
   }
   
   function alert(err: string) {
+
     return (
         Alert.alert(
             err,
@@ -68,6 +68,6 @@ export default async function bodyless(details: { destination: string; type: str
             [
                 {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
             ],
-            { cancelable: false }
+            {cancelable: false}
         ))
-  }
+}
