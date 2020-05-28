@@ -32,7 +32,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
     // const fs = RNFetchBlob.fs
 
-    constructor(props: Props, state: State){
+    constructor(props: Props, state: State) {
         super(props);
         this.state = {
             ...state,
@@ -44,9 +44,11 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
         }
 
+            categoryIds = []
     }
 
-    categoryIds = {}
+
+
 
     // postToAdd = {
     //    text: this.state.text,
