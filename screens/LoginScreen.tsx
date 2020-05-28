@@ -13,7 +13,7 @@ const windowWidth = Dimensions.get('window').width;
 export default class LoginScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
     
-    constructor(navigation: Readonly<{navigation: any}>) {
+    constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
 
         this._isMounted = false;
@@ -48,12 +48,13 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this.setState({isLoading:true})
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
                 if(data.success === 1) {
-                    this.props.navigation.navigate('Home');
+                    this.setState({isLoading:false})
                     this.state.wrongInputs = false;
+                    this.props.navigation.navigate('Home');
                 } else {
                     this.state.wrongInputs = true;
+                    this.setState({isLoading:false})
                 }
-                this.setState({isLoading:false})
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
@@ -67,7 +68,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     openRegisterScreen = () => {
         this.props.navigation.navigate('Register');
     }
-
 
     render() {
         return (
