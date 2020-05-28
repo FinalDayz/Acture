@@ -65,6 +65,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         })
     }
 
+    openRegisterScreen = () => {
+        this.props.navigation.navigate('Register');
+    }
+
     render() {
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -120,7 +124,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 )}
 
                             <TouchableOpacity
-                                //onPress={}
+                                onPress={this.openRegisterScreen}
                                 >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>
