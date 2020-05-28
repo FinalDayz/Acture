@@ -28,10 +28,6 @@ export default async function bodyless(details: { destination: string; type: str
       ])
     
         const resData = await response;
-        
-        if(response.ok) {
-            state.jwt = resData.token
-        }
 
         return resData;
   }
@@ -60,9 +56,10 @@ export default async function bodyless(details: { destination: string; type: str
     })
         const resData = await response;
 
-        if(response.ok) {
+        if(response.ok && details.destination === '/api/users/login') {
             state.jwt = resData.token
         }
+        
         return resData;
   }
   
