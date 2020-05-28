@@ -115,7 +115,9 @@ export default class LoginScreen extends React.Component {
                                     </TouchableOpacity>
                                 )}
 
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                //onPress={}
+                                >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>
                             <TouchableOpacity>
