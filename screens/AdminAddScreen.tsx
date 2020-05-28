@@ -26,7 +26,7 @@ interface State {
     image: string,
     hasError: boolean,
     date: null,
-    categories : Array<Category>[]
+    categories : Array<Category>
 }
 export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
@@ -46,8 +46,10 @@ export class AdminAddScreen extends React.Component<Props, State> {
             categories: []
 
         }
+        // selectedCategory
 
         this._getAllCategories()
+        console.log( this._getAllCategories())
     }
 
 
@@ -125,14 +127,6 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
 
 
-
-
-
-
-
-
-
-
     render(){
 
         return (
@@ -163,12 +157,14 @@ export class AdminAddScreen extends React.Component<Props, State> {
                            placeholder={{
                                label: 'Categorie..'}}
                             onValueChange={(value) => console.log(value)}
-                            items={
+                           items={this.state.categories.map(obj =>
+                               [{
+                                   label: obj.name,
+                                   value: obj.categoryId,
 
-                            }
-                                fo
-
-                            }/>
+                               }]
+                           )}
+                        />
                     </View>
 
                 <View style={styles.buttonFotoContainer}>
