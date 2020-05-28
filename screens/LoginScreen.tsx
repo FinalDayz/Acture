@@ -13,8 +13,8 @@ const windowWidth = Dimensions.get('window').width;
 export default class LoginScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
     
-    constructor(props: Readonly<{}>) {
-        super(props);
+    constructor(navigation: Readonly<{navigation: any}>) {
+        super(navigation);
 
         this._isMounted = false;
     }
@@ -62,8 +62,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this._isMounted && this.setState({
             ready: true
         })
+    }
 
-        
+    openRegisterScreen = () => {
+        this.props.navigation.navigate('Register');
     }
 
 
@@ -122,7 +124,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 )}
 
                             <TouchableOpacity
-                                //onPress={}
+                                onPress={this.openRegisterScreen}
                                 >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>

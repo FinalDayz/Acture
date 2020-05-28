@@ -2,12 +2,16 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisteringScreen'
 import colors from '../constants/colors';
 
 const LoginNavigation = createStackNavigator(
     {
         Login: {
             screen: LoginScreen
+        },
+        Register: {
+            screen: RegisterScreen
         }
     },
     {
@@ -18,7 +22,7 @@ const LoginNavigation = createStackNavigator(
                 elevation: 0,
                 
             },
-            headerTintColor: colors.primary,
+            headerTintColor: colors.textLight,
             
         }
     }
