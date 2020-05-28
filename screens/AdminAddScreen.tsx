@@ -25,7 +25,7 @@ interface State {
     image: string,
     hasError: boolean,
     date: null,
-    categories : Ob
+    categories : Array<Category>
 }
 export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
