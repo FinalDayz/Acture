@@ -1,4 +1,4 @@
-import {UserRole} from "./UserRole";
+import { UserRole } from "./UserRole";
 
 export class User {
     firstname: string = '';
@@ -18,7 +18,15 @@ export class User {
 
     public getFullName() {
         return this.firstname +
-            (this.tussenvoegsel ? " "+this.tussenvoegsel : "")
+            (this.tussenvoegsel ? " " + this.tussenvoegsel : "")
             + " " + this.lastname;
+    }
+
+    constructor(firstname: string, insertion: string, lastname: string, email: string, password: string){
+        this.firstname = firstname;
+        this.tussenvoegsel = insertion;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
     }
 }

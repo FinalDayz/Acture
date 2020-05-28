@@ -1,17 +1,20 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert, TouchableNativeFeedbackBase } from 'react-native';
+
+import React, { Props } from 'react';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert } from 'react-native';
+
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from '../components/HttpClient';
 
+
 const windowWidth = Dimensions.get('window').width;
 
-export default class LoginScreen extends React.Component {
+export default class LoginScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
-
-    constructor(props: Readonly<{}>) {
-        super(props);
+    
+    constructor(navigation: Readonly<{ navigation: any; }>) {
+        super(navigation);
 
         this._isMounted = false;
     }
@@ -41,15 +44,17 @@ export default class LoginScreen extends React.Component {
       };
 
     login = () => {
+
         this.setState({isLoading:true})
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
-                if(data.success) {
-                    //TODO: set login navigation logic
+                if(data.success === 1) {
+                    this.setState({isLoading:false})
                     this.state.wrongInputs = false;
+                    this.props.navigation.navigate('Home');
                 } else {
                     this.state.wrongInputs = true;
+                    this.setState({isLoading:false})
                 }
-                this.setState({isLoading:false})
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
@@ -60,6 +65,9 @@ export default class LoginScreen extends React.Component {
         })
     }
 
+    openRegisterScreen = () => {
+        this.props.navigation.navigate('Register');
+    }
 
     render() {
         return (
@@ -115,7 +123,9 @@ export default class LoginScreen extends React.Component {
                                     </TouchableOpacity>
                                 )}
 
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={this.openRegisterScreen}
+                                >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>
                             <TouchableOpacity>
