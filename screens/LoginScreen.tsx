@@ -52,10 +52,9 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                     this.state.wrongInputs = false;
                     this.props.navigation.navigate('Home');
                 } else {
-                    this.setState({isLoading:false})
                     this.state.wrongInputs = true;
+                    this.setState({isLoading:false})
                 }
-                this.state.wrongInputs = true;
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
