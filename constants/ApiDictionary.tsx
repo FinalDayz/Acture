@@ -3,5 +3,5 @@ export default {
     login: {destination: '/api/users/login', type: 'POST'}, register: {destination: '/api/users/register', type: 'POST'},
 
     //dit is de default ip van de api server
-    apiServer: 'http://192.168.178.59:3000',
+    apiServer: 'http://192.168.178.55:3000',
 };

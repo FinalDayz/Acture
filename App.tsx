@@ -8,7 +8,7 @@ import RegisteringScreen from './screens/RegisteringScreen';
 export default function App() {
     return (
         <View style={{flex: 1,}}>
-            <RegisteringScreen />
+            <RegisteringScreen/>
         </View>
     );
 }

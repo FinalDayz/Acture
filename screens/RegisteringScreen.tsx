@@ -7,6 +7,7 @@ import { userInfo } from 'os';
 import { Input } from '../components/input/standardInput';
 import { bodyfull } from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
+import { stringify } from 'querystring';
 
 export default function LoginScreen() {
 
@@ -17,15 +18,43 @@ export default function LoginScreen() {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [date, setDate] = useState('');
+    const [role, setRole] = useState('');
 
     const saveUserData = () => {
         const user = new User(firstName, insertion, lastName, email, password);
-        //console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password);
+        var role = 'user';
+        setRole(role);
+        registerDate();
         register();
     };
 
+    const registerDate = () => {
+        var today = new Date();
+        var days = today.getDate();
+        var months = today.getMonth()+1; 
+        var years = today.getFullYear();
+
+        var day = days.toString();
+        var month = months.toString();
+        var year=years.toString();
+        if(days<10) 
+        {
+            day='0'+ days;
+        } 
+        if(months<10) 
+        {
+            month='0'+months;
+        } 
+        var date = year + "-" + month + "-" + day;
+        setDate(date)
+    }
+
     const register = () => {
-        bodyfull(ApiDictionary.register, {'firstName': firstName, 'insertion': insertion, 'lastName': lastName, 'email': email, 'password': password}).then((data) => {
+        console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password + ', '+ role + ', ' + date);
+
+        //TODO set default userrole to undefined
+        bodyfull(ApiDictionary.register, {'firstname': firstName, 'tussenvoegsel': insertion, 'lastname': lastName, 'email': email, 'password': password, 'role': role, 'register_date': date}).then((data) => {
             if(!data.success) {
                 //TODO: display succesfull and return to login.
                 console.log("data verstuurt naar de backend")
