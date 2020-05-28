@@ -103,20 +103,6 @@ export class AdminAddScreen extends React.Component<Props, State> {
         });
     }
 
-//     _addPost("http:localhost:3000/api/feed/", this.postToAdd){
-//                   }
-// sendActivate(id: number, callback: (error: any) => void) {
-//     fetch("http://192.168.2.146:3000/api/users/activateUser/" + id,
-//         {
-//             'method': 'PATCH'
-//         }).then(result => {
-//             callback(null);
-//         },
-//         error => {
-//             callback(error);
-//         });
-//
-// }
 
 
 
