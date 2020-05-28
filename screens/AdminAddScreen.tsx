@@ -4,6 +4,8 @@ import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import RNPickerSelect from 'react-native-picker-select';
+
 
 import Constants from 'expo-constants';
 import {endianness} from "os";
@@ -95,13 +97,20 @@ export class AdminAddScreen extends React.Component<Props, State> {
     _addPost = () => {
         console.log("pressed")
         //TODO: fix that this clicks twice during the memory leak preventing
-        bodyfull(ApiDictionary.addPost, {'text': this.state.text, 'title': this.state.title, 'image': this.state.image, 'userId': 1, 'categoryId': 1 }).then((data) => {
+        bodyfull(ApiDictionary.addPost, {
+            'text': this.state.text,
+            'title': this.state.title,
+            'image': this.state.image,
+            'userId': 1,
+            'categoryId': 1 }).then((data) => {
             if(data.success === 1) {
                 console.log("INSERTED")
             }
 
         });
     }
+
+
 
 
 
@@ -117,7 +126,8 @@ export class AdminAddScreen extends React.Component<Props, State> {
                 <TextInput
                     style={styles.titleBox}
                     placeholder="Titel..."
-                    placeholderTextColor="#003f5c"
+                    // placeholderTextColor= "#C4C4C4"
+                    placeholderTextColor= "#8e8e8e"
                     value={this.state.title}
                     onChangeText={(title: any) => this.setState({ title })}/>
                 <TextInput />
@@ -128,10 +138,23 @@ export class AdminAddScreen extends React.Component<Props, State> {
                         padding: 10,
                         height: this.state.textareaHeight}}
                     placeholder="Beschrijving..."
-                    placeholderTextColor="#003f5c"
+                    // placeholderTextColor= "#C4C4C4"
+                    placeholderTextColor= "#8e8e8e"
                     value={this.state.text}
                     onChangeText={text => this.setState({ text })}
                     multiline/>
+                    <View style={ styles.categoryBox}>
+                        <RNPickerSelect
+                           style={styles.pickerSelect}
+                           placeholder={{
+                               label: 'Categorie..'}}
+                            onValueChange={(value) => console.log(value)}
+                            items={[
+                                { label: 'Football', value: 'football' },
+                                { label: 'Baseball', value: 'baseball' },
+                                { label: 'Hockey', value: 'hockey' },
+                            ]}/>
+                    </View>
 
                 <View style={styles.buttonFotoContainer}>
                     <TouchableOpacity onPress={this._pickImage} style={styles.addPhotoButtonContainer}>
@@ -142,7 +165,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
                         />
                     </ TouchableOpacity>
                     <Image source={{ uri: this.state.image }}
-                           style={{ width: 175, height: 175 }} />
+                           style={{ width: 75, height: 75}} />
                 </View>
 
                 <TouchableOpacity onPress={this._addPost} style={styles.submitButton} >
@@ -150,7 +173,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
                     <Text style={styles.submitText}> Toevoegen </Text>
 
                     <Image
-                        style={{width: 30, height: 30, marginTop:5, marginRight:15}}
+                        style={{width: 35, height: 30, marginTop:5, marginRight:15}}
                         source={require('../assets/done.png')}
                     />
                 </ TouchableOpacity>
@@ -173,6 +196,18 @@ const styles = StyleSheet.create({
         width:'100%',
         borderRadius:3,
         padding: 10,
+
+    },
+    pickerSelect: {
+        // placeholderTextColor: "black"
+    },
+
+    categoryBox:{
+        backgroundColor:colors.textLight,
+        width:'100%',
+        borderRadius:3,
+        padding: 10,
+        marginTop: 25,
 
     },
     buttonFotoContainer:{
