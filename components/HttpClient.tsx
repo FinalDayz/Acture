@@ -21,7 +21,7 @@ export default async function bodyless(details: { destination: string; type: str
                 alert(err.message);
             }), 
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), 7000)
+          setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
         ).catch(err => {
             alert(err.message);
         })
@@ -53,7 +53,7 @@ export default async function bodyless(details: { destination: string; type: str
         .then(responseData => {
             return responseData;}),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), 7000)
+          setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
         )
       ]).catch(err => {
         alert(err.message);
@@ -63,7 +63,6 @@ export default async function bodyless(details: { destination: string; type: str
         if(response.ok) {
             state.jwt = resData.token
         }
-
         return resData;
   }
   

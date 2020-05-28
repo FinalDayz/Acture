@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert, TouchableNativeFeedbackBase } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
@@ -19,7 +19,9 @@ export default class LoginScreen extends React.Component {
     state={
         email:"",
         password:"",
-        isLoading: false
+        isLoading: false,
+        show: false,
+        wrongInputs: false
     }
 
     componentDidMount() {
@@ -30,34 +32,36 @@ export default class LoginScreen extends React.Component {
         this._isMounted = false;
     }
 
+    ShowHideComponent = () => {
+        if (this.state.show == true) {
+          this.setState({ show: false });
+        } else {
+          this.setState({ show: true });
+        }
+      };
 
     login = () => {
         this.setState({isLoading:true})
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
-                if(!data.success) {
+                if(data.success) {
                     //TODO: set login navigation logic
+                    this.state.wrongInputs = false;
+                } else {
+                    this.state.wrongInputs = true;
                 }
                 this.setState({isLoading:false})
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
             })
-    
             
         this._isMounted && this.setState({
             ready: true
         })
     }
 
+
     render() {
-        if (this.state.isLoading) {
-            //TODO: add delay + make it overlay on the screen
-            return (
-                <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={colors.textLight} style={styles.contentContainer}/>
-                </View>
-            );
-        }
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
@@ -68,8 +72,12 @@ export default class LoginScreen extends React.Component {
                                 <Image
                                 width={windowWidth * 0.8} 
                                 source={require('../assets/LGS_LOGO_WIT.png')}/>
+
                             </View>
 
+                            {this.state.wrongInputs ? (
+                               <Text style={styles.warningTest}>Verkeerde email of password</Text>
+                                ) : null}
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
@@ -78,7 +86,10 @@ export default class LoginScreen extends React.Component {
                                     onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
-
+                            
+                            {this.state.wrongInputs ? (
+                               <Text style={styles.warningTest}>Verkeerde email of password</Text>
+                                ) : null}
                             <View style={styles.inputView} >
                                 <TextInput
                                     secureTextEntry
@@ -89,12 +100,20 @@ export default class LoginScreen extends React.Component {
                                     />
                             </View>
 
-                            <TouchableOpacity
-                                style={styles.loginBtn}
-                                onPress={this.login}
-                                >
-                                <Text style={styles.loginText}>Log in</Text>
-                            </TouchableOpacity>
+                            {!this.state.isLoading ? (
+                                <TouchableOpacity
+                                    style={styles.loginBtn}
+                                    onPress={this.login}
+                                    >
+                                    <Text style={styles.loginText}>Log in</Text>
+                                </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                    style={styles.loginBtn}
+                                    >
+                                    <ActivityIndicator size="large" color={colors.textLight}/>
+                                    </TouchableOpacity>
+                                )}
 
                             <TouchableOpacity
                                 //onPress={}
@@ -116,6 +135,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.primary
+    },
+    warningTest: {
+        marginBottom: 6,
+        color: "red",
+        fontSize: 12
     },
     loadingContainer: {
         flex: 1,
