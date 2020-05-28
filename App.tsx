@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 // import MainNavigation from './navigation/MainNavigation';
 import LoginScreen from './screens/LoginScreen';
-import {AdminAddScreen} from "./screens/AdminAddScreen";
+// import {AdminAddScreen} from "./screens/AdminAddScreen";
 
 import MainNavigation from './navigation/MainNavigation';
 
