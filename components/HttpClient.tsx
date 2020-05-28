@@ -14,18 +14,15 @@ export default async function bodyless(details: { destination: string; type: str
                 'Content-Type': 'application/json',
                 'jwt': state.jwt,
             }}).then(response => {
-              return response.json();})
-            .then(responseData => {
-                return responseData;})
-            .catch(err => {
-                alert(err.message);
-            }), 
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
-        ).catch(err => {
-            alert(err.message);
-        })
-      ])
+                return response.json();})
+              .then(responseData => {
+                  return responseData;}),
+              new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
+              )
+            ]).catch(err => {
+              alert(err.message);
+          })
     
         const resData = await response;
 
@@ -56,7 +53,7 @@ export default async function bodyless(details: { destination: string; type: str
     })
         const resData = await response;
 
-        if(response.ok && details.destination === '/api/users/login') {
+        if(resData.success === 1 && details.destination === '/api/users/login') {
             state.jwt = resData.token
         }
         
