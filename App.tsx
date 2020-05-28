@@ -5,15 +5,17 @@ import { StyleSheet, View } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import {AdminAddScreen} from "./screens/AdminAddScreen";
 
+import MainNavigation from './navigation/MainNavigation';
 
 export default function App() {
-    return ( 
+    return (
         // <View style={styles.screen}>
         //     <LoginScreen/>
         // </View>
 
+            <MainNavigation/>
         //<MainNavigation style={styles.screen} />
-<AdminAddScreen/>
+// <AdminAddScreen/>
         // <View style={styles.screen}>
         //     <Feed/>
         // </View>
