@@ -24,7 +24,8 @@ interface State {
     textareaHeight: number,
     image: string,
     hasError: boolean,
-    date: null
+    date: null,
+    categories : Ob
 }
 export class AdminAddScreen extends React.Component<Props, State> {
     state: State;
@@ -41,10 +42,11 @@ export class AdminAddScreen extends React.Component<Props, State> {
             textareaHeight: 250,
             image: "",
             hasError: false,
+            categories: this._getAllCategories
 
         }
 
-            categoryIds = []
+
     }
 
 
@@ -92,12 +94,6 @@ export class AdminAddScreen extends React.Component<Props, State> {
         }
     };
 
-    // _addPost = () => {
-    //     //TODO: fix that this clicks twice during the memory leak preventing
-    //     bodyfull(ApiDictionary.addPost, {'text': this.state.text, 'title': this.state.title, 'image': this.state.image, 'userId': 1, 'postDate': this.state.postDate, this.state.categoryId  }).then((data) => {
-    //         console.log("INSERTED")
-    //     });
-    // }
 
     _addPost = () => {
         console.log("pressed")
@@ -117,7 +113,9 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
     _getAllCategories = () => {
         bodyless(ApiDictionary.getAllCategories).then((data) => {
-
+        this.setState({
+            categories: data.name
+        })
             if(data.success === 1) {
                 console.log("INSERTED")
             }
@@ -165,8 +163,9 @@ export class AdminAddScreen extends React.Component<Props, State> {
                                label: 'Categorie..'}}
                             onValueChange={(value) => console.log(value)}
                             items={
-                                this._getAllCategories
-                            ]}/>
+                                label: 'foor'
+
+                            }/>
                     </View>
 
                 <View style={styles.buttonFotoContainer}>
