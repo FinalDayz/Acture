@@ -4,6 +4,8 @@ export default {
     addPost: {destination: '/api/users/add/post', type: 'POST'},
     getAllCategories: {destination: 'api/feed/getAllCategories', type: 'GET'},
 
+    //dit is de defaults van de api server (verander dit naar je home pc)
+    timeoutTimings: 7000, //in miliseconds
     //dit is de default ip van de api server
     apiServer: 'http://localhost:3000',
 };
