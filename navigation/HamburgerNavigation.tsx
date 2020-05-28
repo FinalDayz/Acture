@@ -16,7 +16,7 @@ const MenuNavigation = createStackNavigator({
 const HamburgerNavigation = createDrawerNavigator({
     BottomNav: BottomNavigation,
     Menu: MenuNavigation,
-    manageUsers: ManageUsersScreen,
+    manageUsers: ActivateUsersScreen,
 }, {
     drawerBackgroundColor: colors.primary,
     contentOptions: {

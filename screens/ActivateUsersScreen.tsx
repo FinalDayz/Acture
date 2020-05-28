@@ -3,6 +3,8 @@ import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Al
 import colors from "../constants/colors";
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
+import bodyless from '../components/HttpClient';
+import ApiDictionary from '../constants/ApiDictionary';
 
 export interface Props {
 
@@ -27,32 +29,19 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     fetchInactive() {
-        fetch("http://192.168.2.146:3000/api/users/inactiveUsers")
-            .then(res => res.json())
-            .then(
-                (result: { data: Array<User> }) => {
-
-                    this.setState({
-                        accounts: result.data
-                    });
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
+        bodyless(ApiDictionary.getInactiveUsers).then(result => {
+            this.setState({
+                accounts: result.data
+            });
+        });
     }
 
-    sendActivate(id: number, callback: (error: any) => void) {
-        fetch("http://192.168.2.146:3000/api/users/activateUser/" + id,
-            {
-                'method': 'PATCH'
-            }).then(result => {
-                callback(null);
-            },
-            error => {
-                callback(error);
-            });
-
+    sendActivate(id: number, callback: () => void) {
+        bodyless({
+            destination: ApiDictionary.getInactiveUsers.destination + id,
+            type: ApiDictionary.activateUser.type
+        });
+        callback();
     }
 
     confirmActivation(account: User) {
@@ -78,20 +67,15 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     activateAccount(account: User) {
-
-        this.sendActivate(account.userId, (error) => {
-            if (error === null) {
-
+        this.sendActivate(account.userId, () => {
                 let accounts = this.state.accounts;
                 accounts.splice(this.state.accounts.indexOf(account), 1);
 
                 this.setState({
                     accounts: accounts
                 });
-            } else {
-                Alert.alert("Error activating user!" + error);
             }
-        })
+        )
     }
 
     render() {

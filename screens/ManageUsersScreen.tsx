@@ -16,6 +16,8 @@ import colors from "../constants/colors";
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
+import bodyless, { bodyfull } from '../components/HttpClient';
+import ApiDictionary from '../constants/ApiDictionary';
 
 export interface Props {
 
@@ -39,23 +41,16 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             selectedUser: -1,
         };
 
+
         this.fetchUsers();
     }
 
     fetchUsers() {
-        fetch("http://192.168.2.146:3000/api/users/")
-            .then(res => res.json())
-            .then(
-                (result: { data: Array<User> }) => {
-
-                    this.setState({
-                        accounts: result.data
-                    });
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
+        bodyless(ApiDictionary.getAllUsers).then(result => {
+            this.setState({
+                accounts: result.data
+            });
+        });
     }
 
     private askDeleteUser(account: User) {
