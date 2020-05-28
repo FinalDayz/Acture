@@ -28,7 +28,7 @@ interface State {
     date: null,
     categories : Array<Category>
 }
-export class AdminAddScreen extends React.Component<Props, State> {
+export default class AdminAddScreen extends React.Component<Props, State> {
     state: State;
 
 
@@ -48,8 +48,8 @@ export class AdminAddScreen extends React.Component<Props, State> {
         }
         // selectedCategory
 
-        this._getAllCategories()
-        console.log( this._getAllCategories())
+        // this._getAllCategories()
+        // console.log( this._getAllCategories())
     }
 
 
@@ -65,6 +65,7 @@ export class AdminAddScreen extends React.Component<Props, State> {
 
 
     componentDidMount() {
+        this._getAllCategories()
         this.getPermissionAsync();
     }
 
@@ -114,15 +115,16 @@ export class AdminAddScreen extends React.Component<Props, State> {
         });
     }
 
-    _getAllCategories = () => {
-        bodyless(ApiDictionary.getAllCategories).then((data) => {
-        this.setState({
-            categories: data
-        })
-            if(data.success === 1) {
-                console.log("INSERTED")
-            }
-        });
+    _getAllCategories () {
+        // bodyless(ApiDictionary.getAllCategories).then((data: any) => {
+        // this.setState({
+        //     categories: data
+        // })
+        //     if(data.success === 1) {
+        //         console.log("INSERTED")
+        //     }
+        // });
+        fetch("http://192.168.178.32:3000/api/feed/getAllCategories").then(data => console.log(data.json()))
 }
 
 
@@ -152,19 +154,19 @@ export class AdminAddScreen extends React.Component<Props, State> {
                     onChangeText={text => this.setState({ text })}
                     multiline/>
                     <View style={ styles.categoryBox}>
-                        <RNPickerSelect
-                           style={styles.pickerSelect}
-                           placeholder={{
-                               label: 'Categorie..'}}
-                            onValueChange={(value) => console.log(value)}
-                           items={this.state.categories.map(obj =>
-                               [{
-                                   label: obj.name,
-                                   value: obj.categoryId,
-
-                               }]
-                           )}
-                        />
+                        {/*<RNPickerSelect*/}
+                        {/*   style={styles.pickerSelect}*/}
+                        {/*   placeholder={{*/}
+                        {/*       label: 'Categorie..'}}*/}
+                        {/*    onValueChange={(value) => console.log(value)}*/}
+                        {/*   // items={this.state.categories.map(obj =>*/}
+                        {/*   //     [{*/}
+                        {/*   //         label: obj.name,*/}
+                        {/*   //         value: obj.categoryId,*/}
+                        {/*   //*/}
+                        {/*   //     }]*/}
+                        {/*   // )}*/}
+                        {/*/>*/}
                     </View>
 
                 <View style={styles.buttonFotoContainer}>

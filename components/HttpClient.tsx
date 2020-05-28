@@ -13,19 +13,22 @@ export default async function bodyless(details: { destination: string; type: str
             headers: {
                 'Content-Type': 'application/json',
                 'jwt': state.jwt,
-            }}).then(response => {
-                return response.json();})
-              .then(responseData => {
-                  return responseData;}),
-              new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
-              )
-            ]).catch(err => {
-              alert(err.message);
-          })
-    
-        const resData = await response;
+            }
+        }).then(response => {
+            return response.json();
+        })
+            .then(responseData => {
+                return responseData;
+            }),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
+        )
+    ]).catch(err => {
+        alert(err.message);
+    })
 
+    const resData = await response;
+}
 export async function bodyfull(details: { destination: string; type: string; }, bodyattributes: Object) {
 
 
