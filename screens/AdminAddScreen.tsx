@@ -14,7 +14,8 @@ import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
 import {User} from "../models/User";
-import any = jasmine.any;
+// import any = jasmine.any;
+
 // import RNFetchBlob from 'react-native-fetch-blob';
 
 export interface Props {
@@ -28,10 +29,12 @@ interface State {
     image: string,
     hasError: boolean,
     date: null,
-    categories : Array<Category>
+    categories: Array<Category>
 }
+
 export default class AdminAddScreen extends React.Component<Props, State> {
     state: State;
+    categoryId = 0;
 
 
     // const fs = RNFetchBlob.fs
@@ -56,15 +59,12 @@ export default class AdminAddScreen extends React.Component<Props, State> {
     }
 
 
-
-
     // postToAdd = {
     //    text: this.state.text,
     //    title: this.state.title,
     //    image: this.state.image,
     //    userId: 1,
     //    categoryId: 1};
-
 
 
     componentDidMount() {
@@ -75,7 +75,7 @@ export default class AdminAddScreen extends React.Component<Props, State> {
     getPermissionAsync = async () => {
         // @ts-ignore
         if (Constants.platform.ios) {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
                 alert('Sorry, we need camera roll permissions to make this work!');
             }
@@ -91,7 +91,7 @@ export default class AdminAddScreen extends React.Component<Props, State> {
                 quality: 1,
             });
             if (!result.cancelled) {
-                this.setState({ image: result.uri });
+                this.setState({image: result.uri});
                 // let response = await fs.readFile(uri, 'base64')
             }
 
@@ -103,22 +103,38 @@ export default class AdminAddScreen extends React.Component<Props, State> {
 
 
     _addPost = () => {
-        console.log("pressed")
-        //TODO: fix that this clicks twice during the memory leak preventing
-        bodyfull(ApiDictionary.addPost, {
-            'text': this.state.text,
-            'title': this.state.title,
-            'image': this.state.image,
-            'userId': 1,
-            'categoryId': 1 }).then((data) => {
-            if(data.success === 1) {
-                console.log("INSERTED")
-            }
-
-        });
+        {
+            post("http://192.168.178.32:3000/api/feed/getAllCategories")
+                .then(res => res.json())
+                .then(
+                    (result: { data: Array<Category> }) => {
+                        console.log(result)
+                        this.setState({
+                            categories: result.data
+                        });
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+        }
+        // console.log("pressed")
+        // //TODO: fix that this clicks twice during the memory leak preventing
+        // bodyfull(ApiDictionary.addPost, {
+        //     'text': this.state.text,
+        //     'title': this.state.title,
+        //     'image': this.state.image,
+        //     'userId': 1,
+        //     'categoryId': 1
+        // }).then((data) => {
+        //     if (data.success === 1) {
+        //         console.log("INSERTED")
+        //     }
+        //
+        // });
     }
 
-    _getAllCategories () {
+    _getAllCategories() {
         {
             fetch("http://192.168.178.32:3000/api/feed/getAllCategories")
                 .then(res => res.json())
@@ -142,68 +158,74 @@ export default class AdminAddScreen extends React.Component<Props, State> {
         //         console.log("INSERTED")
         //     }
         // });
-}
+    }
 
 
-
-    render(){
+    render() {
 
         // @ts-ignore
         return (
-            <InputScrollView style = {styles.screen}>
+            <InputScrollView style={styles.screen}>
                 <TextInput
                     style={styles.titleBox}
                     placeholder="Titel..."
                     // placeholderTextColor= "#C4C4C4"
-                    placeholderTextColor= "#8e8e8e"
+                    placeholderTextColor="#8e8e8e"
                     value={this.state.title}
-                    onChangeText={(title: any) => this.setState({ title })}/>
-                <TextInput />
+                    onChangeText={(title: any) => this.setState({title})}/>
+                <TextInput/>
                 <TextInput
-                    style={{backgroundColor:colors.textLight,
-                        width:'100%',
-                        borderRadius:3,
+                    style={{
+                        backgroundColor: colors.textLight,
+                        width: '100%',
+                        borderRadius: 3,
                         padding: 10,
-                        height: this.state.textareaHeight}}
+                        height: this.state.textareaHeight
+                    }}
                     placeholder="Beschrijving..."
                     // placeholderTextColor= "#C4C4C4"
-                    placeholderTextColor= "#8e8e8e"
+                    placeholderTextColor="#8e8e8e"
                     value={this.state.text}
-                    onChangeText={text => this.setState({ text })}
+                    onChangeText={text => this.setState({text})}
                     multiline/>
-                    <View style={ styles.categoryBox}>
-                        <RNPickerSelect
-                           style={styles.pickerSelect}
-                           placeholder={{
-                               label: 'Categorie..'}}
-                            onValueChange={(value) => console.log(value)}
-                           items ={this.state.categories.map(obj =>
-                           [{
-                               label: obj.name,
-                               value: obj.categoryId
-
-                           }])
-                        />
-                    </View>
+                <View style={styles.categoryBox}>
+                    <RNPickerSelect
+                        style={styles.pickerSelect}
+                        placeholder={{
+                            label: 'Categorie..'
+                        }}
+                        onValueChange={(value) => this.categoryId = value}
+                        items={this.state.categories.map(obj =>
+                            ({label: obj.name, value: obj.categoryId})
+                        )}
+                    />
+                </View>
 
                 <View style={styles.buttonFotoContainer}>
                     <TouchableOpacity onPress={this._pickImage} style={styles.addPhotoButtonContainer}>
                         {/*<Text style={styles.photoText}></Text>*/}
                         <Image
-                            style={{width: '60%', height: '60%',marginRight:"7%", flexDirection: 'row', justifyContent: "center", alignItems:"center"}}
+                            style={{
+                                width: '60%',
+                                height: '60%',
+                                marginRight: "7%",
+                                flexDirection: 'row',
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}
                             source={require('../assets/add_photo.png')}
                         />
                     </ TouchableOpacity>
-                    <Image source={{ uri: this.state.image }}
-                           style={{ width: 75, height: 75}} />
+                    <Image source={{uri: this.state.image}}
+                           style={{width: 75, height: 75}}/>
                 </View>
 
-                <TouchableOpacity onPress={this._addPost} style={styles.submitButton} >
+                <TouchableOpacity onPress={this._addPost} style={styles.submitButton}>
 
                     <Text style={styles.submitText}> Toevoegen </Text>
 
                     <Image
-                        style={{width: 35, height: 30, marginTop:5, marginRight:15}}
+                        style={{width: 35, height: 30, marginTop: 5, marginRight: 15}}
                         source={require('../assets/done.png')}
                     />
                 </ TouchableOpacity>
@@ -221,10 +243,10 @@ const styles = StyleSheet.create({
         padding: 50,
         paddingTop: 100
     },
-    titleBox:{
-        backgroundColor:colors.textLight,
-        width:'100%',
-        borderRadius:3,
+    titleBox: {
+        backgroundColor: colors.textLight,
+        width: '100%',
+        borderRadius: 3,
         padding: 10,
 
     },
@@ -232,24 +254,24 @@ const styles = StyleSheet.create({
         // placeholderTextColor: "black"
     },
 
-    categoryBox:{
-        backgroundColor:colors.textLight,
-        width:'100%',
-        borderRadius:3,
+    categoryBox: {
+        backgroundColor: colors.textLight,
+        width: '100%',
+        borderRadius: 3,
         padding: 10,
         marginTop: 25,
 
     },
-    buttonFotoContainer:{
+    buttonFotoContainer: {
         flexDirection: 'row',
-        justifyContent:'space-between',
-        alignItems:'center',
+        justifyContent: 'space-between',
+        alignItems: 'center',
 
 
-        marginTop:Dimensions.get('window').height > 600? 30 : 5,
+        marginTop: Dimensions.get('window').height > 600 ? 30 : 5,
 
     },
-    addPhotoButtonContainer:{
+    addPhotoButtonContainer: {
         width: 50,
         height: 45,
         color: "white",
@@ -260,33 +282,34 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    photoText:{
+    photoText: {
         color: "white",
-        paddingTop:10,
+        paddingTop: 10,
         paddingLeft: 10,
-        fontSize:20,
+        fontSize: 20,
         fontWeight: 'bold'
     },
-    submitButton:{
+    submitButton: {
 
         width: 150,
         height: 39,
         color: "white",
         backgroundColor: colors.primaryLight,
         borderRadius: 10,
-        marginTop:Dimensions.get('window').height > 600? 50 : 35,
-        marginLeft: Dimensions.get('window').width > 50? 185 : 150,
+        marginTop: Dimensions.get('window').height > 600 ? 50 : 35,
+        marginLeft: Dimensions.get('window').width > 50 ? 185 : 150,
         flexDirection: "row",
         justifyContent: "space-between"
     },
-    submitText:{color: "white",
+    submitText: {
+        color: "white",
         justifyContent: "center",
-        paddingTop:10,
+        paddingTop: 10,
         paddingLeft: "5%",
-        fontSize:20,
-        fontWeight:'bold',
-        marginLeft:"-0.5%"},
-
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginLeft: "-0.5%"
+    },
 
 
     container: {
@@ -303,7 +326,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 4,
-        marginBottom:12
+        marginBottom: 12
     },
     buttonText: {
         textAlign: 'center',
