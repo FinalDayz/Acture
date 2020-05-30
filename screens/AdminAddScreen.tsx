@@ -13,6 +13,8 @@ import * as http from "http";
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
+import {User} from "../models/User";
+import any = jasmine.any;
 // import RNFetchBlob from 'react-native-fetch-blob';
 
 export interface Props {
@@ -41,11 +43,12 @@ export default class AdminAddScreen extends React.Component<Props, State> {
             title: "",
             text: "",
             textareaHeight: 250,
-            image: "",
+            // image: "",
             hasError: false,
             categories: []
 
         }
+        this._getAllCategories();
         // selectedCategory
 
         // this._getAllCategories()
@@ -65,7 +68,7 @@ export default class AdminAddScreen extends React.Component<Props, State> {
 
 
     componentDidMount() {
-        this._getAllCategories()
+        this._getAllCategories();
         this.getPermissionAsync();
     }
 
@@ -116,6 +119,21 @@ export default class AdminAddScreen extends React.Component<Props, State> {
     }
 
     _getAllCategories () {
+        {
+            fetch("http://192.168.178.32:3000/api/feed/getAllCategories")
+                .then(res => res.json())
+                .then(
+                    (result: { data: Array<Category> }) => {
+                        console.log(result)
+                        this.setState({
+                            categories: result.data
+                        });
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+        }
         // bodyless(ApiDictionary.getAllCategories).then((data: any) => {
         // this.setState({
         //     categories: data
@@ -124,13 +142,13 @@ export default class AdminAddScreen extends React.Component<Props, State> {
         //         console.log("INSERTED")
         //     }
         // });
-        fetch("http://192.168.178.32:3000/api/feed/getAllCategories").then(data => console.log(data.json()))
 }
 
 
 
     render(){
 
+        // @ts-ignore
         return (
             <InputScrollView style = {styles.screen}>
                 <TextInput
@@ -154,19 +172,18 @@ export default class AdminAddScreen extends React.Component<Props, State> {
                     onChangeText={text => this.setState({ text })}
                     multiline/>
                     <View style={ styles.categoryBox}>
-                        {/*<RNPickerSelect*/}
-                        {/*   style={styles.pickerSelect}*/}
-                        {/*   placeholder={{*/}
-                        {/*       label: 'Categorie..'}}*/}
-                        {/*    onValueChange={(value) => console.log(value)}*/}
-                        {/*   // items={this.state.categories.map(obj =>*/}
-                        {/*   //     [{*/}
-                        {/*   //         label: obj.name,*/}
-                        {/*   //         value: obj.categoryId,*/}
-                        {/*   //*/}
-                        {/*   //     }]*/}
-                        {/*   // )}*/}
-                        {/*/>*/}
+                        <RNPickerSelect
+                           style={styles.pickerSelect}
+                           placeholder={{
+                               label: 'Categorie..'}}
+                            onValueChange={(value) => console.log(value)}
+                           items ={this.state.categories.map(obj =>
+                           [{
+                               label: obj.name,
+                               value: obj.categoryId
+
+                           }])
+                        />
                     </View>
 
                 <View style={styles.buttonFotoContainer}>
