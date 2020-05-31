@@ -7,7 +7,6 @@ import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from '../components/HttpClient';
 
-
 const windowWidth = Dimensions.get('window').width;
 
 export default class LoginScreen extends React.Component<{navigation:any}> {

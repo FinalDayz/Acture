@@ -5,8 +5,8 @@ const state={
     jwt:"",
 }
 
-export default async function bodyless(details: { destination: string; type: string;}) {
-
+export async function bodyless(details: { destination: string; type: string;}) {
+    
     const response = await Promise.race([
         fetch(ApiDictionary.apiServer + details.destination , {
             method: details.type,
@@ -45,15 +45,15 @@ export default async function bodyless(details: { destination: string; type: str
         body: JSON.stringify(bodyattributes)
         })
         .then(response => {
-          return response.json();})
+            return response.json();})
         .then(responseData => {
             return responseData;}),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
         )
       ]).catch(err => {
-        alert(err.message);
-    })
+            alert(err.message);
+        })
         const resData = await response;
 
         if(response.ok && details.destination === '/api/users/login') {

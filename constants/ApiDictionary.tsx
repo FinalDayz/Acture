@@ -4,6 +4,6 @@ export default {
     feed: {destination: '/api/feedposts', type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
-    apiServer: 'http://192.168.178.248:3000',
+    apiServer: 'http://192.168.178.18:3000',
     timeoutTimings: 7000, //in miliseconds
 };

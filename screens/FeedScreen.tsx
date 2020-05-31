@@ -1,23 +1,39 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import HttpClient, { bodyfull } from '../components/HttpClient';
+import { bodyless } from '../components/HttpClient';
 import Post from '../components/Post';
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
+import ApiDictionary from '../constants/ApiDictionary'
 
 export interface Props {}
 
 const FeedScreen = (props: Props) => {
 
-    function getPosts() {
-        //bodyfull({feed}, null)
-    }
+    // const [feedPosts, setFeedPosts] = useState({});
+    
+    // useEffect(() => {
+    //     console.log(ApiDictionary.feed.destination)
+    //     fetch(ApiDictionary.feed.destination, {
+    //         method: 'GET', 
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }).then((response:any) => {
+    //         console.log(response)
+    //         setFeedPosts(response)
+    //     }).catch((error:any) => {
+    //         console.log(error)
+    //     })
+    // },[feedPosts])
 
     return(
         <View style={styles.screen}>
             <ScrollView style={styles.scrollable}>
+
                 <View style={styles.postContainer}>
                     <Post/>
                 </View>
