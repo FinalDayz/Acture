@@ -19,8 +19,13 @@ export class Post extends React.Component<Props> {
         return (
             <ListItem>
                 <View style={this.styles.postContainer}>
-                    <PostHeader postDate={this.props.data.postDate}/>
-                    <PostBody text={this.props.data.text} title={this.props.data.title}/>
+                    <PostHeader
+                        postName={this.props.data.userId}
+                        category={this.props.data.categoryId}
+                        postDate={new Date(this.props.data.postDate)}/>
+                    <PostBody
+                        text={this.props.data.text}
+                        title={this.props.data.title}/>
                 </View>
             </ListItem>
         );

@@ -4,7 +4,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import colors from '../../constants/colors';
 
 export interface Props {
-    postDate: String
+    postName: String
+    category: String
+    postDate: Date
 }
 
 export class PostHeader extends React.Component<Props> {
@@ -22,14 +24,14 @@ export class PostHeader extends React.Component<Props> {
                             <View style={this.styles.profileImage}/>
                         </View>
                         <View style={this.styles.verticalFlex}>
-                            <Text style={this.styles.name}>Lugus</Text>
+                            <Text style={this.styles.name}>{this.props.postName}</Text>
                             <Text style={this.styles.topic}>Vakgebied</Text>
                         </View>
                         <View style={this.styles.verticalFlex}>
                             <View style={this.styles.textContainer}>
-                                <Text style={this.styles.postType}>Nieuws</Text>
+                                <Text style={this.styles.postType}>{this.props.category}</Text>
                             </View>
-                            <Text style={this.styles.date}>{this.props.postDate}</Text>
+                            <Text style={this.styles.date}>{this.props.postDate.toLocaleDateString()}</Text>
                         </View>
                     </View>
                 </View>
