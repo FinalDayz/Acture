@@ -48,7 +48,7 @@ export default function LoginScreen() {
         } 
         var date = year + "-" + month + "-" + day;
         setDate(date)
-    }
+    };
 
     const register = () => {
         console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password + ', '+ role + ', ' + date);
@@ -199,4 +199,3 @@ export default function LoginScreen() {
             textDecorationLine: "underline"
         },
     });
-    

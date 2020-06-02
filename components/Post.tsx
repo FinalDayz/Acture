@@ -3,24 +3,39 @@ import { View, StyleSheet } from 'react-native';
 
 import PostHeader from './postComponents/PostHeader';
 import PostBody from './postComponents/PostBody';
+import {ListItem} from "native-base";
 
-export interface Props {}
+export interface Props {
+    data: any
+}
 
-const Post = (props: Props) => {
-    return (
-        <View style={styles.postContainer}>
-            <PostHeader/>
-            <PostBody/>
-        </View>
-    );
-};
+export class Post extends React.Component<Props> {
 
-const styles = StyleSheet.create ({
-    postContainer: {
-        flex: 1,
-        margin: 10,
-        width: '100%'
+    constructor(props: Props) {
+        super(props);
     }
-});
 
-export default Post;
+    render() {
+        console.log(this.props);
+        return (
+            <ListItem>
+                <View style={this.styles.postContainer}>
+                    <PostHeader/>
+                    <PostBody/>
+                </View>
+            </ListItem>
+        );
+    };
+
+    styles = StyleSheet.create ({
+        postContainer: {
+            flex: 1,
+            margin: 10,
+            width: '100%'
+        }
+    });
+}
+
+
+
+

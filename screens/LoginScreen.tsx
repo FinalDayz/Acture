@@ -25,7 +25,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         isLoading: false,
         show: false,
         wrongInputs: false
-    }
+    };
 
     componentDidMount() {
         this._isMounted = true;
@@ -36,7 +36,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     }
 
     ShowHideComponent = () => {
-        if (this.state.show == true) {
+        if (this.state.show) {
           this.setState({ show: false });
         } else {
           this.setState({ show: true });
@@ -45,10 +45,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
 
     login = () => {
 
-        this.setState({isLoading:true})
+        this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
                 if(data.success === 1) {
-                    this.setState({isLoading:false})
+                    this.setState({isLoading:false});
                     this.state.wrongInputs = false;
                     this.props.navigation.navigate('Home');
                 } else {
@@ -57,17 +57,18 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                 }
             }).catch(err => {
                 console.log("fetch error" + err.message);
-                this.setState({isLoading:false})
-            })
+                this.setState({isLoading:false});
+                this.props.navigation.navigate('Home'); // TODO weghalen
+            });
 
         this._isMounted && this.setState({
             ready: true
         })
-    }
+    };
 
     openRegisterScreen = () => {
         this.props.navigation.navigate('Register');
-    }
+    };
 
     render() {
         return (
