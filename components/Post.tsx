@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import PostHeader from './postComponents/PostHeader';
-import PostBody from './postComponents/PostBody';
+import {PostHeader} from './postComponents/PostHeader';
+import {PostBody} from './postComponents/PostBody';
 import {ListItem} from "native-base";
 
 export interface Props {
@@ -16,12 +16,11 @@ export class Post extends React.Component<Props> {
     }
 
     render() {
-        console.log(this.props);
         return (
             <ListItem>
                 <View style={this.styles.postContainer}>
-                    <PostHeader/>
-                    <PostBody/>
+                    <PostHeader postDate={this.props.data.postDate}/>
+                    <PostBody text={this.props.data.text} title={this.props.data.title}/>
                 </View>
             </ListItem>
         );

@@ -58,7 +58,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false});
-                this.props.navigation.navigate('Home'); // TODO weghalen
             });
 
         this._isMounted && this.setState({
