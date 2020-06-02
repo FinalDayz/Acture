@@ -16,7 +16,7 @@ export class PostHeader extends React.Component<Props> {
     }
 
     render() {
-        return (    //gebruik om header kleur te veranderen: style={(setColor == true) ? styles.headerRed : styles.headerBlue}
+        return (    // gebruik om header kleur te veranderen: style={(setColor == true) ? styles.headerRed : styles.headerBlue}
             <View style={this.styles.headerBackground}>
                 <View style={this.styles.headerBlue}>
                     <View style={this.styles.horizontalFlex}>
