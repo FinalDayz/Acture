@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import {Container, Content, Icon, List, ListItem} from 'native-base';
+import {Container, Content, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
