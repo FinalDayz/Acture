@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import MainNavigation from './navigation/MainNavigation';
-import AdminAddScreen from './screens/AdminAddScreen';
+import Firstattempt from './screens/firstattempt';
+import PostAddScreen from '/screens/PostAddScreen';
 
 export default function App() {
     return (
         // <MainNavigation/>
-        <AdminAddScreen/>
+        <PostAddScreen/>
     );
 }
 

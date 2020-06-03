@@ -1,61 +1,73 @@
 import React from "react";
-import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text, Dimensions} from "react-native";
+import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text, Dimensions, Platform} from "react-native";
 import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import RNPickerSelect from 'react-native-picker-select';
-
-
+// import RNFetchBlob from 'rn-fetch-blob'
+// import RNFetchBlob from 'react-native-fetch-blob'
 import Constants from 'expo-constants';
 import {endianness} from "os";
 import * as http from "http";
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
+import {Post} from "../models/Post";
 import {User} from "../models/User";
+import {ImageInfo} from "expo-image-picker/build/ImagePicker.types";
 // import any = jasmine.any;
+// import ImgToBase64 from 'react-native-image-base64';
+import { FormLabel} from 'react-native-elements'
 
 // import RNFetchBlob from 'react-native-fetch-blob';
+const fileUpload = require('fuctbase64');
 
 export interface Props {
 }
 
 interface State {
-
-    title: string,
-    text: string,
     textareaHeight: number,
-    image: string,
     hasError: boolean,
-    date: null,
-    categories: Array<Category>
+    categories: Array<Category>,
+
+    title: string
+    text: string
+    categoryId: number
+    image: string
+    // image: Blob
+
 }
 
-export default class AdminAddScreen extends React.Component<Props, State> {
+// const Blob = RNFetchBlob.polyfill.Blob;
+// const fs = RNFetchBlob.fs;
+
+// var ReadImageData = require('NativeModules').ReadImageData;
+
+
+export default class PostAddScreen extends React.Component<Props, State> {
     state: State;
-    categoryId = 0;
 
-
-    // const fs = RNFetchBlob.fs
 
     constructor(props: Props, state: State) {
         super(props);
+
+        // {this.state.post.title}   .post.title)}
+
         this.state = {
             ...state,
-            title: "",
-            text: "",
             textareaHeight: 250,
             // image: "",
             hasError: false,
-            categories: []
+            categories: [],
+
+            title: '',
+            text: '',
+            categoryId: 0,
+            image: ''
 
         }
-        this._getAllCategories();
-        // selectedCategory
 
-        // this._getAllCategories()
-        // console.log( this._getAllCategories())
     }
 
 
@@ -87,15 +99,20 @@ export default class AdminAddScreen extends React.Component<Props, State> {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
+                base64: true,
                 aspect: [4, 3],
-                quality: 1,
+                quality: 0.01,
+
             });
-            if (!result.cancelled) {
-                this.setState({image: result.uri});
-                // let response = await fs.readFile(uri, 'base64')
+            if (result && !result.cancelled) {
+                console.log(result);
+                const bas64 = result.base64;
+                if(bas64){
+                    this.setState({image: bas64.toString()});
+                }
+
             }
 
-            console.log(result);
         } catch (E) {
             console.log(E);
         }
@@ -104,34 +121,32 @@ export default class AdminAddScreen extends React.Component<Props, State> {
 
     _addPost = () => {
         {
-            post("http://192.168.178.32:3000/api/feed/getAllCategories")
+            console.log(this.state.image.substr(0, 300));
+
+
+            // create the post object and store the state values in here
+            fetch("http://192.168.178.32:3000/api/feed/addPost", {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'text': this.state.text,
+                    'title': this.state.title,
+                    'image': this.state.image,
+                    'userId': 1,
+                    'categoryId': this.state.categoryId
+                })
+            })
                 .then(res => res.json())
-                .then(
-                    (result: { data: Array<Category> }) => {
-                        console.log(result)
-                        this.setState({
-                            categories: result.data
-                        });
-                    },
-                    (error) => {
-                        console.log(error);
+                .then((data) => {
+                        if (data.success === 1) {
+                            console.log("INSERTED")
+                        }
                     }
                 );
         }
-        // console.log("pressed")
-        // //TODO: fix that this clicks twice during the memory leak preventing
-        // bodyfull(ApiDictionary.addPost, {
-        //     'text': this.state.text,
-        //     'title': this.state.title,
-        //     'image': this.state.image,
-        //     'userId': 1,
-        //     'categoryId': 1
-        // }).then((data) => {
-        //     if (data.success === 1) {
-        //         console.log("INSERTED")
-        //     }
-        //
-        // });
     }
 
     _getAllCategories() {
@@ -140,7 +155,7 @@ export default class AdminAddScreen extends React.Component<Props, State> {
                 .then(res => res.json())
                 .then(
                     (result: { data: Array<Category> }) => {
-                        console.log(result)
+                        // console.log(result)
                         this.setState({
                             categories: result.data
                         });
@@ -166,13 +181,14 @@ export default class AdminAddScreen extends React.Component<Props, State> {
         // @ts-ignore
         return (
             <InputScrollView style={styles.screen}>
+                <FormLabel>Name</FormLabel>
                 <TextInput
                     style={styles.titleBox}
                     placeholder="Titel..."
                     // placeholderTextColor= "#C4C4C4"
                     placeholderTextColor="#8e8e8e"
                     value={this.state.title}
-                    onChangeText={(title: any) => this.setState({title})}/>
+                    onChangeText={(title) => this.setState({title: title})}/>
                 <TextInput/>
                 <TextInput
                     style={{
@@ -186,7 +202,7 @@ export default class AdminAddScreen extends React.Component<Props, State> {
                     // placeholderTextColor= "#C4C4C4"
                     placeholderTextColor="#8e8e8e"
                     value={this.state.text}
-                    onChangeText={text => this.setState({text})}
+                    onChangeText={text => this.setState({text: text})}
                     multiline/>
                 <View style={styles.categoryBox}>
                     <RNPickerSelect
@@ -194,7 +210,7 @@ export default class AdminAddScreen extends React.Component<Props, State> {
                         placeholder={{
                             label: 'Categorie..'
                         }}
-                        onValueChange={(value) => this.categoryId = value}
+                        onValueChange={id => this.setState({categoryId: id})}
                         items={this.state.categories.map(obj =>
                             ({label: obj.name, value: obj.categoryId})
                         )}
@@ -216,8 +232,8 @@ export default class AdminAddScreen extends React.Component<Props, State> {
                             source={require('../assets/add_photo.png')}
                         />
                     </ TouchableOpacity>
-                    <Image source={{uri: this.state.image}}
-                           style={{width: 75, height: 75}}/>
+                    {(this.state.image == '') ? undefined : <Image source={{uri: "data:image/png;base64," + this.state.image}}
+                                                                   style={{width: 125, height: 125}}/>}
                 </View>
 
                 <TouchableOpacity onPress={this._addPost} style={styles.submitButton}>
