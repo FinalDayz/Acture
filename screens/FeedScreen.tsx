@@ -20,19 +20,18 @@ export default class FeedScreen extends React.Component<any, any> {
         }
     }
 
-
     render() {
 
         return(
             <Container>
-                <Content>
+                <View>
                     <List
                         dataArray={this.state.data}
                         renderRow={(item) => {
                             return <Post data={item}/>
                         }}
                     />
-                </Content>
+                </View>
             </Container>
         );
     }
