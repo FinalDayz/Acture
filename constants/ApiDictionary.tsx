@@ -12,6 +12,6 @@ export default {
     getAllCategories: {destination: 'api/feed/getAllCategories', type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
-    apiServer: environmentVars.address + ":" + environmentVars.port,
+    apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
 };
