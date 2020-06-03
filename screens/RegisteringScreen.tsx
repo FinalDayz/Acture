@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {User} from '../models/User'
-import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
+import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button, Alert } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import { userInfo } from 'os';
@@ -9,27 +9,34 @@ import { bodyfull } from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import { stringify } from 'querystring';
 
-export default function LoginScreen() {
+const windowWidth = Dimensions.get('window').width;
 
-    const windowWidth = Dimensions.get('window').width;
+export default class LoginScreen extends React.Component<{navigation:any}> {
 
-    const [firstName, setFirstName] = useState('');
-    const [insertion, setInsertion] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [date, setDate] = useState('');
-    const [role, setRole] = useState('');
+    state={
+        firstName:"",
+        insertion:"",
+        lastName:"",
+        email:"",
+        password:"",
+        date:"",
+        role:""
+    }
 
-    const saveUserData = () => {
-        const user = new User(firstName, insertion, lastName, email, password);
-        var role = 'user';
-        setRole(role);
-        registerDate();
-        register();
+    returnToLoginScreen = () => {
+
+        this.props.navigation.navigate('Login');
     };
 
-    const registerDate = () => {
+    saveUserData = () => {
+        const user = new User(this.state.firstName, this.state.insertion, this.state.lastName, this.state.email, this.state.password);
+        var role = 'user';
+        this.state.role = role;
+        this.registerDate();
+        this.register();
+    };
+
+    registerDate = () => {
         var today = new Date();
         var days = today.getDate();
         var months = today.getMonth()+1; 
@@ -47,24 +54,30 @@ export default function LoginScreen() {
             month='0'+months;
         } 
         var date = year + "-" + month + "-" + day;
-        setDate(date)
-    };
 
-    const register = () => {
-        console.log(firstName + ' ' + insertion + ' ' + lastName + ', ' + email, ', ' + password + ', '+ role + ', ' + date);
+        {() => this.setState({date:date})}
+    }
 
-        //TODO set default userrole to undefined
-        bodyfull(ApiDictionary.register, {'firstname': firstName, 'tussenvoegsel': insertion, 'lastname': lastName, 'email': email, 'password': password, 'role': role, 'register_date': date}).then((data) => {
+    register = () => {
+        console.log(this.state.firstName + ' ' + this.state.insertion + ' ' + this.state.lastName + ', ' + this.state.email, ', ' + this.state.password + ', '+ this.state.role + ', ' + this.state.date);
+
+        bodyfull(ApiDictionary.register, {'firstname': this.state.firstName, 'tussenvoegsel': this.state.insertion, 'lastname': this.state.lastName, 'email': this.state.email, 'password': this.state.password, 'role': this.state.role, 'register_date': this.state.date}).then((data) => {
             if(!data.success) {
-                //TODO: display succesfull and return to login.
-                console.log("data verstuurt naar de backend")
+                Alert.alert(
+                    "Succes!",
+                    'Je bent geregistreerd, log nu in.',
+                    [
+                        {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
+                    ],
+                    { cancelable: false })
+                    this.returnToLoginScreen();
             }
         }).catch(err => {
             console.log("fetch error" + err.message);
         })
     }
 
-    
+    render(){
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
@@ -82,8 +95,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={setFirstName}
-                                    value={firstName}
+                                    onChangeText={text => this.setState({firstName:text})}
                                     />
                             </View>
 
@@ -92,7 +104,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Tussenvoegsel.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={setInsertion}
+                                    onChangeText={text => this.setState({insertion:text})}
                                     />
                             </View>
 
@@ -101,7 +113,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Achternaam.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={setLastName}
+                                    onChangeText={text => this.setState({lastName:text})}
                                     />
                             </View>
 
@@ -110,7 +122,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Email.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={setEmail}
+                                    onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
 
@@ -120,7 +132,7 @@ export default function LoginScreen() {
                                     style={styles.inputText}
                                     placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={setPassword}
+                                    onChangeText={text => this.setState({password:text})}
                                     />
                             </View>
 
@@ -136,7 +148,7 @@ export default function LoginScreen() {
 
                             <TouchableOpacity
                                 style={styles.loginBtn}
-                                onPress={saveUserData}>
+                                onPress={this.saveUserData}>
                                 <Text style={styles.loginText}>Registreer</Text>
                             </TouchableOpacity>
                         </View>
@@ -145,6 +157,7 @@ export default function LoginScreen() {
             </ScrollView>
         )
     }
+}
 
     const styles = StyleSheet.create({
         container: {

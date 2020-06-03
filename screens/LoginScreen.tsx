@@ -7,12 +7,11 @@ import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from '../components/HttpClient';
 
-
 const windowWidth = Dimensions.get('window').width;
 
 export default class LoginScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
-
+    
     constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
 
@@ -47,6 +46,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
 
         this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+                console.log(JSON.stringify(data))
                 if(data.success === 1) {
                     this.setState({isLoading:false});
                     this.state.wrongInputs = false;
@@ -57,9 +57,9 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                 }
             }).catch(err => {
                 console.log("fetch error" + err.message);
-                this.setState({isLoading:false});
-            });
-
+                this.setState({isLoading:false})
+            })
+            
         this._isMounted && this.setState({
             ready: true
         })
@@ -78,9 +78,8 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={{marginBottom: 80}}>
                                 {/* not a normal Image object, documentation found in: https://www.npmjs.com/package/react-native-scalable-image */}
                                 <Image
-                                width={windowWidth * 0.8}
+                                width={windowWidth * 0.8} 
                                 source={require('../assets/LGS_LOGO_WIT.png')}/>
-
                             </View>
 
                             {this.state.wrongInputs ? (
@@ -94,7 +93,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
-
+                            
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
@@ -133,7 +132,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
+                </KeyboardAvoidingView>     
             </ScrollView>
         )
     }
@@ -200,3 +199,4 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline"
     },
 });
+    

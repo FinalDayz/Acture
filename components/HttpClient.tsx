@@ -1,77 +1,81 @@
 import {Alert} from "react-native";
 import ApiDictionary from '../constants/ApiDictionary';
+import environmentVars from "../constants/environmentVars";
 
 const state = {
     jwt: "",
+    getjwt: false
 }
 
 export default async function bodyless(details: { destination: string; type: string; }) {
 
     const response = await Promise.race([
-        fetch(ApiDictionary.apiServer + details.destination, {
-            method: details.type,
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': '6642d9b' + state.jwt,
-            }
-        }).then(response => {
-            return response.json();
-        })
-            .then(responseData => {
-                return responseData;
-            }),
-        new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
-        )
-    ]).catch(err => {
-        alert(err.message);
-    })
-    const resData = await response;
-
-    return resData;
-}
-
-export async function bodyfull(details: { destination: string; type: string; }, bodyattributes: Object) {
-
-
-    const response = await Promise.race([
-        fetch(ApiDictionary.apiServer + details.destination, {
+        fetch(environmentVars.address + environmentVars.port + details.destination, {
             method: details.type,
             headers: {
                 'Content-Type': 'application/json',
                 'jwt': state.jwt,
-            },
-            body: JSON.stringify(bodyattributes)
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(responseData => {
-                return responseData;
-            }),
-        new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
-        )
-    ]).catch(err => {
-        alert(err.message);
-    })
-    const resData = await response;
+            }}).then(response => {
+                return response.json();})
+              .then(responseData => {
+                  return responseData;}),
+              new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
+              )
+            ]).catch(err => {
+              alert(err.message);
+          })
+    
+        const resData = await response;
 
-    if (response.success === 1 && details.destination === '/api/users/login') {
-        state.jwt = resData.token
-    }
-
-    return resData;
+        return resData;
 }
 
-function alert(err: string) {
+export async function bodyfull(details: { destination: string; type: string; }, bodyattributes: Object) {
+
+    console.log("location: " + ApiDictionary.apiIp)
+
+    const response = await Promise.race([
+        fetch(ApiDictionary.apiIp + details.destination , {
+        method: details.type,
+        headers: {
+            'Content-Type': 'application/json',
+            'jwt': state.jwt,
+        },
+        body: JSON.stringify(bodyattributes)
+        })
+        .then(response => {
+            if(response.ok) {
+                state.getjwt = true;
+            } else {
+                state.getjwt= false;
+            }
+          return response.json();})
+        .then(responseData => {
+            return responseData;}),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
+        )
+      ]).catch(err => {
+        alert(err.message);
+    })
+        const resData = await response;
+
+        if(state.getjwt) {
+            state.jwt = resData.token
+        }
+
+        return resData;
+  }
+  
+  function alert(err: string) {
+
     return (
         Alert.alert(
             err,
             'Controleer je internet verbinding en probeer opnieuw.',
             [
-                {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
+                {text: 'OK', style: 'cancel'},
             ],
             {cancelable: false}
-        ))
-}
+         ))}
