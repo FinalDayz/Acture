@@ -5,36 +5,47 @@ import colors from '../../constants/colors';
 
 export interface Props {}
 
-const PostBody = (props: Props) => {
-    return (
-        <View style={styles.body}>
-            <Text style={styles.title} >Dit is een component!</Text>
-            <Text style={styles.bodyText} >Dit is opvultekst want ik wist niks beters te verzinnen dan dit en ik had geen zin om Lorem Ipsum op te zoeken. Maar hopelijk vinden jullie dat niet erg.</Text>
-        </View>
-    );
+export interface Props {
+    title: String
+    text: String
 }
 
-const styles = StyleSheet.create ({
-    body: {
-        flex: 1,
-        backgroundColor: colors.postBody,
-        width: '100%',
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-        paddingBottom: 30
-    },
-    title: {
-        marginHorizontal: 15,
-        marginVertical: 10,
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: colors.textPostTitle
-    },
-    bodyText: {
-        marginHorizontal: 15,
-        fontSize: 15,
-        color: colors.textPostContent
-    }
-});
+export class PostBody extends React.Component<Props> {
 
-export default PostBody;
+    constructor(props: Props) {
+        super(props);
+    }
+
+
+    render() {
+        return(
+            <View style={this.styles.body}>
+                <Text style={this.styles.title} >{this.props.title}</Text>
+                <Text style={this.styles.bodyText} >{this.props.text}</Text>
+            </View>
+        );
+    }
+
+    styles = StyleSheet.create ({
+        body: {
+            flex: 1,
+            backgroundColor: colors.postBody,
+            width: '100%',
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+            paddingBottom: 30
+        },
+        title: {
+            marginHorizontal: 15,
+            marginVertical: 10,
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: colors.textPostTitle
+        },
+        bodyText: {
+            marginHorizontal: 15,
+            fontSize: 15,
+            color: colors.textPostContent
+        }
+    });
+}
