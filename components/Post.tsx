@@ -25,7 +25,8 @@ export class Post extends React.Component<Props> {
                         postDate={new Date(this.props.data.postDate)}/>
                     <PostBody
                         text={this.props.data.text}
-                        title={this.props.data.title}/>
+                        title={this.props.data.title}
+                        userId={this.props.data.userId}/>
                 </View>
             </ListItem>
         );
