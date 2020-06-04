@@ -1,29 +1,54 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Button } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, Content, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
 import {Post} from "../components/Post";
+import {bodyfull} from '../components/HttpClient';
+import ApiDictionary from '../constants/ApiDictionary';
 
 const tempRes = require('../models/res');
 
 export default class FeedScreen extends React.Component<any, any> {
 
+    state = {
+        isLoading: false,
+        data: null
+    };
+
     constructor(props: any) {
         super(props);
 
-        this.state = {
-            isLoading: false,
-            data: tempRes.data
+        this.getFeed();
+    }
+    
+    getFeed = () => {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true});
+            bodyfull(ApiDictionary.getFeed, {
+                "id": "1",
+                "offs": "0" //offset for loading more posts
+            }).then((data) => {
+                console.log("Ik heb deze data: " + data.text())
+                this.setState({isLoading:false})
+                this.state.data=data
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                this.setState({isLoading:false})
+            })
+        } else {
+            return null
         }
     }
 
     render() {
-
         return(
             <Container>
+                <View>
+                    <Button title="joejoe" onPress={() => {}}/>
+                </View>
                 <View>
                     <List
                         dataArray={this.state.data}
@@ -35,6 +60,7 @@ export default class FeedScreen extends React.Component<any, any> {
             </Container>
         );
     }
+    
 
     //options for header bar. Default options are in the navigator.
     navigationOptions = (navData:any) => {

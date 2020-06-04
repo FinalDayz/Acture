@@ -7,6 +7,7 @@ export default {
     getAllUsers: {destination: '/api/users/', type: 'GET'},
     getInactiveUsers: {destination: '/api/users/inactiveUsers/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
+    getFeed: {destination: '/api/feed', type: 'POST'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
     apiIp: environmentVars.address + ":" + environmentVars.port,
