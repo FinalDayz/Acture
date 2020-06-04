@@ -8,6 +8,7 @@ import MenuScreen from '../screens/MenuScreen';
 import colors from '../constants/colors';
 import {ActivateUsersScreen} from "../screens/ActivateUsersScreen";
 import {ManageUsersScreen} from "../screens/ManageUsersScreen";
+import {ManageUsersTabs} from "../screens/ManageUsersTabs";
 
 const MenuNavigation = createStackNavigator({
     Menu: MenuScreen
@@ -16,7 +17,7 @@ const MenuNavigation = createStackNavigator({
 const HamburgerNavigation = createDrawerNavigator({
     BottomNav: BottomNavigation,
     Menu: MenuNavigation,
-    manageUsers: ActivateUsersScreen,
+    manageUsers: ManageUsersTabs,
 }, {
     drawerBackgroundColor: colors.primary,
     contentOptions: {
