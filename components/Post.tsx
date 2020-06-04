@@ -26,7 +26,8 @@ export class Post extends React.Component<Props> {
                     <PostBody
                         text={this.props.data.text}
                         title={this.props.data.title}
-                        userId={this.props.data.userId}/>
+                        userId={this.props.data.userId}
+                        postId={this.props.data.postId}/>
                 </View>
             </ListItem>
         );

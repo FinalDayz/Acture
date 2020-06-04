@@ -5,6 +5,8 @@ import colors from '../../constants/colors';
 
 import {User} from '../../models/User';
 import {UserRole} from "../../models/UserRole";
+import ApiDictionary from '../../constants/ApiDictionary';
+import { bodyfull } from '../HttpClient';
 
 import {Ionicons} from '@expo/vector-icons';
 
@@ -13,15 +15,18 @@ export interface Props {
     title: String
     text: String
     userId: String
+    postId: String
 }
 
 export class PostBody extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
-
     }
 
+    state = {
+        isLoading: false
+    };
 
     render() {
         return(
@@ -36,6 +41,7 @@ export class PostBody extends React.Component<Props> {
                             style={this.styles.icon}
                             onPress={() => {
                                 alert('You tapped the button!');
+                                this.deletePost();
                         }}/>
                     }
                 </View>
@@ -43,6 +49,22 @@ export class PostBody extends React.Component<Props> {
             </View>
         );
     }
+
+    deletePost = () => {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true});
+            bodyfull(ApiDictionary.deletePost, {
+                postId: this.props.postId
+            }).then((data) => {
+                this.render();
+                this.setState({isLoading:false})
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                alert(err.message);
+                this.setState({isLoading:false})
+            })
+        }
+    };
 
 
 
