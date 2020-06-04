@@ -87,6 +87,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 ) : null}
                             <View style={styles.inputView} >
                                 <TextInput
+                                    defaultValue='Test@gmail.com'
                                     style={styles.inputText}
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
