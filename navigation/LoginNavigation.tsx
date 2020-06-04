@@ -4,6 +4,7 @@ import { createAppContainer } from 'react-navigation';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisteringScreen'
 import colors from '../constants/colors';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 
 const LoginNavigation = createStackNavigator(
     {
@@ -12,6 +13,9 @@ const LoginNavigation = createStackNavigator(
         },
         Register: {
             screen: RegisterScreen
+        },
+        ChangePassword: {
+            screen: ChangePasswordScreen
         }
     },
     {

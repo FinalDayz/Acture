@@ -3,13 +3,10 @@ import React, { Props } from 'react';
 import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert, Button } from 'react-native';
 
 import colors from '../constants/colors';
-import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from '../components/HttpClient';
 
-const windowWidth = Dimensions.get('window').width;
-
-export default class LoginScreen extends React.Component<{navigation:any}> {
+export default class ChangePasswordScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
     
     constructor(navigation: Readonly<{ navigation: any; }>) {
@@ -21,6 +18,8 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     state={
         email:"",
         password:"",
+        newpassword:"",
+        newpasswordconfirmation:"",
         isLoading: false,
         show: false,
         wrongInputs: false
@@ -42,9 +41,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         }
       };
 
-    login = () => {
+    ChangePassword = () => {
         this.setState({isLoading:true});
-            bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+        if(this.state.newpassword === this.state.newpasswordconfirmation && this.state.newpassword.length !== 0) {
+            bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email, 'newpassword': this.state.newpassword}).then((data) => {
                 console.log(JSON.stringify(data))
                 if(data.success === 1) {
                     this.setState({isLoading:false});
@@ -62,14 +62,11 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this._isMounted && this.setState({
             ready: true
         })
-    };
+    } else {
+        this.state.wrongInputs = false;
+        this.setState({isLoading:false})
 
-    openRegisterScreen = () => {
-        this.props.navigation.navigate('Register');
-    };
-
-    openChangePasswordScreen = () => {
-        this.props.navigation.navigate('ChangePassword');
+    }
     };
 
     render() {
@@ -78,34 +75,27 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.contentContainer}>
-                            <View style={{marginBottom: 80}}>
-                                {/* not a normal Image object, documentation found in: https://www.npmjs.com/package/react-native-scalable-image */}
-                                <Image
-                                width={windowWidth * 0.8} 
-                                source={require('../assets/LGS_LOGO_WIT.png')}/>
-                            </View>
+                        <View><Text style={styles.headerText}>Wachtwoord Veranderen</Text></View>
+                        
 
-                            <View>
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
-                            </View>
+
                             <View style={styles.inputView} >
                                 <TextInput
                                     defaultValue='Test@gmail.com'
-                                    style={styles.inputText}
+                                    style={styles.inputText} 
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
                             
-                            <View>
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
-                            </View>
-                            
+
                             <View style={styles.inputView} >
                                 <TextInput
                                     secureTextEntry
@@ -116,31 +106,40 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     />
                             </View>
 
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    secureTextEntry
+                                    style={styles.inputText}
+                                    placeholder="Nieuw Wachtwoord..."
+                                    placeholderTextColor="#003f5c"
+                                    onChangeText={text => this.setState({newpassword:text})}
+                                    />
+                            </View>
+
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    secureTextEntry
+                                    style={styles.inputText}
+                                    placeholder="Nieuw Wachtwoord Herhalen..."
+                                    placeholderTextColor="#003f5c"
+                                    onChangeText={text => this.setState({newpasswordconfirmation:text})}
+                                    />
+                            </View>
+
                             {!this.state.isLoading ? (
                                 <TouchableOpacity
-                                    style={styles.loginBtn}
-                                    onPress={this.login}
+                                    style={styles.changePasswordBtn}
+                                    onPress={this.ChangePassword}
                                     >
-                                    <Text style={styles.loginText}>Log in</Text>
+                                    <Text style={styles.changePasswordText}>Log in</Text>
                                 </TouchableOpacity>
                                 ) : (
                                     <TouchableOpacity
-                                    style={styles.loginBtn}
+                                    style={styles.changePasswordBtn}
                                     >
                                     <ActivityIndicator size="large" color={colors.textLight}/>
                                     </TouchableOpacity>
                                 )}
-
-                            <TouchableOpacity
-                                onPress={this.openRegisterScreen}
-                                >
-                                <Text style={styles.RegisterText}>Account aanmaken</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={this.openChangePasswordScreen}
-                                >
-                                <Text style={styles.forgot}>Wachtwoord veranderen</Text>
-                            </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>     
@@ -181,18 +180,12 @@ const styles = StyleSheet.create({
         height:50,
         color:"black"
     },
-        textInput: {
-        height: 40,
-        borderColor: "#000000",
-        borderBottomWidth: 1,
-        marginBottom: 36
-    },
     forgot:{
         color:"white",
         fontSize:11,
         textDecorationLine: "underline"
     },
-    loginBtn:{
+    changePasswordBtn:{
         width:"50%",
         backgroundColor: colors.primaryLight,
         borderRadius:8,
@@ -201,12 +194,13 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         marginBottom:60
     },
-    loginText:{
+    changePasswordText:{
         color:"white"
     },
-    RegisterText:{
-        color:"white",
-        marginBottom: 20,
-        textDecorationLine: "underline"
-    },
+    headerText:{
+        margin: 40,
+        fontWeight:"bold",
+        fontSize: 22,
+        color:"white"
+    }
 });
