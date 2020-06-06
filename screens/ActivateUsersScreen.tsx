@@ -1,10 +1,10 @@
 import React from 'react';
-import {FlatList, Text, StyleSheet, View, Button, CheckBox, TouchableOpacity, Alert, Picker, Image} from 'react-native';
+import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import colors from "../constants/colors";
 import {User} from "../models/User";
-import RNPickerSelect from 'react-native-picker-select';
 import bodyless from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
+import {HttpHelper} from "../components/HttpHelper";
 
 export interface Props {
 
@@ -29,7 +29,9 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     fetchInactive() {
-        bodyless(ApiDictionary.getInactiveUsers).then(result => {
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.getInOrActiveUsers, ['false'])
+        ).then(result => {
             this.setState({
                 accounts: result.data
             });
@@ -37,10 +39,9 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
     }
 
     sendActivate(id: number, callback: () => void) {
-        bodyless({
-            destination: ApiDictionary.getInactiveUsers.destination + id,
-            type: ApiDictionary.activateUser.type
-        });
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.activateUser, [id]
+        ));
         callback();
     }
 
@@ -170,8 +171,8 @@ const styles = StyleSheet.create({
     flatList: {
         width: '100%',
         paddingHorizontal: '7%',
-        marginTop: 50,
-        flex: 1,
+        marginTop: 10,
+        paddingBottom: 50,
     },
     wrapper: {
         flex: 1,

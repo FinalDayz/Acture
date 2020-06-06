@@ -1,23 +1,13 @@
 import React from 'react';
-import {
-    FlatList,
-    Text,
-    StyleSheet,
-    View,
-    Button,
-    CheckBox,
-    TouchableOpacity,
-    Alert,
-    Picker,
-    Image,
-    TextStyle
-} from 'react-native';
+import {Alert, Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import colors from "../constants/colors";
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
-import bodyless, { bodyfull } from '../components/HttpClient';
+import bodyless from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
+import {HttpHelper} from "../components/HttpHelper";
+import {IconInput} from "../components/IconInput";
 
 export interface Props {
 
@@ -45,7 +35,9 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     }
 
     fetchUsers() {
-        bodyless(ApiDictionary.getAllUsers).then(result => {
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.getInOrActiveUsers, ['true'])
+        ).then(result => {
             this.setState({
                 accounts: result.data
             });
@@ -91,6 +83,14 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.wrapper}>
+                <View style={{paddingHorizontal: '7%', paddingTop: 20}}>
+                    <IconInput
+                        iconName={'md-search'}
+                        inputPlaceholder={'Zoek gebruiker...'}
+
+                    />
+                </View>
+
                 <FlatList
                     contentContainerStyle={styles.flatList}
                     data={this.state.accounts}
@@ -182,7 +182,25 @@ const rolePickerStyle = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-
+    searchSection: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    searchIcon: {
+        padding: 10,
+    },
+    input: {
+        flex: 1,
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        paddingLeft: 0,
+        backgroundColor: '#fff',
+        color: '#424242',
+    },
     controlElement: {
         height: 40,
     },
@@ -234,7 +252,7 @@ const styles = StyleSheet.create({
     flatList: {
         width: '100%',
         paddingHorizontal: '7%',
-        marginTop: 50,
+        marginTop: 10,
         flex: 1,
     },
     wrapper: {

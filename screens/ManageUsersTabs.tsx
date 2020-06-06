@@ -1,36 +1,28 @@
 import React from "react";
 import {ManageUsersScreen} from "./ManageUsersScreen";
 import {ActivateUsersScreen} from "./ActivateUsersScreen";
-import {View} from "react-native";
-import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import colors from "../constants/colors";
 
-export interface Props {
+export default createMaterialTopTabNavigator(
+    {
+        'Beheren': ManageUsersScreen,
+        'Activeren': ActivateUsersScreen,
+    }, {
+        initialRouteName: 'Beheren',
+        tabBarOptions: {
+            inactiveTintColor: colors.textGrey,
+            activeTintColor: colors.textGrey,
+            indicatorStyle: {
+                backgroundColor: colors.primary
+            },
+            tabStyle: {},
+            style: {
 
-}
-
-export interface State {
-    tabs: any
-}
-
-export class ManageUsersTabs extends React.Component<Props, State> {
-    constructor(props: Props, state: State) {
-        super(props, state);
-
-
-        console.log("CALLED ManageUsersTabs");
+                backgroundColor: 'white',
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+            },
+        }
     }
-
-
-    render() {
-        const Tab = createMaterialTopTabNavigator();
-        console.log("RENDER::", Tab);
-        return (
-            <Tab.Navigator>
-                <Tab.Screen name="Home" component={ManageUsersScreen} />
-                <Tab.Screen name="Settings" component={ActivateUsersScreen} />
-            </Tab.Navigator>
-        );
-    }
-}
-
-
+);
