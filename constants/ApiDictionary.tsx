@@ -7,6 +7,8 @@ export default {
     getAllUsers: {destination: '/api/users/', type: 'GET'},
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
+    deleteUser: {destination: '/api/users/delete/', type: 'DELETE'},
+    changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds

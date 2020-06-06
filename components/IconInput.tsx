@@ -6,18 +6,32 @@ import colors from "../constants/colors";
 interface Props {
     iconName: string,
     inputPlaceholder: string,
+    onChangeText: (text: string) => void,
     wrapperStyle?: StyleProp<ViewStyle>,
     textInputStyle?: StyleProp<TextStyle>,
 }
 
 interface State {
-
+    inputText: string,
 }
 
-export class IconInput extends React.Component<Props, State>{
+export class IconInput extends React.Component<Props, State> {
+    state: State;
+
     constructor(props: Props, state: State) {
         super(props, state);
+        this.state = {
+            ...state,
+            inputText: '',
+        }
+    }
 
+    changeText(text: string) {
+        this.setState({
+            inputText: text
+        }, () => {
+            this.props.onChangeText(this.state.inputText)
+        });
     }
 
     render() {
@@ -33,12 +47,12 @@ export class IconInput extends React.Component<Props, State>{
             ]}>
                 <Ionicons name={this.props.iconName} size={27}/>
                 <TextInput
+                    onChangeText={this.changeText.bind(this)}
                     style={[{
                         padding: 10,
                         paddingLeft: 10,
                         flex: 1,
                         color: colors.textDark,
-
                     },
                         this.props.textInputStyle
                     ]}
@@ -52,6 +66,4 @@ export class IconInput extends React.Component<Props, State>{
 
 }
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});

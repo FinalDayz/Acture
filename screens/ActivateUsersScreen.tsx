@@ -5,13 +5,15 @@ import {User} from "../models/User";
 import bodyless from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {HttpHelper} from "../components/HttpHelper";
+import {AccountRow} from '../components/account/AccountRow';
 
 export interface Props {
 
 }
 
 interface State {
-    accounts: User[]
+    isLoading: boolean,
+    accounts: User[],
 }
 
 
@@ -22,17 +24,24 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
         super(props, state);
         this.state = {
             ...state,
-            accounts: []
+            accounts: [],
+            isLoading: true,
         };
+    }
 
+    componentDidMount() {
         this.fetchInactive();
     }
 
     fetchInactive() {
+        this.setState({
+            isLoading: true,
+        });
         bodyless(HttpHelper.addUrlParameter(
             ApiDictionary.getInOrActiveUsers, ['false'])
         ).then(result => {
             this.setState({
+                isLoading: false,
                 accounts: result.data
             });
         });
@@ -69,54 +78,33 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
 
     activateAccount(account: User) {
         this.sendActivate(account.userId, () => {
-                let accounts = this.state.accounts;
-                accounts.splice(this.state.accounts.indexOf(account), 1);
-
-                this.setState({
-                    accounts: accounts
-                });
-            }
-        )
+            let accounts = this.state.accounts;
+            accounts.splice(this.state.accounts.indexOf(account), 1);
+            this.setState({
+                accounts: accounts
+            });
+        });
     }
 
     render() {
         return (
-
             <View style={styles.wrapper}>
                 <FlatList
+                    refreshing={this.state.isLoading}
+                    onRefresh={() => this.fetchInactive()}
                     contentContainerStyle={styles.flatList}
                     data={this.state.accounts}
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
-
-                        <View style={styles.accountWrapper}>
-                            <View style={styles.profilePicture}>
-                                <Image source={{uri: "data:image/png;base64," + item.image, scale: 1}}
-                                       style={styles.profilePicture}/>
-                            </View>
-                            <View
-                                style={styles.profileInfo}>
-                                <Text
-                                    style={styles.accountName}>
-                                    {/*TODO: make this use getFullName() once working with User objects*/}
-                                    {item.firstname +
-                                    (item.tussenvoegsel ? " " + item.tussenvoegsel : "")
-                                    + " " + item.lastname}
-                                </Text>
-                                <Text
-                                    style={styles.accountEmail}>
-                                    {item.email}
-                                </Text>
-                            </View>
-
+                        <AccountRow
+                            isExpandable={false}
+                            account={item}>
                             <TouchableOpacity
                                 onPress={() => this.confirmActivation(item)}
                                 style={styles.activateBtn}>
                                 <Text style={styles.activateBtnText}>Activeer</Text>
                             </TouchableOpacity>
-
-                        </View>
-
+                        </AccountRow>
                     }
                 />
             </View>
@@ -125,25 +113,6 @@ export class ActivateUsersScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-    profileInfo: {
-        flexDirection: 'column',
-        width: '50%',
-        flex: 1,
-        paddingRight: 10,
-    },
-    accountEmail: {
-        color: colors.textGrey,
-        paddingLeft: 10,
-        fontWeight: 'bold',
-        fontSize: 12,
-        flexWrap: "wrap",
-    },
-    accountName: {
-        paddingLeft: 10,
-        color: colors.textDark,
-        fontWeight: 'bold',
-        fontSize: 15,
-    },
     activateBtnText: {
         color: colors.textLight,
     },
@@ -152,21 +121,6 @@ const styles = StyleSheet.create({
         padding: 7,
         marginRight: 10,
         backgroundColor: colors.primaryLight,
-    },
-    profilePicture: {
-        backgroundColor: '#999',
-        borderRadius: 50,
-        height: 50,
-        width: 50,
-    },
-    accountWrapper: {
-        alignItems: 'center',
-        backgroundColor: colors.backgroundSecondary,
-        width: '100%',
-        marginTop: 10,
-        padding: 10,
-        borderRadius: 50,
-        flexDirection: 'row',
     },
     flatList: {
         width: '100%',
@@ -177,5 +131,5 @@ const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
         width: '100%',
-    }
+    },
 });

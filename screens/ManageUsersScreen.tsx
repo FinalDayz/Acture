@@ -1,5 +1,15 @@
 import React from 'react';
-import {Alert, Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    Alert,
+    Button,
+    FlatList,
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import colors from "../constants/colors";
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
@@ -8,20 +18,23 @@ import bodyless from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {HttpHelper} from "../components/HttpHelper";
 import {IconInput} from "../components/IconInput";
+import {AccountRow} from '../components/account/AccountRow';
 
 export interface Props {
 
 }
 
 interface State {
+    isLoading: boolean,
     accounts: User[],
     selectedUser: number,
+    searchQuery: string,
 }
-
 
 export class ManageUsersScreen extends React.Component<Props, State> {
     state: State;
     private accountIdShown: number = -1;
+
 
     constructor(props: Props, state: State) {
         super(props, state);
@@ -29,16 +42,24 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             ...state,
             accounts: [],
             selectedUser: -1,
+            isLoading: true,
+            searchQuery: '',
         };
+    }
 
+    componentDidMount() {
         this.fetchUsers();
     }
 
     fetchUsers() {
+        this.setState({
+            isLoading: true
+        });
         bodyless(HttpHelper.addUrlParameter(
             ApiDictionary.getInOrActiveUsers, ['true'])
         ).then(result => {
             this.setState({
+                isLoading: false,
                 accounts: result.data
             });
         });
@@ -68,7 +89,19 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     }
 
     private deleteUser(account: User) {
-        const url = 'changeRole/:id/:newRole';
+        bodyless(HttpHelper.addUrlParameter(ApiDictionary.deleteUser, [account.userId]))
+            .then((result) => {
+
+            });
+    }
+
+    private changeRole(account: User, newRole: UserRole) {
+        console.log("Change user " + account.email+" to: " + newRole);
+        console.log(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]));
+        bodyless(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]))
+            .then((result) => {
+
+            });
     }
 
     private pressedAccount(account: User) {
@@ -80,81 +113,68 @@ export class ManageUsersScreen extends React.Component<Props, State> {
         });
     }
 
+    private searchFilter(account: User): boolean {
+        const searchQuery = this.state.searchQuery;
+        if(!searchQuery)
+            return true;
+        return (
+           (account.firstname +
+               (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
+                + " " + account.lastname).includes(searchQuery) ||
+            account.email.includes(searchQuery)
+        );
+    }
+
     render() {
         return (
             <View style={styles.wrapper}>
                 <View style={{paddingHorizontal: '7%', paddingTop: 20}}>
                     <IconInput
+                        onChangeText={text => {this.setState({searchQuery: text})}}
                         iconName={'md-search'}
                         inputPlaceholder={'Zoek gebruiker...'}
-
                     />
                 </View>
-
                 <FlatList
+                    refreshing={this.state.isLoading}
+                    onRefresh={() => this.fetchUsers()}
                     contentContainerStyle={styles.flatList}
-                    data={this.state.accounts}
+                    data={this.state.accounts.filter((user) => {return this.searchFilter(user)})}
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
-                        <TouchableOpacity
-                            onPress={() => this.pressedAccount(item)}>
-                            <View style={styles.accountWrapper}>
-                                <View style={styles.flexRow}>
-                                    <View style={styles.profilePicture}>
-                                        <Image source={{uri: "data:image/png;base64," + item.image, scale: 1}}
-                                               style={styles.profilePicture}/>
-                                    </View>
-                                    <View
-                                        style={[styles.profileInfo, styles.flexColumn]}>
-                                        <Text
-                                            style={styles.accountName}>
-                                            {/*TODO: make this use getFullName() once working with User objects*/}
-                                            {item.firstname +
-                                            (item.tussenvoegsel ? " " + item.tussenvoegsel : "")
-                                            + " " + item.lastname}
-                                        </Text>
-                                        <Text
-                                            style={styles.accountEmail}>
-                                            {item.email}
-                                        </Text>
-                                    </View>
+                        <AccountRow
+                            isExpandable={true}
+                            account={item}>
+                            <View style={[styles.flexRow, styles.controlElement]}>
+                                <Text style={{flex: 2, fontSize: 18}}>Gebruikers Rol</Text>
+                                <View style={{flex: 1}}>
+                                    <RNPickerSelect
+                                        placeholder={{
+                                            label: item.role.toString(),
+                                            value: item.role.toString(),
+                                        }}
+                                        style={rolePickerStyle}
+                                        onValueChange={(value) => this.changeRole(item, value)}
+                                        items={
+                                            Object.keys(UserRole)
+                                                .filter(role => role !== item.role)
+                                                .map(role => ({label: role, value: role}))
+                                        }
+                                    />
                                 </View>
-                                <View style={[styles.flexColumn,
-                                    this.state.selectedUser === item.userId ? styles.userControlsShown : styles.userControlsHidden,
-                                    {width: '95%'}
-                                ]}>
-                                    <View style={[styles.flexRow, styles.controlElement]}>
-                                        <Text style={{flex: 2, fontSize: 18}}>Gebruikers Rol</Text>
-                                        <View style={{flex: 1}}>
-                                            <RNPickerSelect
-                                                placeholder={{
-                                                    label: item.role.toString(),
-                                                    value: item.role.toString(),
-                                                }}
-                                                style={rolePickerStyle}
-                                                onValueChange={(value) => console.log(value)}
-                                                items={
-                                                    Object.keys(UserRole)
-                                                        .filter(role => role !== item.role)
-                                                        .map(role => ({label: role, value: role}))
-                                                }
-                                            />
-                                        </View>
-                                    </View>
-                                    <View style={[styles.flexRow, styles.controlElement]}>
-                                        <Text style={{flex: 2, fontSize: 18}}>Verwijder gebruiker</Text>
-                                        <View style={{flex: 1}}>
-                                            <Button
-                                                title={'Verwijder'}
-                                                color={'red'}
-                                                onPress={() => this.askDeleteUser(item)}
-                                            />
-                                        </View>
-                                    </View>
-                                </View>
-
                             </View>
-                        </TouchableOpacity>
+                            <View style={[styles.flexRow, styles.controlElement]}>
+                                <Text style={{flex: 2, fontSize: 18}}>Verwijder gebruiker</Text>
+                                <View style={{flex: 1}}>
+                                    <Button
+                                        title={'Verwijder'}
+                                        color={'red'}
+                                        onPress={() => this.askDeleteUser(item)}
+                                    />
+                                </View>
+                            </View>
+
+                        </AccountRow>
 
                     }
                 />
@@ -192,61 +212,13 @@ const styles = StyleSheet.create({
     searchIcon: {
         padding: 10,
     },
-    input: {
-        flex: 1,
-        paddingTop: 10,
-        paddingRight: 10,
-        paddingBottom: 10,
-        paddingLeft: 0,
-        backgroundColor: '#fff',
-        color: '#424242',
-    },
     controlElement: {
         height: 40,
-    },
-    userControlsShown: {
-        marginTop: 15,
-    },
-    userControlsHidden: {
-        display: 'none',
-        height: 0,
     },
     flexRow: {
         flexDirection: 'row',
     },
     flexColumn: {
-        flexDirection: 'column',
-    },
-    profileInfo: {
-        flex: 1,
-        paddingRight: 10,
-    },
-    accountEmail: {
-        color: colors.textGrey,
-        paddingLeft: 10,
-        fontWeight: 'bold',
-        fontSize: 12,
-        flexWrap: "wrap",
-    },
-    accountName: {
-        paddingLeft: 10,
-        color: colors.textDark,
-        fontWeight: 'bold',
-        fontSize: 15,
-    },
-    profilePicture: {
-        backgroundColor: '#999',
-        borderRadius: 40,
-        height: 40,
-        width: 40,
-    },
-    accountWrapper: {
-        alignItems: 'center',
-        backgroundColor: colors.backgroundSecondary,
-        width: '100%',
-        marginTop: 10,
-        padding: 10,
-        borderRadius: 10,
         flexDirection: 'column',
     },
     flatList: {
