@@ -55,7 +55,6 @@ export class PostBody extends React.Component<Props> {
             [
                 {
                     text: 'Annuleren',
-                    onPress: () => console.log('Cancel Pressed')
                 },
                 {
                     text: 'Verwijderen',
