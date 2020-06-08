@@ -30,22 +30,13 @@ interface State {
     textareaHeight: number,
     hasError: boolean,
     categories: Array<Category>,
-
     title: string
     text: string
     categoryId: number
     image: string
     imageName: string
-    // image: Blob
 
 }
-
-// const [imageString, setImageString] = useState("");
-
-// const Blob = RNFetchBlob.polyfill.Blob;
-// const fs = RNFetchBlob.fs;
-
-// var ReadImageData = require('NativeModules').ReadImageData;
 
 
 export default class PostAddScreen extends React.Component<Props, State> {
@@ -54,8 +45,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     constructor(props: Props, state: State) {
         super(props);
-
-        // {this.state.post.title}   .post.title)}
 
         this.state = {
             ...state,
@@ -128,7 +117,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
         {
             console.log(this.state.image.substr(0, 300));
 
-
             // create the post object and store the state values in here
             fetch("http://192.168.178.32:3000/api/feed/addPost", {
                 method: 'POST',
@@ -152,6 +140,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     }
                 );
         }
+
     }
 
     _getAllCategories() {
@@ -169,6 +158,24 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         console.log(error);
                     }
                 );
+        }
+
+        if(!this.state.isLoading) {
+
+            this.state.isLoading = true;
+            bodyfull(ApiDictionary.getFeed, {
+                id: "1",
+                offs: this.state.offset //offset for loading more posts
+            })
+                .then(
+                    (result: {data:Array<PostModel>}) => {
+                        this.setState({data: result.data})
+                    })
+                .catch ((error) => {
+                    console.log(error);
+                })
+        } else {
+            return null
         }
         // bodyless(ApiDictionary.getAllCategories).then((data: any) => {
         // this.setState({
