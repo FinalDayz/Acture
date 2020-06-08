@@ -35,6 +35,7 @@ interface State {
     categoryId: number
     image: string
     imageName: string
+    isLoading: boolean
 
 }
 
@@ -48,6 +49,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
         this.state = {
             ...state,
+            isLoading: false,
             textareaHeight: 250,
             // image: "",
             hasError: false,
@@ -113,24 +115,32 @@ export default class PostAddScreen extends React.Component<Props, State> {
     };
 
 
-    _addPost = () => {
-        {
-            console.log(this.state.image.substr(0, 300));
+    _addPost = () =>
+    {
+        // console.log(this.state.image.substr(0, 300));
 
-            // create the post object and store the state values in here
-            fetch("http://192.168.178.32:3000/api/feed/addPost", {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    'text': this.state.text,
-                    'title': this.state.title,
-                    'image': this.state.image,
-                    'userId': 1,
-                    'categoryId': this.state.categoryId
-                })
+        // create the post object and store the state values in here
+        // fetch("http://192.168.178.32:3000/api/feed/addPost", {
+        //     method: 'POST',
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         'text': this.state.text,
+        //         'title': this.state.title,
+        //         'image': this.state.image,
+        //         'userId': 1,
+        //         'categoryId': this.state.categoryId
+        //     })
+        // })
+        if (!this.state.isLoading) {
+            bodyfull(ApiDictionary.addPost, {
+                'text': this.state.text,
+                'title': this.state.title,
+                'image': this.state.image,
+                'userId': 1,
+                'categoryId': this.state.categoryId
             })
                 .then(res => res.json())
                 .then((data) => {
@@ -139,13 +149,17 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         }
                     }
                 );
+        }else {
+            return null
         }
 
     }
 
     _getAllCategories() {
-        {
-            fetch("http://192.168.178.32:3000/api/feed/getAllCategories")
+        if (!this.state.isLoading) {
+
+            this.state.isLoading = true;
+            bodyless(ApiDictionary.getAllCategories)
                 .then(res => res.json())
                 .then(
                     (result: { data: Array<Category> }) => {
@@ -158,34 +172,42 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         console.log(error);
                     }
                 );
-        }
-
-        if(!this.state.isLoading) {
-
-            this.state.isLoading = true;
-            bodyfull(ApiDictionary.getFeed, {
-                id: "1",
-                offs: this.state.offset //offset for loading more posts
-            })
-                .then(
-                    (result: {data:Array<PostModel>}) => {
-                        this.setState({data: result.data})
-                    })
-                .catch ((error) => {
-                    console.log(error);
-                })
         } else {
             return null
         }
-        // bodyless(ApiDictionary.getAllCategories).then((data: any) => {
-        // this.setState({
-        //     categories: data
-        // })
-        //     if(data.success === 1) {
-        //         console.log("INSERTED")
-        //     }
-        // });
     }
+    // if(!this.state.isLoading) {
+    //
+    //     this.state.isLoading = true;
+    //     bodyfull(ApiDictionary.getFeed, {
+    //         id: "1",
+    //         offs: this.state.offset //offset for loading more posts
+    //     })
+    //         .then(
+    //             (result: {data:Array<PostModel>}) => {
+    //                 this.setState({data: result.data})
+    //             })
+    //         .catch ((error) => {
+    //             console.log(error);
+    //         })
+    // } else {
+    //     return null
+    // }
+    //
+    //     if(!this.state.isLoading) {
+    //
+    //         this.state.isLoading = true;
+    //     bodyless(ApiDictionary.getAllCategories).then((data: any) => {
+    //     this.setState({
+    //         categories: data
+    //     })
+    //         if(data.success === 1) {
+    //             console.log("INSERTED")
+    //         }
+    //     });
+    // }else {
+    //         return null
+    //     }
 
 
     render() {
@@ -199,7 +221,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         }}>Titel:</Text>
                         <TextInput
                             style={{
-                            width: "95%"}}
+                                width: "95%"}}
                             // placeholder="cgcc "
                             value={this.state.title}
                             onChangeText={(title) => this.setState({title: title})}/>
@@ -237,8 +259,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     </View>
                     <View style={styles.line}></View>
                     <View style={styles.belowButtons}>
-                       <Ionicons name='md-trash' size={27} color={"grey"}/>
-                       <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
+                        <Ionicons name='md-trash' size={27} color={"grey"}/>
+                        <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
                     </View>
 
                 </View>
@@ -379,7 +401,7 @@ const styles = StyleSheet.create({
     },
     belowButtons:{
         borderColor: "#20232a",
-       paddingHorizontal: 150,
+        paddingHorizontal: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 30,
