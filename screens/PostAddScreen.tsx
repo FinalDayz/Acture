@@ -182,7 +182,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         console.log(error);
                     }
                 );
-        } else {
+        }else {
             return null
         }
     }
@@ -218,7 +218,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
     // }else {LK
     //         return null
     //     }
-
 
     render() {
         return (
