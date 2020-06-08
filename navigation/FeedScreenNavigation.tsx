@@ -4,6 +4,7 @@ import { createAppContainer } from 'react-navigation';
 import FeedScreen from '../screens/FeedScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
+import PostAddScreen from "../screens/PostAddScreen";
 
 const FeedScreenNavigation = createStackNavigator(
     {
@@ -12,6 +13,9 @@ const FeedScreenNavigation = createStackNavigator(
         },
         Profile: {
             screen: ProfileScreen
+        },
+        PostAddScreen:{
+            screen: PostAddScreen
         }
     },
     {

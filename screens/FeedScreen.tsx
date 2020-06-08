@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import {View, StyleSheet, ScrollView, Button} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, Content, Icon, List, ListItem} from 'native-base';
 
@@ -26,6 +26,7 @@ export default class FeedScreen extends React.Component<any, any> {
         return(
             <Container>
                 <Content>
+                    <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
                     <List
                         dataArray={this.state.data}
                         renderRow={(item) => {

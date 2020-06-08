@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text, Dimensions, Platform} from "react-native";
 import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
@@ -16,9 +16,9 @@ import {Category} from "../models/Category";
 import {Post} from "../models/Post";
 import {User} from "../models/User";
 import {ImageInfo} from "expo-image-picker/build/ImagePicker.types";
+import {Ionicons} from "@expo/vector-icons";
 // import any = jasmine.any;
 // import ImgToBase64 from 'react-native-image-base64';
-import { FormLabel} from 'react-native-elements'
 
 // import RNFetchBlob from 'react-native-fetch-blob';
 const fileUpload = require('fuctbase64');
@@ -35,9 +35,12 @@ interface State {
     text: string
     categoryId: number
     image: string
+    imageName: string
     // image: Blob
 
 }
+
+// const [imageString, setImageString] = useState("");
 
 // const Blob = RNFetchBlob.polyfill.Blob;
 // const fs = RNFetchBlob.fs;
@@ -64,7 +67,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
             title: '',
             text: '',
             categoryId: 0,
-            image: ''
+            image: '',
+            imageName: ''
 
         }
 
@@ -105,10 +109,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
             });
             if (result && !result.cancelled) {
-                console.log(result);
+                console.log(result.uri);
                 const bas64 = result.base64;
                 if(bas64){
-                    this.setState({image: bas64.toString()});
+                    this.setState({image: bas64.toString()})
+                    this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/")+1)})
                 }
 
             }
@@ -177,76 +182,61 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
 
     render() {
-
-        // @ts-ignore
         return (
-            <InputScrollView style={styles.screen}>
-                <FormLabel>Name</FormLabel>
-                <TextInput
-                    style={styles.titleBox}
-                    placeholder="Titel..."
-                    // placeholderTextColor= "#C4C4C4"
-                    placeholderTextColor="#8e8e8e"
-                    value={this.state.title}
-                    onChangeText={(title) => this.setState({title: title})}/>
-                <TextInput/>
-                <TextInput
-                    style={{
-                        backgroundColor: colors.textLight,
-                        width: '100%',
-                        borderRadius: 3,
-                        padding: 10,
-                        height: this.state.textareaHeight
-                    }}
-                    placeholder="Beschrijving..."
-                    // placeholderTextColor= "#C4C4C4"
-                    placeholderTextColor="#8e8e8e"
-                    value={this.state.text}
-                    onChangeText={text => this.setState({text: text})}
-                    multiline/>
-                <View style={styles.categoryBox}>
-                    <RNPickerSelect
-                        style={styles.pickerSelect}
-                        placeholder={{
-                            label: 'Categorie..'
-                        }}
-                        onValueChange={id => this.setState({categoryId: id})}
-                        items={this.state.categories.map(obj =>
-                            ({label: obj.name, value: obj.categoryId})
-                        )}
-                    />
-                </View>
-
-                <View style={styles.buttonFotoContainer}>
-                    <TouchableOpacity onPress={this._pickImage} style={styles.addPhotoButtonContainer}>
-                        {/*<Text style={styles.photoText}></Text>*/}
-                        <Image
+            <View style={styles.screen}>
+                <View style={styles.componentContainer}>
+                    <View style = {styles. titleBox}>
+                        <Text style={{
+                            fontStyle: 'italic',
+                            width: "10%"
+                        }}>Titel:</Text>
+                        <TextInput
                             style={{
-                                width: '60%',
-                                height: '60%',
-                                marginRight: "7%",
-                                flexDirection: 'row',
-                                justifyContent: "center",
-                                alignItems: "center"
+                            width: "95%"}}
+                            // placeholder="cgcc "
+                            value={this.state.title}
+                            onChangeText={(title) => this.setState({title: title})}/>
+                        <TextInput/>
+                    </View>
+                    <View style = {styles.beschrijvingBox}>
+                        <TextInput
+                            style={{
+                                // backgroundColor: colors.textLight,
+                                // height: this.state.textareaHeight
                             }}
-                            source={require('../assets/add_photo.png')}
+                            placeholder="Beschrijving..."
+                            value={this.state.text}
+                            onChangeText={text => this.setState({text: text})}
+                            multiline/>
+                    </View>
+
+                    <View style={styles.categoryBox}>
+                        <RNPickerSelect
+                            style={styles.pickerSelect}
+                            placeholder={{
+                                label: 'Categorie selecteren'
+                            }}
+                            onValueChange={id => this.setState({categoryId: id})}
+                            items={this.state.categories.map(obj =>
+                                ({label: obj.name, value: obj.categoryId})
+                            )}
                         />
-                    </ TouchableOpacity>
-                    {(this.state.image == '') ? undefined : <Image source={{uri: "data:image/png;base64," + this.state.image}}
-                                                                   style={{width: 125, height: 125}}/>}
+                    </View>
+                    <View style={ { marginTop: 30,marginHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Ionicons style={ { width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera' size={27} color={"grey"}/>
+                        <Text  style={ {width : "65%",paddingTop: 12, marginLeft: 13}}>
+                            {this.state.imageName.slice(this.state.imageName.length - 10)}
+                        </Text>
+                    </View>
+                    <View style={styles.line}></View>
+                    <View style={styles.belowButtons}>
+                       <Ionicons name='md-trash' size={27} color={"grey"}/>
+                       <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
+                    </View>
+
                 </View>
 
-                <TouchableOpacity onPress={this._addPost} style={styles.submitButton}>
-
-                    <Text style={styles.submitText}> Toevoegen </Text>
-
-                    <Image
-                        style={{width: 35, height: 30, marginTop: 5, marginRight: 15}}
-                        source={require('../assets/done.png')}
-                    />
-                </ TouchableOpacity>
-
-            </InputScrollView>
+            </View>
         );
     }
 
@@ -255,16 +245,47 @@ export default class PostAddScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: colors.primary,
-        padding: 50,
-        paddingTop: 100
+        backgroundColor: "white",
+        padding: 28,
+        //         // paddingTop: 100
+    },
+    componentContainer:{
+        paddingVertical: 5,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#F4F4F4',
+        borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
+    },
+    line:{
+        borderBottomWidth: 1,
+        borderBottomColor: '#D3D3D3',
+        marginHorizontal: 10
     },
     titleBox: {
-        backgroundColor: colors.textLight,
-        width: '100%',
-        borderRadius: 3,
-        padding: 10,
-
+        // backgroundColor: 'red',
+        flexDirection: 'row',
+        paddingVertical: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#D3D3D3',
+        justifyContent: 'space-between',
+        marginHorizontal: 10
+    },
+    beschrijvingBox:{
+        // backgroundColor: 'red',
+        height: "65%",
+        marginVertical: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#D3D3D3',
+        marginHorizontal: 10
     },
     pickerSelect: {
         // placeholderTextColor: "black"
@@ -272,10 +293,10 @@ const styles = StyleSheet.create({
 
     categoryBox: {
         backgroundColor: colors.textLight,
-        width: '100%',
+        height: 30,
         borderRadius: 3,
-        padding: 10,
-        marginTop: 25,
+        padding: 5,
+        marginHorizontal: 10
 
     },
     buttonFotoContainer: {
@@ -348,6 +369,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 15,
         color: '#fff'
+    },
+    belowButtons:{
+        borderColor: "#20232a",
+       paddingHorizontal: 150,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 30,
     }
     // descriptionBox:{
     //     backgroundColor:colors.inputfieldLight

@@ -9,7 +9,7 @@ const MainNavigation = createSwitchNavigator({
     Login: LoginNavigation,
     Home: HamburgerNavigation
     },{
-        initialRouteName: 'Login'
+        initialRouteName: 'Home'
     }
 );
 

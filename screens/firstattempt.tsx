@@ -77,7 +77,6 @@ export default class Firstattempt extends React.Component<Props, State> {
     //    userId: 1,
     //    categoryId: 1};
 
-
     componentDidMount() {
         this._getAllCategories();
         this.getPermissionAsync();
