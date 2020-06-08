@@ -1,17 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
-import {Post} from "../components/Post";
+import { Post } from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
-import {PostModel} from '../models/PostModel';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { PostModel } from '../models/PostModel';
 
-export default class FeedScreen extends React.Component<any, any> {
+export default class AllEventsScreen extends React.Component<any, any> {
 
     state = {
         isLoading: false,
@@ -24,17 +23,14 @@ export default class FeedScreen extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        this.getFeed()
+        this.getEvents()
     }
     
-    getFeed() {
+    getEvents() {
         if(!this.state.isLoading) {
             
             this.state.isLoading = true;
-            bodyfull(ApiDictionary.getFeed, {
-                id: "1",
-                offs: this.state.offset //offset for loading more posts
-            })
+            bodyfull(ApiDictionary.getEvents, {})
             .then(
                 (result: {data:Array<PostModel>}) => {
                     this.setState({data: result.data})
@@ -47,11 +43,6 @@ export default class FeedScreen extends React.Component<any, any> {
         }
     }
 
-    getMorePosts() {
-        this.state.offset = this.state.offset + 15;
-        this.getFeed();
-    }
-
     render() {
         return(
             <Container style={this.styles.screen}>
@@ -61,13 +52,8 @@ export default class FeedScreen extends React.Component<any, any> {
                         renderRow={(item) => {
                             return <Post data={item}/>
                         }}
-                    />
-                    <View>
-                        <TouchableOpacity onPress={this.getMorePosts}>
-                            <Text style={this.styles.postloader}>Meer posts laden</Text>
-                        </TouchableOpacity>
-                    </View> 
-                </View>   
+                    /> 
+                </View>     
             </Container>
         );
     }
@@ -75,7 +61,7 @@ export default class FeedScreen extends React.Component<any, any> {
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Feed',
+            headerTitle: 'Evenementen',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
@@ -111,10 +97,6 @@ export default class FeedScreen extends React.Component<any, any> {
             flex: 1,
             width: '100%',
             height: '100%'
-        },
-        postloader: {
-            color: colors.textDark,
-            marginBottom: 50
         }
     });
 }

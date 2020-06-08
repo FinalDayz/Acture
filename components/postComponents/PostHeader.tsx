@@ -15,10 +15,34 @@ export class PostHeader extends React.Component<Props> {
         super(props);
     }
 
+    //Sets color for header bar based on post type variable
+    setHeaderColor() {
+        if(this.props.category == '1') { return colors.postHeaderRed }
+        if(this.props.category == '2') { return colors.postHeaderBlue }
+        if(this.props.category == '3') { return colors.postHeaderYellow }
+        if(this.props.category == '4') { return colors.postHeaderGreen }
+        if(this.props.category == '5') { return colors.postHeaderPurple }
+        if(this.props.category == '6') { return colors.postHeaderOrange }
+        if(this.props.category == '7') { return colors.postHeaderPurple }
+        else { return colors.postHeaderTypeBlue }
+    }
+
+    //Sets color for the post type background in the header bar based on post type variable
+    setHeaderTypeColor() {
+        if(this.props.category == '1') { return colors.postHeaderTypeRed }
+        if(this.props.category == '2') { return colors.postHeaderTypeBlue }
+        if(this.props.category == '3') { return colors.postHeaderTypeYellow }
+        if(this.props.category == '4') { return colors.postHeaderTypeGreen }
+        if(this.props.category == '5') { return colors.postHeaderTypePurple }
+        if(this.props.category == '6') { return colors.postHeaderTypeOrange }
+        if(this.props.category == '7') { return colors.postHeaderTypePurple }
+        else { return colors.postHeaderTypeBlue }
+    }
+
     render() {
-        return (    // gebruik om header kleur te veranderen: style={(setColor == true) ? styles.headerRed : styles.headerBlue}
+        return (   
             <View style={this.styles.headerBackground}>
-                <View style={this.styles.headerBlue}>
+                <View style={this.styles.header}>
                     <View style={this.styles.horizontalFlex}>
                         <View>
                             <View style={this.styles.profileImage}/>
@@ -45,17 +69,10 @@ export class PostHeader extends React.Component<Props> {
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20
         },
-        headerBlue: {
+        header: {
             height: 60,
             width: '100%',
-            backgroundColor: colors.postHeaderBlue,
-            padding: 10,
-            borderRadius: 20
-        },
-        headerRed: {
-            height: 60,
-            width: '100%',
-            backgroundColor: colors.postHeaderRed,
+            backgroundColor: this.setHeaderColor(),
             padding: 10,
             borderRadius: 20
         },
@@ -76,7 +93,7 @@ export class PostHeader extends React.Component<Props> {
         },
         textContainer: {
             alignSelf: 'flex-end',
-            backgroundColor: colors.postHeaderTypeBlue,
+            backgroundColor: this.setHeaderTypeColor(),
             borderRadius: 20,
             width: '70%',
             justifyContent: 'center',
@@ -89,7 +106,7 @@ export class PostHeader extends React.Component<Props> {
         },
         topic: {
             marginLeft: 10,
-            color: '#212099',
+            color: colors.textLight,
             fontSize: 16,
         },
         postType: {
