@@ -48,7 +48,7 @@ export default class FeedScreen extends React.Component<any, any> {
     }
 
     getMorePosts() {
-        this.state.offset = this.state.offset + 15;
+        this.state.offset + 15;
         this.getFeed();
     }
 
@@ -62,11 +62,11 @@ export default class FeedScreen extends React.Component<any, any> {
                             return <Post data={item}/>
                         }}
                     />
-                    <View>
+                    {/* <View>
                         <TouchableOpacity onPress={this.getMorePosts}>
                             <Text style={this.styles.postloader}>Meer posts laden</Text>
                         </TouchableOpacity>
-                    </View> 
+                    </View>  */}
                 </View>   
             </Container>
         );

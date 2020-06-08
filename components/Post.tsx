@@ -23,9 +23,13 @@ export class Post extends React.Component<Props> {
                 <ListItem style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
-                            postName={this.props.data.userId}
-                            category={this.props.data.categoryId}
-                            postDate={new Date(this.props.data.postDate)}/>
+                            userId={this.props.data.userId}
+                            category={this.props.data.categoryname}
+                            categoryId={this.props.data.categoryId}
+                            postDate={new Date(this.props.data.postDate)}
+                            firstName={this.props.data.firstname}
+                            LastName={this.props.data.lastname}
+                            insertion={this.props.data.tussenvoegsel}/>
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
@@ -42,9 +46,13 @@ export class Post extends React.Component<Props> {
                 <ListItem style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
-                            postName={this.props.data.userId}
-                            category={this.props.data.categoryId}
-                            postDate={new Date(this.props.data.postDate)}/>
+                            userId={this.props.data.userId}
+                            category={this.props.data.categoryname}
+                            categoryId={this.props.data.categoryId}
+                            postDate={new Date(this.props.data.postDate)}
+                            firstName={this.props.data.firstname}
+                            LastName={this.props.data.lastname}
+                            insertion={this.props.data.tussenvoegsel}/>
                         <PostBody
                             text={this.props.data.text}
                             title={this.props.data.title}/>

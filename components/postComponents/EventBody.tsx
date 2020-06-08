@@ -53,7 +53,7 @@ export class EventBody extends React.Component<Props> {
             paddingBottom: 30
         },
         line: {
-            backgroundColor: colors.textPostContent,
+            borderColor: colors.textPostContent,
             borderBottomWidth: 1,
             marginHorizontal: 15,
             marginVertical: 5
