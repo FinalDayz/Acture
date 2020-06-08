@@ -1,5 +1,15 @@
 import React, {useState} from "react";
-import {Image, StyleSheet, TextInput, TouchableOpacity, View, Text, Dimensions, Platform} from "react-native";
+import {
+    Image,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    View,
+    Text,
+    Dimensions,
+    Platform,
+    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView
+} from "react-native";
 import InputScrollView from "react-native-input-scroll-view";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
@@ -213,7 +223,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.screen}>
-                <View style={styles.componentContainer}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.componentContainer} >
                     <View style = {styles. titleBox}>
                         <Text style={{
                             fontStyle: 'italic',
@@ -264,7 +275,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     </View>
 
                 </View>
-
+                    </TouchableWithoutFeedback>
             </View>
         );
     }
