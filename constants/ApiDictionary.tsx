@@ -7,7 +7,7 @@ export default {
     getAllUsers: {destination: '/api/users/', type: 'GET'},
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
-    getFeed: {destination: '/api/feed', type: 'POST'},
+    getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds

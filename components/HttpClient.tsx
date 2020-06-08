@@ -32,6 +32,8 @@ export default async function bodyless(details: { destination: string; type: str
 
 export async function bodyfull(details: { destination: string; type: string; }, bodyattributes: Object) {
 
+    console.log(ApiDictionary.apiIp + details.destination)
+
     const response = await Promise.race([
         fetch(ApiDictionary.apiIp + details.destination , {
         method: details.type,
@@ -58,7 +60,7 @@ export async function bodyfull(details: { destination: string; type: string; }, 
     })
         const resData = await response;
 
-        if(state.getjwt) {
+        if(state.getjwt && resData.token) {
             state.jwt = resData.token;
         }
 

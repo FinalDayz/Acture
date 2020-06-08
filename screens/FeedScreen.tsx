@@ -1,47 +1,58 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import {Container, Content, List} from 'native-base';
+import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
 import {Post} from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
-
-const tempRes = require('../models/res');
+import {PostModel} from '../models/PostModel';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class FeedScreen extends React.Component<any, any> {
 
     state = {
         isLoading: false,
-        data: null
+        data: [],
+        offset: 0
     };
 
     constructor(props: any) {
         super(props);
+    }
 
-        this.getFeed();
+    componentDidMount() {
+        this.getFeed()
     }
     
-    getFeed = () => {
+    getFeed() {
         if(!this.state.isLoading) {
-            this.setState({isLoading:true});
+            
+            this.state.isLoading = true;
             bodyfull(ApiDictionary.getFeed, {
-                "id": "1",
-                "offs": "0" //offset for loading more posts
-            }).then((data) => {
-                console.log("Ik heb deze data: " + data.text())
-                this.setState({isLoading:false})
-                this.state.data=data
-            }).catch(err => {
-                console.log("fetch error" + err.message);
-                this.setState({isLoading:false})
+                id: "1",
+                offs: this.state.offset //offset for loading more posts
             })
+            .then(
+                (result: {data:Array<PostModel>}) => {
+                    //let feedlist = this.state.data.concat(result.data);
+                    this.setState({data: result.data})
+                })
+                .catch ((error) => {
+                        console.log(error);
+                    })
         } else {
             return null
         }
     }
+
+    getMorePosts() {
+        this.state.offset = this.state.offset + 15;
+        this.getFeed();
+    }
+
 
     render() {
         return(
@@ -56,10 +67,19 @@ export default class FeedScreen extends React.Component<any, any> {
                             return <Post data={item}/>
                         }}
                     />
+                <View>
+                    <TouchableOpacity onPress={this.getMorePosts}>
+                        <Text style={this.styles.postloader}>Meer posts laden</Text>
+                    </TouchableOpacity>
+                </View> 
                 </View>
+                
+                
             </Container>
         );
     }
+
+    
     
 
     //options for header bar. Default options are in the navigator.
@@ -108,6 +128,10 @@ export default class FeedScreen extends React.Component<any, any> {
             alignItems: 'center',
             width: '85%',
             minWidth: 200 //minimale breedte van een post
+        },
+        postloader: {
+            color: colors.textDark,
+            marginBottom: 50
         }
     });
 }
