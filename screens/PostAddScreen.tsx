@@ -215,7 +215,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     //             console.log("INSERTED")
     //         }
     //     });
-    // }else {
+    // }else {LK
     //         return null
     //     }
 
