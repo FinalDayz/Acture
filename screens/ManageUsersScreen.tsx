@@ -41,7 +41,6 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             selectedUser: -1,
         };
 
-
         this.fetchUsers();
     }
 

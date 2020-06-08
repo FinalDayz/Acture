@@ -5,7 +5,7 @@ export default {
     login: {destination: '/api/users/login', type: 'POST'},
     register: {destination: '/api/users/register', type: 'POST'},
     getAllUsers: {destination: '/api/users/', type: 'GET'},
-    getInactiveUsers: {destination: '/api/users/inactiveUsers/', type: 'GET'},
+    getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
 
     addPost: {destination: '/api/users/add/post', type: 'POST'},
