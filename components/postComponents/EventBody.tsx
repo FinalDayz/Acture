@@ -9,6 +9,9 @@ export interface Props {
     title: String
     text: String
     eventDate: Date
+    adress: String
+    city: String
+    price: String
 }
 
 export class EventBody extends React.Component<Props> {
@@ -29,10 +32,10 @@ export class EventBody extends React.Component<Props> {
                         <Text style={this.styles.detailItem}>{this.props.eventDate.toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Text>
                     </View>
                     <View style={this.styles.horizontal}>
-                        <Text style={this.styles.detailItem}>Locatie</Text>
-                        <Text style={this.styles.detailItem}>Plaats</Text>
+                        <Text style={this.styles.detailItem}>{this.props.adress}</Text>
+                        <Text style={this.styles.detailItem}>{this.props.city}</Text>
                     </View>
-                    <Text style={this.styles.detailItem}>Toegangsprijs</Text>
+                    <Text style={this.styles.detailItem}>{this.props.price}</Text>
                 </View>
                 <View style={this.styles.line}/>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>

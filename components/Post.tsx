@@ -29,7 +29,10 @@ export class Post extends React.Component<Props> {
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
-                            eventDate={new Date(this.props.data.date)}/>
+                            eventDate={new Date(this.props.data.date)}
+                            adress={this.props.data.adress}
+                            city={this.props.data.city}
+                            price={this.props.data.price}/>
                     </View>
                 </ListItem>
             );
@@ -57,7 +60,7 @@ export class Post extends React.Component<Props> {
             borderBottomWidth: 0, //important: removes auto-generated border
             alignSelf: 'center',
             alignItems: 'center',
-            width: '95%',
+            width: '100%',
             minWidth: 200
             
         },
