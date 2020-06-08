@@ -55,7 +55,7 @@ export default class ProfileScreen extends React.Component<any, any> {
             this.setState({isLoading:true});
 
             bodyfull(ApiDictionary.getUserBlogs, {
-                userId: 1
+                userId: 1 // TODO: meegeven bij navigatie
             })
                 .then(
                     (result: {data: Array<PostModel>}) => {
