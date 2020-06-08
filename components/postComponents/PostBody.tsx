@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 
 import colors from '../../constants/colors';
 
@@ -9,6 +9,7 @@ import ApiDictionary from '../../constants/ApiDictionary';
 import { bodyfull } from '../HttpClient';
 
 import {Ionicons} from '@expo/vector-icons';
+import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorState";
 
 
 export interface Props {
@@ -39,10 +40,7 @@ export class PostBody extends React.Component<Props> {
                             size={27}
                             color="black"
                             style={this.styles.icon}
-                            onPress={() => {
-                                alert('You tapped the button!');
-                                this.deletePost();
-                        }}/>
+                            onPress={() => {this.createConfirmAlert()}}/>
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
@@ -50,12 +48,31 @@ export class PostBody extends React.Component<Props> {
         );
     }
 
-    deletePost = () => {
+    createConfirmAlert() {
+        Alert.alert(
+            'Klik op verwijderen om te bevestigen.',
+            '',
+            [
+                {
+                    text: 'Annuleren',
+                    onPress: () => console.log('Cancel Pressed')
+                },
+                {
+                    text: 'Verwijderen',
+                    onPress: () => this.deletePost()
+                }
+            ],
+            { cancelable: true }
+        );
+    }
+
+    deletePost() {
         if(!this.state.isLoading) {
             this.setState({isLoading:true});
             bodyfull(ApiDictionary.deletePost, {
                 postId: this.props.postId
             }).then((data) => {
+                alert("Verwijderen succesvol");
                 this.render();
                 this.setState({isLoading:false})
             }).catch(err => {
@@ -66,7 +83,11 @@ export class PostBody extends React.Component<Props> {
         }
     };
 
+    alertStyles = StyleSheet.create({
+        cancel: {
 
+        }
+    });
 
     styles = StyleSheet.create ({
         body: {
