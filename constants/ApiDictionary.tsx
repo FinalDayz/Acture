@@ -8,6 +8,7 @@ export default {
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
     deletePost: {destination: '/api/feedposts/', type: 'DELETE'},
+    getUserBlogs: {destination: '/api/feedposts/my-blogs/', type: 'GET'},
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
