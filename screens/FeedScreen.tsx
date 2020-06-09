@@ -32,7 +32,6 @@ export default class FeedScreen extends React.Component<any, any> {
             
             this.state.isLoading = true;
             bodyfull(ApiDictionary.getFeed, {
-                id: "1",
                 offs: this.state.offset //offset for loading more posts
             })
             .then(
