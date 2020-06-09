@@ -5,7 +5,7 @@ var temporary_res = {
       "postId": 3,
       "text": "Dit is de eerste post in de database! Exciting times, huh? Nu nog een leuke inhoud verzinnen... Dat blijft lastig.",
       "image": null,
-      "userId": 1,
+      "userId": 2,
       "postDate": "2020-05-27T10:00:00.000Z",
       "categoryId": 1,
       "title": "Eerste post!"
@@ -14,7 +14,7 @@ var temporary_res = {
       "postId": 4,
       "text": "hallo",
       "image": null,
-      "userId": 1,
+      "userId": 2,
       "postDate": "2020-05-28T04:55:00.000Z",
       "categoryId": 1,
       "title": "its good"
