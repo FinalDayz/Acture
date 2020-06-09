@@ -4,6 +4,7 @@ import {Ionicons} from "@expo/vector-icons";
 import colors from "../constants/colors";
 
 interface Props {
+    // Icon names from: https://infinitered.github.io/ionicons-version-3-search/
     iconName: string,
     inputPlaceholder: string,
     onChangeText: (text: string) => void,

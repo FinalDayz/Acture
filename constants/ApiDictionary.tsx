@@ -10,6 +10,10 @@ export default {
     deleteUser: {destination: '/api/users/delete/', type: 'DELETE'},
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
 
+
+    followUsers: {destination: '/api/follow/', type: 'GET'},
+    changeFollow: {destination: '/api/follow/', type: 'PATCH'},
+
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
 };

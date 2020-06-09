@@ -29,7 +29,6 @@ export interface Props {
 interface State {
     isLoading: boolean,
     accounts: User[],
-    selectedUser: number,
     searchQuery: string,
 }
 
@@ -43,7 +42,6 @@ export class ManageUsersScreen extends React.Component<Props, State> {
         this.state = {
             ...state,
             accounts: [],
-            selectedUser: -1,
             isLoading: true,
             searchQuery: '',
         };
@@ -96,33 +94,14 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     }
 
     private changeRole(account: User, newRole: UserRole) {
-        console.log("Change user " + account.email + " to: " + newRole);
-        console.log(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]));
         bodyless(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]))
             .then((result) => {
 
             });
     }
 
-    private pressedAccount(account: User) {
-        let id = account.userId;
-        if (this.state.selectedUser === id)
-            id = -1;
-        this.setState({
-            selectedUser: id
-        });
-    }
-
     private searchFilter(account: User): boolean {
-        const searchQuery = this.state.searchQuery;
-        if (!searchQuery)
-            return true;
-        return (
-            (account.firstname +
-                (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
-                + " " + account.lastname).includes(searchQuery) ||
-            account.email.includes(searchQuery)
-        );
+        return User.searchFilter(account, this.state.searchQuery);
     }
 
     render() {

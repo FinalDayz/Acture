@@ -29,4 +29,15 @@ export class User {
         this.email = email;
         this.password = password;
     }
+
+    static searchFilter(account: User, searchQuery: string): boolean {
+        if (!searchQuery)
+            return true;
+        return (
+            (account.firstname +
+                (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
+                + " " + account.lastname).includes(searchQuery) ||
+            account.email.includes(searchQuery)
+        );
+    }
 }
