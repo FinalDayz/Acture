@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -47,6 +47,11 @@ export default class AllEventsScreen extends React.Component<any, any> {
         return(
             <Container style={this.styles.screen}>
                 <View style={this.styles.scrollable}>
+                    {!this.state.isLoading ? (
+                        <View style={this.styles.loading}>
+                            <ActivityIndicator size="large" color={colors.primaryLight}/>
+                        </View>
+                    ) : (<View></View>)}
                     <List
                         dataArray={this.state.data}
                         renderRow={(item) => {
@@ -97,6 +102,11 @@ export default class AllEventsScreen extends React.Component<any, any> {
             flex: 1,
             width: '100%',
             height: '100%'
+        },
+        loading: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     });
 }
