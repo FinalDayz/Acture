@@ -19,6 +19,8 @@ import ApiDictionary from '../constants/ApiDictionary';
 import {HttpHelper} from "../components/HttpHelper";
 import {IconInput} from "../components/IconInput";
 import {AccountRow} from '../components/account/AccountRow';
+import {Hr} from '../components/Hr';
+import {Ionicons} from '@expo/vector-icons';
 
 export interface Props {
 
@@ -46,7 +48,6 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             searchQuery: '',
         };
     }
-
     componentDidMount() {
         this.fetchUsers();
     }
@@ -64,7 +65,6 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             });
         });
     }
-
     private askDeleteUser(account: User) {
         const fullName = account.firstname +
             (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
@@ -96,7 +96,7 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     }
 
     private changeRole(account: User, newRole: UserRole) {
-        console.log("Change user " + account.email+" to: " + newRole);
+        console.log("Change user " + account.email + " to: " + newRole);
         console.log(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]));
         bodyless(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]))
             .then((result) => {
@@ -115,11 +115,11 @@ export class ManageUsersScreen extends React.Component<Props, State> {
 
     private searchFilter(account: User): boolean {
         const searchQuery = this.state.searchQuery;
-        if(!searchQuery)
+        if (!searchQuery)
             return true;
         return (
-           (account.firstname +
-               (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
+            (account.firstname +
+                (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
                 + " " + account.lastname).includes(searchQuery) ||
             account.email.includes(searchQuery)
         );
@@ -130,7 +130,9 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             <View style={styles.wrapper}>
                 <View style={{paddingHorizontal: '7%', paddingTop: 20}}>
                     <IconInput
-                        onChangeText={text => {this.setState({searchQuery: text})}}
+                        onChangeText={text => {
+                            this.setState({searchQuery: text})
+                        }}
                         iconName={'md-search'}
                         inputPlaceholder={'Zoek gebruiker...'}
                     />
@@ -139,15 +141,18 @@ export class ManageUsersScreen extends React.Component<Props, State> {
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.fetchUsers()}
                     contentContainerStyle={styles.flatList}
-                    data={this.state.accounts.filter((user) => {return this.searchFilter(user)})}
+                    data={this.state.accounts.filter((user) => {
+                        return this.searchFilter(user)
+                    })}
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
                         <AccountRow
                             isExpandable={true}
                             account={item}>
+                            <Hr/>
                             <View style={[styles.flexRow, styles.controlElement]}>
                                 <Text style={{flex: 2, fontSize: 18}}>Gebruikers Rol</Text>
-                                <View style={{flex: 1}}>
+                                <View style={{flex: 1,}}>
                                     <RNPickerSelect
                                         placeholder={{
                                             label: item.role.toString(),
@@ -160,12 +165,22 @@ export class ManageUsersScreen extends React.Component<Props, State> {
                                                 .filter(role => role !== item.role)
                                                 .map(role => ({label: role, value: role}))
                                         }
-                                    />
+                                        Icon={() => {
+                                            return (
+                                                <Ionicons name="ios-arrow-dropdown" size={20}
+                                                          style={{}}/>
+                                            )
+                                        }}
+                                    >
+
+                                    </RNPickerSelect>
                                 </View>
                             </View>
+                            <Hr/>
                             <View style={[styles.flexRow, styles.controlElement]}>
                                 <Text style={{flex: 2, fontSize: 18}}>Verwijder gebruiker</Text>
                                 <View style={{flex: 1}}>
+
                                     <Button
                                         title={'Verwijder'}
                                         color={'red'}
@@ -184,36 +199,35 @@ export class ManageUsersScreen extends React.Component<Props, State> {
 }
 
 const rolePickerStyle = StyleSheet.create({
+    iconContainer: {
+        paddingRight: 5,
+    },
     placeholder: {
-        color: 'blue',
+        color: '#696969',
         fontSize: 18,
     },
     inputIOS: {
-        color: 'blue',
+        color: '#696969',
         fontSize: 18,
     },
     inputAndroid: {
-        color: 'blue',
+        color: '#696969',
         fontSize: 18,
     },
     viewContainer: {
-        alignItems: 'center',
+        padding: 2,
+        paddingLeft: 5,
+        borderRadius: 5,
+        backgroundColor: 'white',
+
     },
 });
 
 const styles = StyleSheet.create({
-    searchSection: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    searchIcon: {
-        padding: 10,
-    },
     controlElement: {
-        height: 40,
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        height: 35,
     },
     flexRow: {
         flexDirection: 'row',
