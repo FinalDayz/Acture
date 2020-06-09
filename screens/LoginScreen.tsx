@@ -16,6 +16,17 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         super(navigation);
 
         this._isMounted = false;
+
+    }
+
+    componentWillMount(): void {
+        this.setState({
+            password: 'test',
+            email: 'test@gmail.com'
+        }, () => {
+            console.log("blabla") ;
+            this.login()
+        });
     }
 
     state={
@@ -43,7 +54,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
       };
 
     login = () => {
-
+        console.log("loginloginloginlogin")
         this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
                 console.log(JSON.stringify(data))
