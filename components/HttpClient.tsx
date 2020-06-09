@@ -5,7 +5,7 @@ import environmentVars from "../constants/environmentVars";
 const state = {
     jwt: "",
     getjwt: false
-}
+};
 
 export default async function bodyless(details: { destination: string; type: string; }) {
     const response = await Promise.race([
@@ -23,7 +23,7 @@ export default async function bodyless(details: { destination: string; type: str
               )
             ]).catch(err => {
               alert(err.message);
-          })
+          });
 
         const resData = await response;
 
@@ -57,7 +57,7 @@ export async function bodyfull(details: { destination: string; type: string; }, 
         )
       ]).catch(err => {
         alert(err.message);
-    })
+    });
         const resData = await response;
 
         if(state.getjwt && resData.token) {

@@ -55,7 +55,9 @@ export class Post extends React.Component<Props> {
                             insertion={this.props.data.tussenvoegsel}/>
                         <PostBody
                             text={this.props.data.text}
-                            title={this.props.data.title}/>
+                            title={this.props.data.title}
+                            userId={this.props.data.userId}
+                            postId={this.props.data.postId}/>
                     </View>
                 </ListItem>
             );

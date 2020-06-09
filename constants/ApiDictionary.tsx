@@ -9,6 +9,8 @@ export default {
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
+    deletePost: {destination: '/api/feedposts/', type: 'DELETE'},
+    getUserBlogs: {destination: '/api/feedposts/user-blogs/', type: 'POST'},
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
