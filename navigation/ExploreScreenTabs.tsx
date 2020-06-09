@@ -1,12 +1,13 @@
 import React from "react";
-import {ManageUsersScreen} from "./ManageUsersScreen";
-import {ActivateUsersScreen} from "./ActivateUsersScreen";
+import {ManageUsersScreen} from "../screens/ManageUsersScreen";
+import {ActivateUsersScreen} from "../screens/ActivateUsersScreen";
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import colors from "../constants/colors";
+import {ExploreUsersScreen} from "../screens/Explore/ExploreUsersScreen";
 
 export default createMaterialTopTabNavigator(
     {
-        'Beheren': ManageUsersScreen,
+        'Leden': ExploreUsersScreen,
         'Activeren': ActivateUsersScreen,
     }, {
         initialRouteName: 'Beheren',

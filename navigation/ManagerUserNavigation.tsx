@@ -2,7 +2,7 @@ import {createStackNavigator} from "react-navigation-stack";
 import ProfileScreen from "../screens/ProfileScreen";
 import colors from "../constants/colors";
 import React from "react";
-import ManageUsersTabs from "../screens/ManageUsersTabs";
+import ManageUsersTabs from "./ManageUsersTabs";
 
 export default createStackNavigator(
     {
