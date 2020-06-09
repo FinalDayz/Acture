@@ -4,9 +4,13 @@ import { View, StyleSheet, Text } from 'react-native';
 import colors from '../../constants/colors';
 
 export interface Props {
-    postName: String
+    userId: String
     category: String
+    categoryId: String
     postDate: Date
+    firstName: String
+    LastName: String
+    insertion: String //tussenvoegsel
 }
 
 export class PostHeader extends React.Component<Props> {
@@ -15,16 +19,51 @@ export class PostHeader extends React.Component<Props> {
         super(props);
     }
 
+    //Sets color for header bar based on post type variable
+    setHeaderColor() {
+        if(this.props.categoryId == '1') { return colors.postHeaderRed }
+        if(this.props.categoryId == '2') { return colors.postHeaderBlue }
+        if(this.props.categoryId == '3') { return colors.postHeaderYellow }
+        if(this.props.categoryId == '4') { return colors.postHeaderGreen }
+        if(this.props.categoryId == '5') { return colors.postHeaderPurple }
+        if(this.props.categoryId == '6') { return colors.postHeaderOrange }
+        if(this.props.categoryId == '7') { return colors.postHeaderPurple }
+        else { return colors.postHeaderBlue }
+    }
+
+    //Sets color for the post type background in the header bar based on post type variable
+    setHeaderTypeColor() {
+        if(this.props.categoryId == '1') { return colors.postHeaderTypeRed }
+        if(this.props.categoryId == '2') { return colors.postHeaderTypeBlue }
+        if(this.props.categoryId == '3') { return colors.postHeaderTypeYellow }
+        if(this.props.categoryId == '4') { return colors.postHeaderTypeGreen }
+        if(this.props.categoryId == '5') { return colors.postHeaderTypePurple }
+        if(this.props.categoryId == '6') { return colors.postHeaderTypeOrange }
+        if(this.props.categoryId == '7') { return colors.postHeaderTypePurple }
+        else { return colors.postHeaderTypeBlue }
+    }
+
+    makeName() {
+        let name = "naam"
+        if(this.props.insertion) {
+            name = this.props.firstName + " " + this.props.insertion + " " + this.props.LastName
+        }
+        else {
+            name = this.props.firstName + " " + this.props.LastName
+        }
+        return name
+    }
+
     render() {
-        return (    // gebruik om header kleur te veranderen: style={(setColor == true) ? styles.headerRed : styles.headerBlue}
+        return (   
             <View style={this.styles.headerBackground}>
-                <View style={this.styles.headerBlue}>
+                <View style={this.styles.header}>
                     <View style={this.styles.horizontalFlex}>
                         <View>
                             <View style={this.styles.profileImage}/>
                         </View>
                         <View style={this.styles.verticalFlex}>
-                            <Text style={this.styles.name}>{this.props.postName}</Text>
+                            <Text style={this.styles.name}>{this.makeName()}</Text>
                             <Text style={this.styles.topic}>Vakgebied</Text>
                         </View>
                         <View style={this.styles.verticalFlex}>
@@ -45,17 +84,10 @@ export class PostHeader extends React.Component<Props> {
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20
         },
-        headerBlue: {
+        header: {
             height: 60,
             width: '100%',
-            backgroundColor: colors.postHeaderBlue,
-            padding: 10,
-            borderRadius: 20
-        },
-        headerRed: {
-            height: 60,
-            width: '100%',
-            backgroundColor: colors.postHeaderRed,
+            backgroundColor: this.setHeaderColor(),
             padding: 10,
             borderRadius: 20
         },
@@ -76,25 +108,24 @@ export class PostHeader extends React.Component<Props> {
         },
         textContainer: {
             alignSelf: 'flex-end',
-            backgroundColor: colors.postHeaderTypeBlue,
+            backgroundColor: this.setHeaderTypeColor(),
             borderRadius: 20,
-            width: '70%',
             justifyContent: 'center',
-            alignItems: 'flex-end'
+            marginRight: 5
         },
         name: {
             marginLeft: 10,
             color: colors.textLight,
-            fontSize: 19
+            fontSize: 16
         },
         topic: {
             marginLeft: 10,
-            color: '#212099',
+            color: colors.textLight,
             fontSize: 16,
+            fontStyle: 'italic'
         },
         postType: {
-            paddingHorizontal: 10,
-            marginRight: 10,
+            paddingHorizontal: 15,
             fontSize: 16,
             fontStyle: 'italic',
             color: colors.textLight

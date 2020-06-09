@@ -1,14 +1,14 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
-import EventsPlaceholderScreen from '../screens/EventsPlaceholderScreen';
+import AllEventsScreen from '../screens/AllEventsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 
 const EventsScreenNavigation = createStackNavigator(
     {
         Events: {
-            screen: EventsPlaceholderScreen
+            screen: AllEventsScreen
         },
         Profile: {
             screen: ProfileScreen
