@@ -8,10 +8,10 @@ export default {
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
 
-    addPost: {destination: '/api/users/add/post', type: 'POST'},
-    getAllCategories: {destination: 'api/feed/getAllCategories', type: 'GET'},
+    addPost: {destination: '/api/feed/addPost', type: 'POST'},
+    getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
     apiIp: environmentVars.address + ":" + environmentVars.port,
-    timeoutTimings: 7000, //in miliseconds
+    timeoutTimings: 70000, //in miliseconds
 };

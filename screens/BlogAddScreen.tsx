@@ -8,18 +8,18 @@ import {
     Text,
     Dimensions,
     Platform,
-    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView
+    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView
 } from "react-native";
+
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import RNPickerSelect from 'react-native-picker-select';
 import Constants from 'expo-constants';
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
-import {error} from "util";
+
 
 export interface Props {
 }
@@ -34,6 +34,7 @@ interface State {
     image: string
     imageName: string
     isLoading: boolean
+    // blogCategoryId: number
 
 }
 
@@ -57,10 +58,10 @@ export default class PostAddScreen extends React.Component<Props, State> {
             text: '',
             categoryId: 0,
             image: '',
-            imageName: ''
+            imageName: '',
+            // blogCategoryId: 0
 
         }
-        // this._getAllCategories();
 
     }
 
@@ -74,7 +75,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
 
     componentDidMount() {
-        this._getAllCategories();
+        // this._getAllCategories();
         this.getPermissionAsync();
     }
 
@@ -116,17 +117,16 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     _addPost = () =>
     {
-        console.log("I Am pressed")
-        console.log(this.state.isLoading)
-        if (!this.state.isLoading){
+        if (!this.state.isLoading) {
             bodyfull(ApiDictionary.addPost, {
                 'text': this.state.text,
                 'title': this.state.title,
                 'image': this.state.image,
                 'userId': 1,
                 'categoryId': this.state.categoryId
-            }).then((data) => {
-                console.log(JSON.stringify(data))
+            })
+                .then(res => res.json())
+                .then((data) => {
                         if (data.success === 1) {
                             console.log("INSERTED")
                         }
@@ -138,26 +138,28 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     }
 
-
-    _getAllCategories = () => {
+    _getAllCategories() {
         if (!this.state.isLoading) {
+
             this.state.isLoading = true;
             bodyless(ApiDictionary.getAllCategories)
+                .then(res => res.json())
                 .then(
-                    (result) => {
-                        // console.log(JSON.stringify(result.data))
-                        // console.log("resullttt" , result)
+                    (result: { data: Array<Category> }) => {
+                        // console.log(result)
                         this.setState({
                             categories: result.data
                         });
-                        this.setState({
-                            isLoading: false
-                        });
+                        for (let entry of this.state.categories){
+                            if (entry.name = 'Blog'){
+                                this.state.categoryId = entry.categoryId;
+                            }
+                        }
                     },
-                ).catch(err =>{
-                console.log(err);
-                this.setState({isLoading:false})
-                })
+                    (error) => {
+                        console.log(error);
+                    }
+                );
         }else {
             return null
         }
@@ -170,58 +172,43 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return (
             <View style={styles.screen}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.componentContainer} >
-                    <View style = {styles. titleBox}>
-                        <Text style={{
-                            fontStyle: 'italic',
-                            width: "10%"
-                        }}>Titel:</Text>
-                        <TextInput
-                            style={{
-                                width: "95%"}}
-                            // placeholder="cgcc "
-                            value={this.state.title}
-                            onChangeText={(title) => this.setState({title: title})}/>
-                        <TextInput/>
+                    <View style={styles.componentContainer} >
+                        <View style = {styles. titleBox}>
+                            <Text style={{
+                                fontStyle: 'italic',
+                               width:  Dimensions.get('window').width >  300 ? 30 : 5
+                            }}>Titel:</Text>
+                            <TextInput
+                                style={{
+                                    width: "95%"}}
+                                value={this.state.title}
+                                onChangeText={(title) => this.setState({title: title})}/>
+                             <TextInput/>
+                        </View>
+                        <View style = {styles.beschrijvingBox}>
+                            <TextInput
+                                style={{
+                                    // backgroundColor: colors.textLight,
+                                    // height: this.state.textareaHeight
+                                }}
+                                placeholder="Beschrijving...deded3"
+                                value={this.state.text}
+                                onChangeText={text => this.setState({text: text})}
+                                multiline/>
+                        </View>
+                        <View style={ { marginTop: 30,marginHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Ionicons style={ { width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera' size={27} color={"grey"}/>
+                            <Text  style={ {width : "65%",paddingTop: 12, marginLeft: 13}}>
+                                {this.state.imageName.slice(this.state.imageName.length - 10)}
+                            </Text>
+                        </View>
+                        <View style={styles.line}></View>
+                        <View style={styles.belowButtons}>
+                            <Ionicons name='md-trash' size={27} color={"grey"}/>
+                            <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
+                        </View>
                     </View>
-                    <View style = {styles.beschrijvingBox}>
-                        <TextInput
-                            style={{
-                                // backgroundColor: colors.textLight,
-                                // height: this.state.textareaHeight
-                            }}
-                            placeholder="Beschrijving..."
-                            value={this.state.text}
-                            onChangeText={text => this.setState({text: text})}
-                            multiline/>
-                    </View>
-
-                    <View style={styles.categoryBox}>
-                        <RNPickerSelect
-                            style={styles.pickerSelect}
-                            placeholder={{
-                                label: 'Categorie selecteren'
-                            }}
-                            onValueChange={id => this.setState({categoryId: id})}
-                            items={this.state.categories.map(obj =>
-                                ({label: obj.name, value: obj.categoryId})
-                            )}
-                        />
-                    </View>
-                    <View style={ { marginTop: 30,marginHorizontal: 10, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Ionicons style={ { width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera' size={27} color={"grey"}/>
-                        <Text  style={ {width : "65%",paddingTop: 12, marginLeft: 13}}>
-                            {this.state.imageName.slice(this.state.imageName.length - 10)}
-                        </Text>
-                    </View>
-                    <View style={styles.line}></View>
-                    <View style={styles.belowButtons}>
-                        <Ionicons name='md-trash' size={27} color={"grey"}/>
-                        <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
-                    </View>
-
-                </View>
-                    </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
             </View>
         );
     }
@@ -358,10 +345,10 @@ const styles = StyleSheet.create({
     },
     belowButtons:{
         borderColor: "#20232a",
-        paddingHorizontal: 150,
+        paddingHorizontal: Dimensions.get('window').width >  300 ? 150 : 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 30,
+        marginTop:  Dimensions.get('window').height >  600 ? 30 : 10,
     }
     // descriptionBox:{
     //     backgroundColor:colors.inputfieldLight
