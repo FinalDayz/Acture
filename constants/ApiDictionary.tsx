@@ -7,11 +7,17 @@ export default {
     getAllUsers: {destination: '/api/users/', type: 'GET'},
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
-    getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
-    getEvents: {destination: '/api/feedposts/events', type: 'POST'},
+    deleteUser: {destination: '/api/users/delete/', type: 'DELETE'},
+    changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
+
+    followUsers: {destination: '/api/follow/', type: 'GET'},
+    changeFollow: {destination: '/api/follow/', type: 'PATCH'},
+
     deletePost: {destination: '/api/feedposts/', type: 'DELETE'},
     getUserBlogs: {destination: '/api/feedposts/user-blogs/', type: 'POST'},
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
+    getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
+    getEvents: {destination: '/api/feedposts/events', type: 'POST'},
 };
