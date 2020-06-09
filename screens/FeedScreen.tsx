@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -55,6 +55,11 @@ export default class FeedScreen extends React.Component<any, any> {
     render() {
         return(
             <Container style={this.styles.screen}>
+                {!this.state.isLoading ? (
+                        <View style={this.styles.loading}>
+                            <ActivityIndicator size="large" color={colors.primaryLight}/>
+                        </View>
+                    ) : (<View></View>)}
                 <View style={this.styles.scrollable}>
                     <List
                         dataArray={this.state.data}
@@ -62,15 +67,16 @@ export default class FeedScreen extends React.Component<any, any> {
                             return <Post data={item}/>
                         }}
                     />
-                    {/* <View>
-                        <TouchableOpacity onPress={this.getMorePosts}>
-                            <Text style={this.styles.postloader}>Meer posts laden</Text>
-                        </TouchableOpacity>
-                    </View>  */}
-                </View>   
+                </View>     
             </Container>
         );
     }
+
+                    // {/* <View>
+                    //     <TouchableOpacity onPress={this.getMorePosts}>
+                    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
+                    //     </TouchableOpacity>
+                    // </View>  */}
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
@@ -115,6 +121,11 @@ export default class FeedScreen extends React.Component<any, any> {
         postloader: {
             color: colors.textDark,
             marginBottom: 50
+        },
+        loading: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     });
 }
