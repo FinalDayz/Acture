@@ -24,7 +24,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     }
 
     returnToLoginScreen = () => {
-
         this.props.navigation.navigate('Login');
     };
 
