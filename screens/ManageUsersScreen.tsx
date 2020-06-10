@@ -89,7 +89,11 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     private deleteUser(account: User) {
         bodyless(HttpHelper.addUrlParameter(ApiDictionary.deleteUser, [account.userId]))
             .then((result) => {
-
+                let accounts = this.state.accounts;
+                accounts.splice(this.state.accounts.indexOf(account), 1);
+                this.setState({
+                    accounts: accounts
+                });
             });
     }
 
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: '7%',
         marginTop: 10,
-        flex: 1,
+        paddingBottom: 50,
     },
     wrapper: {
         flex: 1,

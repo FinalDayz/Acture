@@ -113,7 +113,6 @@ const styles = StyleSheet.create ({
     flatList: {
         width: '100%',
         marginTop: 10,
-        flex: 1,
         paddingHorizontal: '7%',
     },
     wrapper: {
