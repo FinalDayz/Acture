@@ -54,8 +54,8 @@ export class User {
         return (
             (account.firstname +
                 (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
-                + " " + account.lastname).includes(searchQuery) ||
-            account.email.includes(searchQuery)
+                + " " + account.lastname).toLowerCase().includes(searchQuery.toLowerCase()) ||
+            account.email.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
 }
