@@ -5,6 +5,7 @@ export default {
     //GET gebruik je alleen bij bodyless, alle andere type vormen zijn bodyfull
     //GET POST UPDATE DELETE
     login: {destination: '/api/users/login', type: 'POST'},
+    changePassword: {destination: '/api/users/changePassword', type: 'POST'},
     register: {destination: '/api/users/register', type: 'POST'},
     getAllUsers: {destination: '/api/users/', type: 'GET'},
     getInactiveUsers: {destination: '/api/users/inactiveUsers/', type: 'GET'},

@@ -44,12 +44,12 @@ export default class ChangePasswordScreen extends React.Component<{navigation:an
     ChangePassword = () => {
         this.setState({isLoading:true});
         if(this.state.newpassword === this.state.newpasswordconfirmation && this.state.newpassword.length !== 0) {
-            bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email, 'newpassword': this.state.newpassword}).then((data) => {
-                console.log(JSON.stringify(data))
+            bodyfull(ApiDictionary.changePassword, {'password': this.state.password, 'email': this.state.email, 'newpassword': this.state.newpassword}).then((data) => {
+                // console.log(JSON.stringify(data))
                 if(data.success === 1) {
                     this.setState({isLoading:false});
                     this.state.wrongInputs = false;
-                    this.props.navigation.navigate('Home');
+                    this.SuccesfullChange();
                 } else {
                     this.state.wrongInputs = true;
                     this.setState({isLoading:false})
@@ -65,9 +65,19 @@ export default class ChangePasswordScreen extends React.Component<{navigation:an
     } else {
         this.state.wrongInputs = false;
         this.setState({isLoading:false})
-
-    }
+        }
     };
+
+    SuccesfullChange() {
+        Alert.alert(
+            "Succes!",
+            'Je wachtwoord is veranderd, log nu in.',
+            [
+                {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
+            ],
+            { cancelable: false })
+            this.props.navigation.navigate('Login');
+    }
 
     render() {
         return (
@@ -131,7 +141,7 @@ export default class ChangePasswordScreen extends React.Component<{navigation:an
                                     style={styles.changePasswordBtn}
                                     onPress={this.ChangePassword}
                                     >
-                                    <Text style={styles.changePasswordText}>Log in</Text>
+                                    <Text style={styles.changePasswordText}>Verander wachtwoord</Text>
                                 </TouchableOpacity>
                                 ) : (
                                     <TouchableOpacity

@@ -5,7 +5,7 @@ import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimens
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
-import { bodyfull } from '../components/HttpClient';
+import bodyless, { bodyfull } from '../components/HttpClient';
 
 const windowWidth = Dimensions.get('window').width;
 
