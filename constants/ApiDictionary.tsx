@@ -2,7 +2,10 @@ import environmentVars from "./environmentVars";
 
 export default {
     //hier een lijst van alle apidestinations, gebruikt dit incombinatie met de httpclient :)
+    //GET gebruik je alleen bij bodyless, alle andere type vormen zijn bodyfull
+    //GET POST UPDATE DELETE
     login: {destination: '/api/users/login', type: 'POST'},
+    changePassword: {destination: '/api/users/changePassword', type: 'POST'},
     register: {destination: '/api/users/register', type: 'POST'},
     getAllUsers: {destination: '/api/users/', type: 'GET'},
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
@@ -19,7 +22,6 @@ export default {
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
 
-    
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
 };
