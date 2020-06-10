@@ -14,5 +14,7 @@ web-report/
 .DS_Store
 
 constants/environmentVars.tsx
+constants/enviromentsVars.tsx
+constants/environmentsVars.tsx
 
 debug.log
