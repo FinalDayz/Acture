@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+import {bodyfull} from '../../components/HttpClient';
+import ApiDictionary from '../../constants/ApiDictionary';
 
 import colors from '../../constants/colors';
 
@@ -12,14 +15,37 @@ export interface Props {
     adress: String
     city: String
     price: String
+    attendance: String
+    eventId: number
 }
 
 export class EventBody extends React.Component<Props> {
+
+    state = {
+        isLoading: false,
+        isAttendant: false
+    };
 
     constructor(props: Props) {
         super(props);
     }
 
+    addUserToEvent() {
+        if(!this.state.isLoading) {
+
+            this.state.isLoading = true;
+            bodyfull(ApiDictionary.insertAttendant, {
+                offs: this.props.eventId
+            })
+            .catch ((error) => {
+                    console.log(error);
+            })
+        }
+    }
+
+    removeUserFromEvent() {
+        //http request
+    }
 
     render() {
         return(
@@ -39,6 +65,15 @@ export class EventBody extends React.Component<Props> {
                 </View>
                 <View style={this.styles.line}/>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
+                <View style={this.styles.bottomContent}>
+                    <View style={this.styles.attendanceContainer}>
+                        <Text style={this.styles.attendance}>{this.props.attendance}  aanmeldingen</Text>
+                    </View>
+                    <TouchableOpacity style={this.styles.attendButton} onPress={() => {this.addUserToEvent()}}>
+                        <Text style={this.styles.attendButtonText}>Aanmelden</Text>
+                    </TouchableOpacity>
+                    
+                </View>    
             </View>
         );
     }
@@ -83,6 +118,35 @@ export class EventBody extends React.Component<Props> {
             marginHorizontal: 15,
             fontSize: 15,
             color: colors.textPostContent
+        },
+        bottomContent: {
+            marginTop: 15,
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            alignItems: 'flex-start'
+        },
+        attendButton: {
+            flex: 1,
+            backgroundColor: colors.postHeaderGreen,
+            borderRadius: 20,
+            alignItems: 'center',
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            marginRight: 15          
+        },
+        attendButtonText: {
+            color: colors.textLight,
+            fontSize: 16
+        },
+        attendanceContainer: {
+            flex: 2,
+            marginLeft: 15,
+            marginTop: 2
+        },
+        attendance: {
+            fontSize: 15,
+            fontStyle: 'italic',
+            color: colors.textPostContent,
         }
     });
 }
