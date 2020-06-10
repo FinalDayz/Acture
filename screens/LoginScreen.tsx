@@ -16,6 +16,17 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         super(navigation);
 
         this._isMounted = false;
+
+    }
+
+    componentWillMount(): void {
+        this.setState({
+            password: 'test',
+            email: 'test@gmail.com'
+        }, () => {
+            console.log("blabla") ;
+            this.login()
+        });
     }
 
     state={
@@ -57,7 +68,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
-            })
+            });
             
         this._isMounted && this.setState({
             ready: true
