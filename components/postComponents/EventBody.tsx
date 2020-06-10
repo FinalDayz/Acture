@@ -16,7 +16,7 @@ export interface Props {
     city: String
     price: String
     attendance: String
-    eventId: number
+    evenementId: number
 }
 
 export class EventBody extends React.Component<Props> {
@@ -34,11 +34,12 @@ export class EventBody extends React.Component<Props> {
         if(!this.state.isLoading) {
 
             this.state.isLoading = true;
+            console.log("Het ID isss " + this.props.evenementId)
             bodyfull(ApiDictionary.insertAttendant, {
-                offs: this.props.eventId
+                eventId: this.props.evenementId
             })
             .catch ((error) => {
-                    console.log(error);
+                    console.log("Dit is de error joehoeeee: " + error);
             })
         }
     }
