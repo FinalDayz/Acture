@@ -5,8 +5,7 @@ import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimens
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
-import { bodyfull } from '../components/HttpClient';
-
+import { bodyfull, expireJWT } from '../components/HttpClient';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -15,8 +14,16 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     
     constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
-
         this._isMounted = false;
+    }
+
+    componentWillMount(): void {
+        // this.setState({
+        //     password: 'test',
+        //     email: 'test@gmail.com'
+        // }, () => {
+        //     this.login()
+        // });
     }
 
     state={
@@ -25,6 +32,11 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         isLoading: false,
         show: false,
         wrongInputs: false
+    };
+
+    resetLogin() {
+        this.state.email = "";
+        this.state.password = "";
     }
 
     componentDidMount() {
@@ -36,7 +48,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     }
 
     ShowHideComponent = () => {
-        if (this.state.show == true) {
+        if (this.state.show) {
           this.setState({ show: false });
         } else {
           this.setState({ show: true });
@@ -44,11 +56,11 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
       };
 
     login = () => {
-
-        this.setState({isLoading:true})
+        this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+                console.log(JSON.stringify(data))
                 if(data.success === 1) {
-                    this.setState({isLoading:false})
+                    this.setState({isLoading:false});
                     this.state.wrongInputs = false;
                     this.props.navigation.navigate('Home');
                 } else {
@@ -58,16 +70,16 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
-            })
+            });
             
         this._isMounted && this.setState({
             ready: true
         })
-    }
+    };
 
     openRegisterScreen = () => {
         this.props.navigation.navigate('Register');
-    }
+    };
 
     render() {
         return (
@@ -80,7 +92,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 <Image
                                 width={windowWidth * 0.8} 
                                 source={require('../assets/LGS_LOGO_WIT.png')}/>
-
                             </View>
 
                             {this.state.wrongInputs ? (
@@ -88,6 +99,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 ) : null}
                             <View style={styles.inputView} >
                                 <TextInput
+                                    defaultValue='Test@gmail.com'
                                     style={styles.inputText}
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
@@ -200,4 +212,3 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline"
     },
 });
-    

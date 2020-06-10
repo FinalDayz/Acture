@@ -75,6 +75,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             month='0'+months;
         } 
         var date = year + "-" + month + "-" + day;
+
         {() => this.setState({date:date})}
     }
 
