@@ -9,6 +9,8 @@ import {AccountRow} from "../../components/account/AccountRow";
 import {Hr} from "../../components/Hr";
 import {Ionicons} from "@expo/vector-icons";
 import {UserWithFollow} from "../../models/UserWithFollow";
+import {HeaderButtons, Item} from "react-navigation-header-buttons";
+import HeaderButton from "../../components/HeaderButton";
 
 export interface Props {
 
@@ -101,6 +103,34 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
             </View>
         );
     }
+
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Explore',
+            headerRight: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item
+                        title='profile'
+                        iconName='md-person' //TODO: change to profile picture
+                        onPress={() => {
+                            navData.navigation.navigate('Profile');
+                        }}/>
+                </HeaderButtons>
+            ),
+            headerLeft: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item
+                        title='menu'
+                        iconName='md-menu'
+                        onPress={() => {
+                            navData.navigation.toggleDrawer();
+                        }}
+                    />
+                </HeaderButtons>
+            )
+        };
+    }
+
 }
 
 const styles = StyleSheet.create ({
