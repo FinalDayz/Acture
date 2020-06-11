@@ -27,9 +27,11 @@ const exploreTabs = createMaterialTopTabNavigator(
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
             },
-        }
+        },
+        navigationOptions: ExploreUsersScreen.navigationOptions
     }
 );
+
 
 // Options for header bar. Default options are in the navigator.
 // exploreTabs.navigationOptions = (navData:any) => {
