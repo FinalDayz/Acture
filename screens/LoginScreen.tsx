@@ -11,7 +11,7 @@ const windowWidth = Dimensions.get('window').width;
 
 export default class LoginScreen extends React.Component<{navigation:any}> {
     _isMounted: boolean;
-    
+
     constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
 
@@ -69,7 +69,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
             });
-            
+
         this._isMounted && this.setState({
             ready: true
         })
@@ -92,7 +92,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={{marginBottom: 80}}>
                                 {/* not a normal Image object, documentation found in: https://www.npmjs.com/package/react-native-scalable-image */}
                                 <Image
-                                width={windowWidth * 0.8} 
+                                width={windowWidth * 0.8}
                                 source={require('../assets/LGS_LOGO_WIT.png')}/>
                             </View>
 
@@ -110,13 +110,13 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
-                            
+
                             <View>
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
                             </View>
-                            
+
                             <View style={styles.inputView} >
                                 <TextInput
                                     secureTextEntry
@@ -154,7 +154,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>     
+                </KeyboardAvoidingView>
             </ScrollView>
         )
     }
