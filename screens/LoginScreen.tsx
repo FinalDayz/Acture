@@ -19,15 +19,16 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
 
     }
 
-    componentWillMount(): void {
-        this.setState({
-            password: 'test',
-            email: 'test@gmail.com'
-        }, () => {
-            console.log("blabla") ;
-            this.login()
-        });
-    }
+    // componentWillMount(): void {
+    //     this.setState({
+    //         password: 'test',
+    //         email: 'test@gmail.com'
+    //     }, () => {
+    //         console.log("blabla") ;
+    //         this.login()
+    //     });
+    // }
+
 
     state={
         email:"",
