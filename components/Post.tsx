@@ -18,6 +18,7 @@ export class Post extends React.Component<Props> {
     }
 
     render() {
+        console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
                 <ListItem style={this.styles.listContainer}>
@@ -39,7 +40,8 @@ export class Post extends React.Component<Props> {
                             price={this.props.data.price}
                             attendance={this.props.data.total_people}
                             evenementId={this.props.data.evenementId}
-                            doesAttend={this.props.data.doesAttend}/>
+                            doesAttend={this.props.data.doesAttend}
+                            postId={this.props.data.postId}/>
                     </View>
                 </ListItem>
             );

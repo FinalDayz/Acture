@@ -1,7 +1,7 @@
 import React from 'react';
-import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View} from 'react-native';
+import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View, TextInputProps} from 'react-native';
 
-export interface Props {
+export interface Props extends TextInputProps{
     isRequired?: boolean,
     isValid?: boolean,
     type: KeyboardTypeOptions,
@@ -101,12 +101,10 @@ export class Input extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={styles.twoColumn}>
-                <Text style={styles.halve}>{this.props.type}:</Text>
                 <View style={styles.halve}>
                     <TextInput
                         {...this.props}
-                        style={[styles.input]}
+                        // style={[styles.input]}
                         onChangeText={text => this.changeHandler(text)}
                         value={this.state.text}
                         onBlur={() => this.finishText}
@@ -116,8 +114,6 @@ export class Input extends React.Component<Props, State> {
                         {this.state.isValid ? '' : this.state.error}
                     </Text>
                 </View>
-
-            </View>
         );
     }
 }
@@ -132,7 +128,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1
     },
     halve: {
-        flex: 1
+        //flex: 1
     },
     twoColumn: {
         paddingTop: 5,

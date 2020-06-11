@@ -6,8 +6,6 @@ import ApiDictionary from '../../constants/ApiDictionary';
 
 import colors from '../../constants/colors';
 
-//export interface Props {}
-
 export interface Props {
     title: String
     text: String
@@ -18,6 +16,7 @@ export interface Props {
     attendance: String
     evenementId: number
     doesAttend: number
+    postId: String
 }
 
 export class EventBody extends React.Component<Props> {
@@ -84,6 +83,23 @@ export class EventBody extends React.Component<Props> {
             </View>
         );
     }
+
+    deletePost() {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true});
+            bodyfull(ApiDictionary.deletePost, {
+                postId: this.props.postId
+            }).then((data) => {
+                alert("Verwijderen succesvol");
+                this.render();
+                this.setState({isLoading:false})
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                alert(err.message);
+                this.setState({isLoading:false})
+            })
+        }
+    };
 
     styles = StyleSheet.create ({
         body: {
