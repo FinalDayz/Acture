@@ -26,8 +26,13 @@ export class User {
         return User.loggedInUser;
     }
 
+    static setLoggedInUser(user: User) {
+        User.loggedInUser = user;
+    }
+
     public static getRole() {
         return User.getLoggedInUser().role;
+
     }
 
     public static getUserId() {
