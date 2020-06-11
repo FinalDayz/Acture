@@ -17,13 +17,14 @@ export interface Props {
     price: String
     attendance: String
     evenementId: number
+    doesAttend: number
 }
 
 export class EventBody extends React.Component<Props> {
 
     state = {
         isLoading: false,
-        isAttendant: false
+        attendButtonPressed: false
     };
 
     constructor(props: Props) {
@@ -32,15 +33,15 @@ export class EventBody extends React.Component<Props> {
 
     addUserToEvent() {
         if(!this.state.isLoading) {
-
+            this.state.attendButtonPressed = true;
             this.state.isLoading = true;
-            console.log("Het ID isss " + this.props.evenementId)
             bodyfull(ApiDictionary.insertAttendant, {
                 eventId: this.props.evenementId
             })
             .catch ((error) => {
                     console.log("Dit is de error joehoeeee: " + error);
             })
+            this.setState({isLoading : false});
         }
     }
 
@@ -62,18 +63,23 @@ export class EventBody extends React.Component<Props> {
                         <Text style={this.styles.detailItem}>{this.props.adress}</Text>
                         <Text style={this.styles.detailItem}>{this.props.city}</Text>
                     </View>
-                    <Text style={this.styles.detailItem}>{this.props.price}</Text>
+                    <Text style={this.styles.detailItem}>Toegang: {this.props.price}</Text>
                 </View>
                 <View style={this.styles.line}/>
-                <Text style={this.styles.bodyText} >{this.props.text}</Text>
+                <Text style={this.styles.bodyText}>{this.props.text}</Text>
                 <View style={this.styles.bottomContent}>
                     <View style={this.styles.attendanceContainer}>
                         <Text style={this.styles.attendance}>{this.props.attendance}  aanmeldingen</Text>
                     </View>
-                    <TouchableOpacity style={this.styles.attendButton} onPress={() => {this.addUserToEvent()}}>
-                        <Text style={this.styles.attendButtonText}>Aanmelden</Text>
-                    </TouchableOpacity>
-                    
+
+                    { (this.props.doesAttend == 0 && !this.state.attendButtonPressed) &&
+                        <TouchableOpacity style={this.styles.attendButton} onPress={() => {this.addUserToEvent()}}>
+                            <Text style={this.styles.attendButtonText}>Aanmelden</Text>
+                        </TouchableOpacity>
+                    }
+                    { (this.props.doesAttend == 1 || this.state.attendButtonPressed) &&
+                        <Text style={this.styles.doesAttend}>Je bent aangemeld</Text>
+                    }
                 </View>    
             </View>
         );
@@ -131,7 +137,7 @@ export class EventBody extends React.Component<Props> {
             backgroundColor: colors.postHeaderGreen,
             borderRadius: 20,
             alignItems: 'center',
-            paddingHorizontal: 10,
+            paddingHorizontal: 0,
             paddingVertical: 3,
             marginRight: 15          
         },
@@ -140,7 +146,7 @@ export class EventBody extends React.Component<Props> {
             fontSize: 16
         },
         attendanceContainer: {
-            flex: 2,
+            flex: 1,
             marginLeft: 15,
             marginTop: 2
         },
@@ -148,6 +154,13 @@ export class EventBody extends React.Component<Props> {
             fontSize: 15,
             fontStyle: 'italic',
             color: colors.textPostContent,
+        },
+        doesAttend: {
+            flex: 1,
+            marginRight: 15,
+            marginTop: 2,
+            fontSize: 15,
+            color: colors.textPostContent
         }
     });
 }
