@@ -54,6 +54,7 @@ export default class FeedScreen extends React.Component<any, any> {
     render() {
         return(
             <Container style={this.styles.screen}>
+                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
                 {this.state.isLoading ? (
                         <View style={this.styles.loading}>
                             <ActivityIndicator size="large" color={colors.primaryLight}/>
