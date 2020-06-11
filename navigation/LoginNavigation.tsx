@@ -21,11 +21,11 @@ const LoginNavigation = createStackNavigator(
     {
         defaultNavigationOptions: {
             headerStyle: {
-                backgroundColor: colors.textLight,
+                backgroundColor: colors.primary,
                 shadowOpacity: 0,
                 elevation: 0,
             },
-            headerTintColor: colors.primary
+            headerTintColor: colors.textLight
         }
     }
 );
