@@ -101,6 +101,8 @@ export class Input extends React.Component<Props, State> {
 
     render() {
         return (
+            <View style={styles.twoColumn}>
+                <Text style={styles.halve}>{this.props.type}:</Text>
                 <View style={styles.halve}>
                     <TextInput
                         {...this.props}
@@ -114,6 +116,8 @@ export class Input extends React.Component<Props, State> {
                         {this.state.isValid ? '' : this.state.error}
                     </Text>
                 </View>
+
+            </View>
         );
     }
 }

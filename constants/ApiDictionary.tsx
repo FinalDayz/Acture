@@ -13,6 +13,10 @@ export default {
     deleteUser: {destination: '/api/users/', type: 'DELETE'},
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
 
+    addPost: {destination: '/api/feed/addPost/', type: 'POST'},
+    getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
+
+    //dit is de defaults van de api server (verander dit naar je home pc)
     followUsers: {destination: '/api/follow/', type: 'GET'},
     changeFollow: {destination: '/api/follow/', type: 'PATCH'},
 
@@ -22,6 +26,7 @@ export default {
 
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
+
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 7000, //in miliseconds
