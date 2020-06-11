@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import colors from '../../constants/colors';
+import { bodyfull } from '../HttpClient';
+import ApiDictionary from '../../constants/ApiDictionary';
 
 //export interface Props {}
 
@@ -12,6 +14,7 @@ export interface Props {
     adress: String
     city: String
     price: String
+    postId: String
 }
 
 export class EventBody extends React.Component<Props> {
@@ -19,6 +22,10 @@ export class EventBody extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
     }
+    
+    state = {
+        isLoading: false
+    };
 
 
     render() {
@@ -42,6 +49,23 @@ export class EventBody extends React.Component<Props> {
             </View>
         );
     }
+
+    deletePost() {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true});
+            bodyfull(ApiDictionary.deletePost, {
+                postId: this.props.postId
+            }).then((data) => {
+                alert("Verwijderen succesvol");
+                this.render();
+                this.setState({isLoading:false})
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                alert(err.message);
+                this.setState({isLoading:false})
+            })
+        }
+    };
 
     styles = StyleSheet.create ({
         body: {
