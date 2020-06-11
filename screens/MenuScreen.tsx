@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import colors from '../constants/colors';
-import HeaderButton from '../components/HeaderButton';
 
 export interface Props {}
 

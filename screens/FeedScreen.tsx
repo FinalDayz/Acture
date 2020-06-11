@@ -38,11 +38,10 @@ export default class FeedScreen extends React.Component<any, any> {
                 (result: {data:Array<PostModel>}) => {
                     this.setState({data: result.data})
                 })
-                .catch ((error) => {
-                        console.log(error);
-                    })
-        } else {
-            return null
+            .catch ((error) => {
+                console.log(error);
+            })
+            this.setState({isLoading : false});
         }
     }
 
@@ -54,7 +53,7 @@ export default class FeedScreen extends React.Component<any, any> {
     render() {
         return(
             <Container style={this.styles.screen}>
-                {!this.state.isLoading ? (
+                {this.state.isLoading ? (
                         <View style={this.styles.loading}>
                             <ActivityIndicator size="large" color={colors.primaryLight}/>
                         </View>

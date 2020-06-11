@@ -18,6 +18,7 @@ export default {
 
     deletePost: {destination: '/api/feedposts/', type: 'DELETE'},
     getUserBlogs: {destination: '/api/feedposts/user-blogs/', type: 'POST'},
+    insertAttendant: {destination: '/api/attendance/addAttendant/', type: 'POST'},
 
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
