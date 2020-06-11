@@ -24,6 +24,7 @@ export class Post extends React.Component<Props> {
                 <ListItem style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
+                            profileImage={this.props.data.profileImage}
                             userId={this.props.data.userId}
                             category={this.props.data.categoryname}
                             categoryId={this.props.data.categoryId}
@@ -39,7 +40,6 @@ export class Post extends React.Component<Props> {
                             city={this.props.data.city}
                             price={this.props.data.price}
                             postId={this.props.data.postId}/>
-                        />
                     </View>
                 </ListItem>
             );
@@ -49,6 +49,7 @@ export class Post extends React.Component<Props> {
                 <ListItem style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
+                            profileImage={this.props.data.profileImage}
                             userId={this.props.data.userId}
                             category={this.props.data.categoryname}
                             categoryId={this.props.data.categoryId}
@@ -65,7 +66,6 @@ export class Post extends React.Component<Props> {
                 </ListItem>
             );
         }
-        
     };
 
     styles = StyleSheet.create ({
@@ -75,7 +75,7 @@ export class Post extends React.Component<Props> {
             alignItems: 'center',
             width: '100%',
             minWidth: 200
-            
+
         },
         postContainer: {
             flex: 1,
