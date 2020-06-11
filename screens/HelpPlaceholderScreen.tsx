@@ -22,7 +22,7 @@ HelpPlaceholderScreen.navigationOptions = (navData:any) => {
         headerRight: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item 
-                title='profile' 
+                title='profile'
                 iconName='md-person' //TODO: change to profile picture
                 onPress={() => {
                     navData.navigation.navigate('Profile');

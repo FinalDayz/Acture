@@ -2,14 +2,12 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
 import colors from '../constants/colors';
-import ExplorePlaceholderScreen from '../screens/ExplorePlaceholderScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ExploreScreenTabs from "./ExploreScreenTabs";
 
 const ExploreScreenNavigation = createStackNavigator(
     {
-        Explore: {
-            screen: ExplorePlaceholderScreen
-        },
+        Explore: ExploreScreenTabs,
         Profile: {
             screen: ProfileScreen
         }

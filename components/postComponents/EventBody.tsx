@@ -1,67 +1,52 @@
 import React from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import colors from '../../constants/colors';
-
-import {User} from '../../models/User';
-import {UserRole} from "../../models/UserRole";
-import ApiDictionary from '../../constants/ApiDictionary';
 import { bodyfull } from '../HttpClient';
+import ApiDictionary from '../../constants/ApiDictionary';
 
-import {Ionicons} from '@expo/vector-icons';
-import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorState";
-
+//export interface Props {}
 
 export interface Props {
     title: String
     text: String
-    userId: String
+    eventDate: Date
+    adress: String
+    city: String
+    price: String
     postId: String
 }
 
-export class PostBody extends React.Component<Props> {
+export class EventBody extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
     }
-
+    
     state = {
         isLoading: false
     };
 
+
     render() {
         return(
             <View style={this.styles.body}>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={this.styles.title} >{this.props.title}</Text>
-                    { (User.getRole() === UserRole.admin || User.getUserId().toString() == this.props.userId) &&
-                        <Ionicons
-                            name='md-more'
-                            size={27}
-                            color="black"
-                            style={this.styles.icon}
-                            onPress={() => {this.createConfirmAlert()}}/>
-                    }
+                <Text style={this.styles.title} >{this.props.title}</Text>
+                <View style={this.styles.line}/>
+                <View style={this.styles.details}>
+                    <View style={this.styles.horizontal}>
+                        <Text style={this.styles.detailItem}>{this.props.eventDate.toLocaleDateString()}</Text>
+                        <Text style={this.styles.detailItem}>{this.props.eventDate.toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Text>
+                    </View>
+                    <View style={this.styles.horizontal}>
+                        <Text style={this.styles.detailItem}>{this.props.adress}</Text>
+                        <Text style={this.styles.detailItem}>{this.props.city}</Text>
+                    </View>
+                    <Text style={this.styles.detailItem}>{this.props.price}</Text>
                 </View>
+                <View style={this.styles.line}/>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
             </View>
-        );
-    }
-
-    createConfirmAlert() {
-        Alert.alert(
-            'Klik op verwijderen om te bevestigen.',
-            '',
-            [
-                {
-                    text: 'Annuleren',
-                },
-                {
-                    text: 'Verwijderen',
-                    onPress: () => this.deletePost()
-                }
-            ],
-            { cancelable: true }
         );
     }
 
@@ -82,12 +67,6 @@ export class PostBody extends React.Component<Props> {
         }
     };
 
-    alertStyles = StyleSheet.create({
-        cancel: {
-
-        }
-    });
-
     styles = StyleSheet.create ({
         body: {
             flex: 1,
@@ -97,18 +76,32 @@ export class PostBody extends React.Component<Props> {
             borderBottomRightRadius: 20,
             paddingBottom: 30
         },
+        line: {
+            borderColor: colors.textPostContent,
+            borderBottomWidth: 1,
+            marginHorizontal: 15,
+            marginVertical: 5
+        },
         title: {
             marginHorizontal: 15,
             marginVertical: 10,
-            flex: 16,
             fontSize: 20,
             fontWeight: 'bold',
             color: colors.textPostTitle
         },
-        icon: {
+        details: {
+            marginVertical: 2
+        },
+        horizontal: {
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            alignItems: 'flex-start'
+        },
+        detailItem: {
             flex: 1,
-            marginVertical: 8,
-            marginHorizontal: 15
+            marginLeft: 15,
+            fontSize: 13,
+            color: colors.textPostContent
         },
         bodyText: {
             marginHorizontal: 15,

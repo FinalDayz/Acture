@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import MainNavigation from './navigation/MainNavigation';
 
 export default function App() {
-    return ( 
+    return (
 
-            <MainNavigation/>
+        <MainNavigation/>
     );
 }
 
@@ -16,3 +16,4 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     }
 });
+
