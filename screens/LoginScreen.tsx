@@ -6,6 +6,7 @@ import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import bodyless, { bodyfull } from '../components/HttpClient';
+import { bodyfull, expireJWT } from '../components/HttpClient';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -14,19 +15,16 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     
     constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
-
         this._isMounted = false;
-
     }
 
     componentWillMount(): void {
-        this.setState({
-            password: 'test',
-            email: 'test@gmail.com'
-        }, () => {
-            console.log("blabla") ;
-            this.login()
-        });
+        // this.setState({
+        //     password: 'test',
+        //     email: 'test@gmail.com'
+        // }, () => {
+        //     this.login()
+        // });
     }
 
     state={
@@ -36,6 +34,11 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         show: false,
         wrongInputs: false
     };
+
+    resetLogin() {
+        this.state.email = "";
+        this.state.password = "";
+    }
 
     componentDidMount() {
         this._isMounted = true;
