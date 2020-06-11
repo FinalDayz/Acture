@@ -9,7 +9,7 @@ import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 const LoginNavigation = createStackNavigator(
     {
         Login: {
-            screen: LoginScreen
+            screen: LoginScreen,
         },
         Register: {
             screen: RegisterScreen
@@ -25,7 +25,10 @@ const LoginNavigation = createStackNavigator(
                 shadowOpacity: 0,
                 elevation: 0,
             },
-            headerTintColor: colors.primary
+            headerTintColor: colors.textLight
+        },
+        navigationOptions: {
+            title: 'help'
         }
     }
 );

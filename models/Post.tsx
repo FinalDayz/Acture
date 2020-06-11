@@ -4,3 +4,5 @@ export class Post {
     // image: string
     categoryId?: number= 0;
 }
+
+

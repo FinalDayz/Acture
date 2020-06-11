@@ -27,10 +27,10 @@ export default class FeedScreen extends React.Component<any, any> {
     componentDidMount() {
         this.getFeed()
     }
-
+    
     getFeed() {
         if(!this.state.isLoading) {
-
+            
             this.state.isLoading = true;
             bodyfull(ApiDictionary.getFeed, {
                 offs: this.state.offset //offset for loading more posts
@@ -39,11 +39,10 @@ export default class FeedScreen extends React.Component<any, any> {
                 (result: {data:Array<PostModel>}) => {
                     this.setState({data: result.data})
                 })
-                .catch ((error) => {
-                        console.log(error);
-                    })
-        } else {
-            return null
+            .catch ((error) => {
+                console.log(error);
+            })
+            this.setState({isLoading : false});
         }
     }
 
@@ -55,8 +54,7 @@ export default class FeedScreen extends React.Component<any, any> {
     render() {
         return(
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
-                {!this.state.isLoading ? (
+                {this.state.isLoading ? (
                         <View style={this.styles.loading}>
                             <ActivityIndicator size="large" color={colors.primaryLight}/>
                         </View>

@@ -63,7 +63,6 @@ export async function bodyfull(details: { destination: string; type: string; }, 
         if(state.getjwt && resData.token) {
             state.jwt = resData.token;
         }
-
         return resData;
   }
 
@@ -78,3 +77,8 @@ export async function bodyfull(details: { destination: string; type: string; }, 
             ],
             {cancelable: false}
          ))}
+
+    export function expireJWT(){
+        state.jwt = "";
+        state.getjwt = false;
+    }

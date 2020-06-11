@@ -5,29 +5,31 @@ import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimens
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
-import bodyless, { bodyfull } from '../components/HttpClient';
+import bodyless, { bodyfull, expireJWT } from '../components/HttpClient';
 
 const windowWidth = Dimensions.get('window').width;
 
 export default class LoginScreen extends React.Component<{navigation:any}> {
+    static navigationOptions = {
+        title: ''
+    };
+
     _isMounted: boolean;
-    
+
     constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
-
         this._isMounted = false;
-
     }
 
-    componentWillMount(): void {
-        this.setState({
-            password: 'test',
-            email: 'test@gmail.com'
-        }, () => {
-            console.log("blabla") ;
-            this.login()
-        });
-    }
+    // componentWillMount(): void {
+    //     this.setState({
+    //         password: 'test',
+    //         email: 'test@gmail.com'
+    //     }, () => {
+    //         console.log("blabla") ;
+    //         this.login()
+    //     });
+    // }
 
     state={
         email:"",
@@ -36,6 +38,11 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         show: false,
         wrongInputs: false
     };
+
+    resetLogin() {
+        this.state.email = "";
+        this.state.password = "";
+    }
 
     componentDidMount() {
         this._isMounted = true;
@@ -54,6 +61,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
       };
 
     login = () => {
+        console.log({'password': this.state.password, 'email': this.state.email});
         this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
                 console.log(JSON.stringify(data))
@@ -69,7 +77,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
             });
-            
+
         this._isMounted && this.setState({
             ready: true
         })
@@ -92,7 +100,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={{marginBottom: 80}}>
                                 {/* not a normal Image object, documentation found in: https://www.npmjs.com/package/react-native-scalable-image */}
                                 <Image
-                                width={windowWidth * 0.8} 
+                                width={windowWidth * 0.8}
                                 source={require('../assets/LGS_LOGO_WIT.png')}/>
                             </View>
 
@@ -103,20 +111,19 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
-                                    defaultValue='Test@gmail.com'
                                     style={styles.inputText}
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
-                            
+
                             <View>
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
                             </View>
-                            
+
                             <View style={styles.inputView} >
                                 <TextInput
                                     secureTextEntry
@@ -154,7 +161,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>     
+                </KeyboardAvoidingView>
             </ScrollView>
         )
     }
