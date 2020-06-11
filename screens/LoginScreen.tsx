@@ -10,6 +10,10 @@ import bodyless, { bodyfull } from '../components/HttpClient';
 const windowWidth = Dimensions.get('window').width;
 
 export default class LoginScreen extends React.Component<{navigation:any}> {
+    static navigationOptions = {
+        title: ''
+    };
+
     _isMounted: boolean;
     
     constructor(navigation: Readonly<{ navigation: any; }>) {
@@ -104,7 +108,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
-                                    defaultValue='Test@test.com'
+                                    // defaultValue='Test@test.com'
                                     style={styles.inputText}
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
