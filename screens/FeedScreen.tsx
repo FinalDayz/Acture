@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView, Button} from 'react-native';
+import {ScrollView, Button} from 'react-native';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
@@ -55,6 +55,7 @@ export default class FeedScreen extends React.Component<any, any> {
     render() {
         return(
             <Container style={this.styles.screen}>
+                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
                 {!this.state.isLoading ? (
                         <View style={this.styles.loading}>
                             <ActivityIndicator size="large" color={colors.primaryLight}/>

@@ -1,7 +1,7 @@
 import React from 'react';
-import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View} from 'react-native';
+import {KeyboardTypeOptions, StyleSheet, Text, TextInput, View, TextInputProps} from 'react-native';
 
-export interface Props {
+export interface Props extends TextInputProps {
     isRequired?: boolean,
     isValid?: boolean,
     type: KeyboardTypeOptions,
