@@ -21,7 +21,7 @@ const LoginNavigation = createStackNavigator(
     {
         defaultNavigationOptions: {
             headerStyle: {
-                backgroundColor: colors.primary,
+                backgroundColor: colors.textLight,
                 shadowOpacity: 0,
                 elevation: 0,
             },
