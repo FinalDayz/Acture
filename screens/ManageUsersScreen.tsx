@@ -1,16 +1,5 @@
 import React from 'react';
-import {
-    ActivityIndicator,
-    Alert,
-    Button,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
-import colors from "../constants/colors";
+import {Alert, Button, FlatList, StyleSheet, Text, View} from 'react-native';
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
@@ -46,6 +35,7 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             searchQuery: '',
         };
     }
+
     componentDidMount() {
         this.fetchUsers();
     }
@@ -63,6 +53,7 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             });
         });
     }
+
     private askDeleteUser(account: User) {
         const fullName = account.firstname +
             (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
@@ -89,15 +80,18 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     private deleteUser(account: User) {
         bodyless(HttpHelper.addUrlParameter(ApiDictionary.deleteUser, [account.userId]))
             .then((result) => {
-
+                let accounts = this.state.accounts;
+                accounts.splice(this.state.accounts.indexOf(account), 1);
+                this.setState({
+                    accounts: accounts
+                });
             });
     }
 
     private changeRole(account: User, newRole: UserRole) {
-        bodyless(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]))
-            .then((result) => {
-
-            });
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.changeUserRole, [account.userId, newRole])
+        );
     }
 
     private searchFilter(account: User): boolean {
@@ -218,7 +212,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: '7%',
         marginTop: 10,
-        flex: 1,
+        paddingBottom: 50,
     },
     wrapper: {
         flex: 1,

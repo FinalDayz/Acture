@@ -1,18 +1,16 @@
 import React from 'react';
-import {ScrollView, Button} from 'react-native';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
-import {Post} from "../components/Post";
+import { Post } from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
-import {PostModel} from '../models/PostModel';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { PostModel } from '../models/PostModel';
 
-export default class FeedScreen extends React.Component<any, any> {
+export default class AllEventsScreen extends React.Component<any, any> {
 
     state = {
         isLoading: false,
@@ -25,63 +23,50 @@ export default class FeedScreen extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        this.getFeed()
+        this.getEvents()
     }
     
-    getFeed() {
+    getEvents() {
         if(!this.state.isLoading) {
             
             this.state.isLoading = true;
-            bodyfull(ApiDictionary.getFeed, {
-                offs: this.state.offset //offset for loading more posts
-            })
+            bodyfull(ApiDictionary.getEvents, {})
             .then(
                 (result: {data:Array<PostModel>}) => {
                     this.setState({data: result.data})
                 })
-            .catch ((error) => {
-                console.log(error);
-            })
-            this.setState({isLoading : false});
+                .catch ((error) => {
+                        console.log(error);
+                    })
+        } else {
+            return null
         }
-    }
-
-    getMorePosts() {
-        this.state.offset + 15;
-        this.getFeed();
     }
 
     render() {
         return(
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
-                {this.state.isLoading ? (
+                <View style={this.styles.scrollable}>
+                    {!this.state.isLoading ? (
                         <View style={this.styles.loading}>
                             <ActivityIndicator size="large" color={colors.primaryLight}/>
                         </View>
                     ) : (<View></View>)}
-                <View style={this.styles.scrollable}>
                     <List
                         dataArray={this.state.data}
                         renderRow={(item) => {
                             return <Post data={item}/>
                         }}
-                    />
-                </View>
+                    /> 
+                </View>     
             </Container>
         );
     }
 
-                    // {/* <View>
-                    //     <TouchableOpacity onPress={this.getMorePosts}>
-                    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-                    //     </TouchableOpacity>
-                    // </View>  */}
-
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Feed',
+            headerTitle: 'Evenementen',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
@@ -117,10 +102,6 @@ export default class FeedScreen extends React.Component<any, any> {
             flex: 1,
             width: '100%',
             height: '100%'
-        },
-        postloader: {
-            color: colors.textDark,
-            marginBottom: 50
         },
         loading: {
             flex: 1,
