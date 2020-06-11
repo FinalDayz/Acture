@@ -39,7 +39,6 @@ export class Post extends React.Component<Props> {
                             city={this.props.data.city}
                             price={this.props.data.price}
                             postId={this.props.data.postId}/>
-                        />
                     </View>
                 </ListItem>
             );

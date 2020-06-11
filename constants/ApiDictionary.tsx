@@ -13,7 +13,7 @@ export default {
     deleteUser: {destination: '/api/users/', type: 'DELETE'},
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
 
-    addPost: {destination: '/api/feed/addPost', type: 'POST'},
+    addPost: {destination: '/api/feed/addPost/', type: 'POST'},
     getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)

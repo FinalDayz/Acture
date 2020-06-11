@@ -19,7 +19,7 @@ import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
-import {error} from "util";
+// import {error} from "util";
 import {Input} from "../components/input/standardInput";
 
 
@@ -177,28 +177,26 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     _addPost = () => {
-    // && this.CheckTextInput()
         if (!this.state.isLoading) {
             this.state.isLoading = true;
-            // console.log(this.CheckTextInput)
             bodyfull(ApiDictionary.addPost, {
                 'text': this.state.text,
                 'title': this.state.title,
                 'image': this.state.image,
                 'categoryId': this.state.categoryId
             }).then((data) => {
-                    console.log(JSON.stringify(data))
                     if (data.success === 1) {
                         console.log("INSERTED")
                     }
                     this.setState({isLoading : false})
                 }
-            );
-        } else {
-            return null
+            ).catch(err => {
+                console.log(err)
+                this.setState({isLoading:false})
+            });
         }
-
     }
+
 
 
     _getAllCategories = () => {
@@ -207,8 +205,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
             bodyless(ApiDictionary.getAllCategories)
                 .then(
                     (result) => {
-                        // console.log(JSON.stringify(result.data))
-                        // console.log("resullttt" , result)
                         this.setState({
                             categories: result.data
                         });
