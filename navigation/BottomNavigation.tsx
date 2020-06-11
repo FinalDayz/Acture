@@ -17,7 +17,7 @@ const BottomNavigation = createMaterialBottomTabNavigator({
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return(
-                    <Ionicons name='help-circle' size={27} color={tabInfo.tintColor}/>
+                    <Ionicons name='md-help-circle' size={27} color={tabInfo.tintColor}/>
                 );
             }
         }
