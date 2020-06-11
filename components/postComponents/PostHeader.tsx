@@ -2,8 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 import colors from '../../constants/colors';
+import {AccountImage} from "../account/AccountImage";
 
 export interface Props {
+    profileImage: string
     userId: String
     category: String
     categoryId: String
@@ -55,12 +57,13 @@ export class PostHeader extends React.Component<Props> {
     }
 
     render() {
-        return (   
+        return (
             <View style={this.styles.headerBackground}>
                 <View style={this.styles.header}>
                     <View style={this.styles.horizontalFlex}>
                         <View>
-                            <View style={this.styles.profileImage}/>
+                            <AccountImage
+                                image={this.props.profileImage}/>
                         </View>
                         <View style={this.styles.verticalFlex}>
                             <Text style={this.styles.name}>{this.makeName()}</Text>
