@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, Button} from 'react-native';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -12,32 +12,44 @@ import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class FeedScreen extends React.Component<any, any> {
+export interface Props {
+    navigation: any
+}
 
-    state = {
-        isLoading: false,
-        data: [],
-        offset: 0
-    };
+interface State {
+    isLoading: boolean,
+    data: PostModel[],
+    offset: number
+}
 
-    constructor(props: any) {
-        super(props);
+export default class FeedScreen extends React.Component<Props, State> {
+    state: State;
+
+    constructor(props: Props, state: State) {
+        super(props, state);
+        this.state = {
+            data: [],
+            isLoading: false,
+            offset: 0
+        }
     }
 
     componentDidMount() {
         this.getFeed()
     }
-    
+
     getFeed() {
         if(!this.state.isLoading) {
-            
-            this.state.isLoading = true;
+
+            this.setState({isLoading: true});
             bodyfull(ApiDictionary.getFeed, {
                 offs: this.state.offset //offset for loading more posts
             })
-            .then(
-                (result: {data:Array<PostModel>}) => {
-                    this.setState({data: result.data})
+            .then(result => {
+                    this.setState({
+                        isLoading: false,
+                        data: result.data
+                    });
                 })
             .catch ((error) => {
                 console.log(error);
@@ -46,13 +58,24 @@ export default class FeedScreen extends React.Component<any, any> {
         }
     }
 
+    handleDelete(postId: string) {
+        console.log("helemaal hier: ");
+        const newData = this.state.data.filter(
+            (post) => post.postId.toString() !== postId
+        );
+
+        this.setState({
+            data: newData
+        })
+    };
+
     getMorePosts() {
         this.state.offset + 15;
         this.getFeed();
     }
 
     render() {
-        return(
+        return (
             <Container style={this.styles.screen}>
                 <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
                 {this.state.isLoading ? (
@@ -61,12 +84,21 @@ export default class FeedScreen extends React.Component<any, any> {
                         </View>
                     ) : (<View></View>)}
                 <View style={this.styles.scrollable}>
-                    <List
-                        dataArray={this.state.data}
-                        renderRow={(item) => {
-                            return <Post data={item}/>
-                        }}
+                    <FlatList
+                        refreshing={this.state.isLoading}
+                        onRefresh={() => this.getFeed()}
+                        contentContainerStyle={this.styles.list}
+                        data={this.state.data}
+                        keyExtractor={(item, index) => item.postId.toString()}
+                        renderItem={itemData =>
+                            <Post
+                                data={itemData.item}
+                                onDelete={this.handleDelete}
+                            />
+                        }
+
                     />
+
                 </View>
             </Container>
         );
@@ -126,6 +158,9 @@ export default class FeedScreen extends React.Component<any, any> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        list: {
+            width: '100%',
         }
     });
 }
