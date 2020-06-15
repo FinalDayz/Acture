@@ -18,7 +18,6 @@ export class Post extends React.Component<Props> {
     }
 
     render() {
-        console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
                 <ListItem style={this.styles.listContainer}>

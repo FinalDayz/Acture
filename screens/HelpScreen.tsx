@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import {bodyfull} from '../components/HttpClient';
@@ -7,6 +7,9 @@ import ApiDictionary from '../constants/ApiDictionary';
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
 import {PostModel} from '../models/PostModel';
+import { List } from 'native-base';
+import { Post } from '../components/Post';
+import { NewButton } from '../components/NewButton';
 
 export default class HelpScreen extends React.Component<any, any> {
 
@@ -28,7 +31,7 @@ export default class HelpScreen extends React.Component<any, any> {
         if(!this.state.isLoading) {
             
             this.state.isLoading = true;
-            bodyfull(ApiDictionary.getFeed, {
+            bodyfull(ApiDictionary.getGuides, {
                 offs: this.state.offset //offset for loading more posts
             })
             .then(
@@ -45,7 +48,20 @@ export default class HelpScreen extends React.Component<any, any> {
     render() {
         return(
             <View style={this.styles.screen}>
-                <Text>Help placeholder</Text>
+                <NewButton/>
+                {this.state.isLoading ? (
+                        <View style={this.styles.loading}>
+                            <ActivityIndicator size="large" color={colors.primaryLight}/>
+                        </View>
+                    ) : (<View></View>)}
+                <View style={this.styles.scrollable}>
+                    <List
+                        dataArray={this.state.data}
+                        renderRow={(item) => {
+                            return <Post data={item}/>
+                        }}
+                    />
+                </View>
             </View>
         );
     }
@@ -86,6 +102,16 @@ export default class HelpScreen extends React.Component<any, any> {
             justifyContent: 'center',
             fontSize: 30,
             backgroundColor: colors.backgroundPrimary
+        },
+        scrollable: {
+            flex: 1,
+            width: '100%',
+            height: '100%'
+        },
+        loading: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     });
 }    
