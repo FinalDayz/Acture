@@ -23,7 +23,9 @@ import {Ionicons} from "@expo/vector-icons";
 import {Input} from "../components/input/standardInput";
 
 
-export interface Props {
+
+interface Props {
+    navigation: any
 }
 
 interface State {
@@ -169,12 +171,14 @@ export default class PostAddScreen extends React.Component<Props, State> {
             this.state.descriptionIsValid = false
         }
 
-        if (!this.state.titleIsValid || !this.state.descriptionIsValid) {
-            return false;
-        } else {
-            return true;
-        }
+        return (!this.state.titleIsValid || !this.state.descriptionIsValid) ? false : true;
     }
+
+    // navigateTo() => {
+    //
+    //         this.props.navigation.navigate('Profile');
+    // }
+
 
     _addPost = () => {
         if (!this.state.isLoading) {
@@ -187,8 +191,10 @@ export default class PostAddScreen extends React.Component<Props, State> {
             }).then((data) => {
                     if (data.success === 1) {
                         console.log("INSERTED")
+                        this.setState({isLoading : false})
                     }
-                    this.setState({isLoading : false})
+                    // this.navigateTo();
+                    // this.setState({isLoading : false})
                 }
             ).catch(err => {
                 console.log(err)
@@ -233,14 +239,14 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     // onLayout={(event) => this.measureView(event)}
 
-    getStyle(){
-        let componentContainerStyle = styles.componentContainerBig;
-
-        if(Dimensions.get('window').height > 450 &&  Dimensions.get('window').height < 550){
-            componentContainerStyle = styles.componentContainerSmall;
-    }
-     return componentContainerStyle;
-}
+    // getStyle(){
+    //     let componentContainerStyle = styles.componentContainerBig;
+    //
+    //     if(Dimensions.get('window').height > 450 &&  Dimensions.get('window').height < 550){
+    //         componentContainerStyle = styles.componentContainerSmall;
+    // }
+    //  return componentContainerStyle;
+// }
 
     // setStyleContainer(){
     //     if( this.state.isSmallWindow){
@@ -251,14 +257,14 @@ export default class PostAddScreen extends React.Component<Props, State> {
     // }
 
 
+
     render() {
         // this.setStyleContainer()
         return (
-            
-            <View style={styles.screen}>
+            <ScrollView style={styles.screen}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     {/*<View style = {this.state.componentContainer}>*/}
-                    <ScrollView style={styles.componentContainerBig}>
+                    <View style={styles.componentContainerBig}>
                         <View style={styles.titleBox}>
                             {/*style={this.state.titleIsValid ? styles.titleBox : styles.wrongTitleBox}*/}
                             <Text style={{
@@ -312,12 +318,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
                                 )}
                             />
                         </View>
-
                         <View style={{
                             marginTop: 30,
                             marginHorizontal: 10,
                             flexDirection: 'row',
-                            justifyContent: 'space-between',
+                            justifyContent: 'space-between'
                         }}>
                             <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera'
                                       size={27} color={"grey"}/>
@@ -325,17 +330,15 @@ export default class PostAddScreen extends React.Component<Props, State> {
                                 {this.state.imageName.slice(this.state.imageName.length - 10)}
                             </Text>
                         </View>
-
                         <View style={styles.line}></View>
-
-                        <View style={styles.belowButtons} >
+                        <View style={styles.belowButtons}>
                             <Ionicons name='md-trash' size={27} color={"grey"}/>
-                            <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
+                            {/*<Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>*/}
+                            <Ionicons onPress={this._addPost}name='md-send' size={27} color={"grey"}/>
                         </View>
-
-                    </ScrollView>
+                    </View>
                 </TouchableWithoutFeedback>
-            </View>
+            </ScrollView>
         );
     }
 
@@ -354,11 +357,9 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     componentContainerBig: {
-        // backgroundColor: "red",
-        
         paddingVertical: 5,
         width: '100%',
-        // height: 550,
+        height: 550,
         backgroundColor: '#F4F4F4',
         // backgroundColor: 'white',
         borderRadius: 10,
@@ -392,7 +393,7 @@ const styles = StyleSheet.create({
     line: {
         borderBottomWidth: 1,
         borderBottomColor: '#D3D3D3',
-        marginHorizontal: 10,
+        marginHorizontal: 10
     },
     titleBox: {
         // backgroundColor: 'red',
@@ -417,8 +418,7 @@ const styles = StyleSheet.create({
 
     beschrijvingBox: {
         // backgroundColor: 'red',
-        height: 100,
-        // height: "65%",
+        height: "65%",
         marginVertical: 5,
         borderBottomWidth: 1,
         borderBottomColor: '#D3D3D3',
@@ -440,13 +440,32 @@ const styles = StyleSheet.create({
 
     categoryBox: {
         backgroundColor: colors.textLight,
-        // height: 50,
+        height: 30,
         borderRadius: 3,
         padding: 5,
         marginHorizontal: 10
 
     },
+    buttonFotoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
 
+
+        marginTop: Dimensions.get('window').height > 600 ? 30 : 5,
+
+    },
+    addPhotoButtonContainer: {
+        width: 50,
+        height: 45,
+        color: "white",
+        backgroundColor: colors.primaryLight,
+        borderRadius: 10,
+        // marginTop:Dimensions.get('window').height > 600? 30 : -500,
+        flexDirection: 'row',
+        justifyContent: "center",
+        alignItems: "center",
+    },
     photoText: {
         color: "white",
         paddingTop: 10,
@@ -455,6 +474,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     submitButton: {
+
         width: 150,
         height: 39,
         color: "white",
@@ -499,10 +519,10 @@ const styles = StyleSheet.create({
     },
     belowButtons: {
         borderColor: "#20232a",
-        // paddingHorizontal: 150,
+        paddingHorizontal: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 60,
+        marginTop: 30,
     }
     // descriptionBox:{
     //     backgroundColor:colors.inputfieldLight

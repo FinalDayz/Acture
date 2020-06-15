@@ -1,4 +1,3 @@
-
 import React, { Props } from 'react';
 import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert, Button } from 'react-native';
 
@@ -6,7 +5,6 @@ import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import bodyless, { bodyfull, expireJWT } from '../components/HttpClient';
-import {User} from "../models/User";
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -55,28 +53,28 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
 
     ShowHideComponent = () => {
         if (this.state.show) {
-          this.setState({ show: false });
+            this.setState({ show: false });
         } else {
-          this.setState({ show: true });
+            this.setState({ show: true });
         }
-      };
+    };
 
     login = () => {
         this.setState({isLoading:true});
-            bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
-                User.setLoggedInUser(data.user);
-                if(data.success === 1) {
-                    this.setState({isLoading:false});
-                    this.state.wrongInputs = false;
-                    this.props.navigation.navigate('Home');
-                } else {
-                    this.state.wrongInputs = true;
-                    this.setState({isLoading:false})
-                }
-            }).catch(err => {
-                console.log("fetch error" + err.message);
+        bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+            console.log(JSON.stringify(data))
+            if(data.success === 1) {
+                this.setState({isLoading:false});
+                this.state.wrongInputs = false;
+                this.props.navigation.navigate('Home');
+            } else {
+                this.state.wrongInputs = true;
                 this.setState({isLoading:false})
-            });
+            }
+        }).catch(err => {
+            console.log("fetch error" + err.message);
+            this.setState({isLoading:false})
+        });
 
         this._isMounted && this.setState({
             ready: true
@@ -100,13 +98,13 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={{marginBottom: 80}}>
                                 {/* not a normal Image object, documentation found in: https://www.npmjs.com/package/react-native-scalable-image */}
                                 <Image
-                                width={windowWidth * 0.8}
-                                source={require('../assets/LGS_LOGO_WIT.png')}/>
+                                    width={windowWidth * 0.8}
+                                    source={require('../assets/LGS_LOGO_WIT.png')}/>
                             </View>
 
                             <View>
-                            {this.state.wrongInputs ? (
-                               <Text style={styles.warningTest}>Verkeerde email of password</Text>
+                                {this.state.wrongInputs ? (
+                                    <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
                             </View>
                             <View style={styles.inputView} >
@@ -115,12 +113,12 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     placeholder="Email..."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({email:text})}
-                                    />
+                                />
                             </View>
 
                             <View>
-                            {this.state.wrongInputs ? (
-                               <Text style={styles.warningTest}>Verkeerde email of password</Text>
+                                {this.state.wrongInputs ? (
+                                    <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
                             </View>
 
@@ -131,32 +129,32 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({password:text})}
-                                    />
+                                />
                             </View>
 
                             {!this.state.isLoading ? (
                                 <TouchableOpacity
                                     style={styles.loginBtn}
                                     onPress={this.login}
-                                    >
+                                >
                                     <Text style={styles.loginText}>Log in</Text>
                                 </TouchableOpacity>
-                                ) : (
-                                    <TouchableOpacity
+                            ) : (
+                                <TouchableOpacity
                                     style={styles.loginBtn}
-                                    >
+                                >
                                     <ActivityIndicator size="large" color={colors.textLight}/>
-                                    </TouchableOpacity>
-                                )}
+                                </TouchableOpacity>
+                            )}
 
                             <TouchableOpacity
                                 onPress={this.openRegisterScreen}
-                                >
+                            >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={this.openChangePasswordScreen}
-                                >
+                            >
                                 <Text style={styles.forgot}>Wachtwoord veranderen</Text>
                             </TouchableOpacity>
                         </View>
@@ -199,7 +197,7 @@ const styles = StyleSheet.create({
         height:50,
         color:"black"
     },
-        textInput: {
+    textInput: {
         height: 40,
         borderColor: "#000000",
         borderBottomWidth: 1,
