@@ -11,7 +11,7 @@ import {
     TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView
 } from "react-native";
 import colors from "../constants/colors";
-import * as ImagePicker from 'expo-image-picker';
+//import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import RNPickerSelect from 'react-native-picker-select';
 import Constants from 'expo-constants';
@@ -114,30 +114,30 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     };
 
-    _pickImage = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                base64: true,
-                aspect: [4, 3],
-                quality: 0.01,
+    // _pickImage = async () => {
+    //     try {
+    //         let result = await ImagePicker.launchImageLibraryAsync({
+    //             mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //             allowsEditing: true,
+    //             base64: true,
+    //             aspect: [4, 3],
+    //             quality: 0.01,
 
-            });
-            if (result && !result.cancelled) {
-                console.log(result.uri);
-                const bas64 = result.base64;
-                if (bas64) {
-                    this.setState({image: bas64.toString()})
-                    this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)})
-                }
+    //         });
+    //         if (result && !result.cancelled) {
+    //             console.log(result.uri);
+    //             const bas64 = result.base64;
+    //             if (bas64) {
+    //                 this.setState({image: bas64.toString()})
+    //                 this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)})
+    //             }
 
-            }
+    //         }
 
-        } catch (E) {
-            console.log(E);
-        }
-    };
+    //     } catch (E) {
+    //         console.log(E);
+    //     }
+    // };
 
     // CheckTextInput = () => {
     //     const {title, text} = this.state;
@@ -317,7 +317,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                             flexDirection: 'row',
                             justifyContent: 'space-between'
                         }}>
-                            <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera'
+                            <Ionicons style={{width: "35%", paddingTop: 5}} onPress={() => {}/*this._pickImage*/} name='md-camera'
                                       size={27} color={"grey"}/>
                             <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>
                                 {this.state.imageName.slice(this.state.imageName.length - 10)}
