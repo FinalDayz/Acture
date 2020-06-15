@@ -7,7 +7,7 @@ import HeaderButton from '../components/HeaderButton';
 
 export interface Props {}
 
-const HelpPlaceholderScreen = (props: Props) => {
+const HelpScreen = (props: Props) => {
     return(
         <View style={styles.screen}>
             <Text>Help placeholder</Text>
@@ -16,9 +16,9 @@ const HelpPlaceholderScreen = (props: Props) => {
 };
 
 //options for header bar. Default options are in the navigator.
-HelpPlaceholderScreen.navigationOptions = (navData:any) => {
+HelpScreen.navigationOptions = (navData:any) => {
     return {
-        headerTitle: 'Help (Placeholder)',
+        headerTitle: 'Help',
         headerRight: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item 
@@ -53,4 +53,4 @@ const styles = StyleSheet.create ({
     }
 });
 
-export default HelpPlaceholderScreen;
+export default HelpScreen;
