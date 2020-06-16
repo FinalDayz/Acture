@@ -41,6 +41,7 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     }
 
     fetchUsers() {
+        console.log('role:' , User.getLoggedInUser().role);
         this.setState({
             isLoading: true
         });

@@ -21,7 +21,7 @@ export class Post extends React.Component<Props> {
         console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
-                <ListItem style={this.styles.listContainer}>
+                <ListItem key={this.props.data.postId} style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
                             profileImage={this.props.data.profileImage}
@@ -49,7 +49,7 @@ export class Post extends React.Component<Props> {
         }
         else {
             return (
-                <ListItem style={this.styles.listContainer}>
+                <ListItem key={this.props.data.postId} style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
                             profileImage={this.props.data.profileImage}

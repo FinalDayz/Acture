@@ -22,6 +22,9 @@ const FeedScreenNavigation = createStackNavigator(
         },
         BlogAddScreen:{
             screen: BlogAddScreen
+        },
+        userPrivacyScreen: {
+            screen: userPrivacyScreen
         }
 
     },
