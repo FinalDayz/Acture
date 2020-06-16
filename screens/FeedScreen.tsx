@@ -43,6 +43,7 @@ export default class FeedScreen extends React.Component<any, any> {
             .catch ((error) => {
                 console.log(error);
             })
+            console.log("De state is nu: " + this.state.isLoading)
             this.setState({isLoading:false});
             console.log("De state is nu: " + this.state.isLoading)
         }
