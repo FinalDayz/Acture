@@ -41,7 +41,7 @@ export default class HelpScreen extends React.Component<any, any> {
             .catch ((error) => {
                 console.log(error);
             })
-            this.setState({isLoading : false});
+            this.state.isLoading = false;
         }
     }
 
@@ -51,9 +51,9 @@ export default class HelpScreen extends React.Component<any, any> {
                 <NewButton/>
                 {this.state.isLoading ? (
                         <View style={this.styles.loading}>
-                            <ActivityIndicator size="large" color={colors.primaryLight}/>
+                            <ActivityIndicator size="large" color={colors.primary}/>
                         </View>
-                    ) : (<View></View>)}
+                    ) : null }
                 <View style={this.styles.scrollable}>
                     <List
                         dataArray={this.state.data}
