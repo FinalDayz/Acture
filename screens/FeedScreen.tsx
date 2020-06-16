@@ -31,21 +31,20 @@ export default class FeedScreen extends React.Component<any, any> {
     getFeed() {
         if(!this.state.isLoading) {
             
-            this.setState({isLoading:true});
-            console.log("De state is nu: " + this.state.isLoading)
-            bodyfull(ApiDictionary.getFeed, {
-                offs: this.state.offset //offset for loading more posts
-            })
-            .then(
-                (result: {data:Array<PostModel>}) => {
-                    this.setState({data: result.data})
+            this.setState({isLoading:true}, () => {
+                console.log("De state 1 is nu: " + this.state.isLoading)
+                bodyfull(ApiDictionary.getFeed, {
+                    offs: this.state.offset //offset for loading more posts
                 })
-            .catch ((error) => {
-                console.log(error);
+                .then(
+                    (result: {data:Array<PostModel>}) => {
+                        this.setState({data: result.data})
+                        this.setState({isLoading:false})
+                    })
+                .catch ((error) => {
+                    console.log(error);
+                })
             })
-            console.log("De state is nu: " + this.state.isLoading)
-            this.setState({isLoading:false});
-            console.log("De state is nu: " + this.state.isLoading)
         }
     }
 
@@ -58,7 +57,7 @@ export default class FeedScreen extends React.Component<any, any> {
         return(
             <Container style={this.styles.screen}>
                 <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
-                {!this.state.isLoading ? (
+                {this.state.isLoading ? (
                     <View style={this.styles.loading}>
                         <ActivityIndicator size="large" color={colors.primary}/>
                     </View>
