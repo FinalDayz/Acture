@@ -13,6 +13,7 @@ web-report/
 # macOS
 .DS_Store
 
+environmentVars.tsx
 constants/environmentVars.tsx
 constants/enviromentsVars.tsx
 constants/environmentsVars.tsx

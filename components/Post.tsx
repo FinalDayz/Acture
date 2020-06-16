@@ -6,9 +6,13 @@ import {PostHeader} from './postComponents/PostHeader';
 import {PostBody} from './postComponents/PostBody';
 import {EventBody} from './postComponents/EventBody';
 
+import ApiDictionary from '../constants/ApiDictionary';
+import { bodyfull } from './HttpClient';
+
 
 export interface Props {
     data: any
+    onDelete(postId: string): void
 }
 
 export class Post extends React.Component<Props> {
@@ -16,6 +20,33 @@ export class Post extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
     }
+
+    state = {
+        isLoading: false
+    };
+
+    handleDelete(postId: string) {
+        console.log("id here 2: " + postId);
+        // this.deletePost()
+        this.props.onDelete(postId);
+    }
+
+    private deletePost() {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true});
+            bodyfull(ApiDictionary.deletePost, {
+                postId: this.props.data.postId
+            }).then((data) => {
+                alert("Verwijderen succesvol");
+                this.setState({isLoading:false});
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                alert(err.message);
+                console.log("hierooo");
+                this.setState({isLoading:false})
+            })
+        }
+    };
 
     render() {
         if (this.props.data.categoryId === 4) {
@@ -63,7 +94,9 @@ export class Post extends React.Component<Props> {
                             text={this.props.data.text}
                             title={this.props.data.title}
                             userId={this.props.data.userId}
-                            postId={this.props.data.postId}/>
+                            postId={this.props.data.postId}
+                            onDelete={this.handleDelete}
+                        />
                     </View>
                 </ListItem>
             );
