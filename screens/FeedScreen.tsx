@@ -40,14 +40,13 @@ export default class FeedScreen extends React.Component<Props, State> {
 
     getFeed() {
         if(!this.state.isLoading) {
-            
             this.setState({isLoading:true}, () => {
                 console.log("De state 1 is nu: " + this.state.isLoading)
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
                 .then(
-                    (result: {data:Array<PostModel>}) => {
+                    (result) => {
                         this.setState({
                             isLoading: false,
                             data: result.data
@@ -55,6 +54,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                     })
                 .catch ((error) => {
                     console.log(error);
+                    this.setState({isLoading : false});
                 })
             })
         }
@@ -72,8 +72,8 @@ export default class FeedScreen extends React.Component<Props, State> {
     };
 
     getMorePosts() {
-        let tempOffset = 15;
-        this.setState({offset:tempOffset}, () => {this.getFeed()});
+        this.state.offset + 15;
+        this.getFeed();
     }
 
     render() {
@@ -81,10 +81,10 @@ export default class FeedScreen extends React.Component<Props, State> {
             <Container style={this.styles.screen}>
                 <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
                 {this.state.isLoading ? (
-                    <View style={this.styles.loading}>
-                        <ActivityIndicator size="large" color={colors.primary}/>
-                    </View>
-                    ) : null}
+                        <View style={this.styles.loading}>
+                            <ActivityIndicator size="large" color={colors.primaryLight}/>
+                        </View>
+                    ) : (<View></View>)}
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={false}
@@ -98,19 +98,19 @@ export default class FeedScreen extends React.Component<Props, State> {
                                 onDelete={this.handleDelete}
                             />
                         }
+
                     />
-                    
+
                 </View>
             </Container>
         );
     }
  
-    // <View>
-    //     <TouchableOpacity onPress={this.getMorePosts}>
-    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-    //     </TouchableOpacity>
-    // </View>
-                    
+                    // {/* <View>
+                    //     <TouchableOpacity onPress={this.getMorePosts}>
+                    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
+                    //     </TouchableOpacity>
+                    // </View>  */}
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
@@ -157,9 +157,9 @@ export default class FeedScreen extends React.Component<Props, State> {
             marginBottom: 50
         },
         loading: {
+            flex: 1,
             justifyContent: 'center',
-            alignItems: 'center',
-            marginVertical: 1
+            alignItems: 'center'
         },
         list: {
             width: '100%',
