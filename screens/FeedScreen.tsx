@@ -61,14 +61,14 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     handleDelete(postId: string) {
-        console.log("helemaal hier: ");
-        const newData = this.state.data.filter(
-            (post) => post.postId.toString() !== postId
-        );
-
-        this.setState({
-            data: newData
-        })
+        console.log("helemaal hier, id: " + postId);
+        // const newData = this.state.data.filter(
+        //     (post) => post.postId.toString() !== postId
+        // );
+        //
+        // this.setState({
+        //     data: newData
+        // })
     };
 
     getMorePosts() {
@@ -98,9 +98,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                                 onDelete={this.handleDelete}
                             />
                         }
-
                     />
-
                 </View>
             </Container>
         );

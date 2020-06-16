@@ -95,7 +95,7 @@ export class Post extends React.Component<Props> {
                             title={this.props.data.title}
                             userId={this.props.data.userId}
                             postId={this.props.data.postId}
-                            onDelete={this.handleDelete}
+                            onDelete={this.handleDelete.bind(this)}
                         />
                     </View>
                 </ListItem>
