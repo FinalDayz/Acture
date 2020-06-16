@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import {bodyfull} from '../components/HttpClient';
@@ -7,20 +7,30 @@ import ApiDictionary from '../constants/ApiDictionary';
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
 import {PostModel} from '../models/PostModel';
-import { List } from 'native-base';
 import { Post } from '../components/Post';
-import { NewButton } from '../components/NewButton';
+import { NewPostButton } from '../components/NewPostButton';
 
-export default class HelpScreen extends React.Component<any, any> {
+export interface Props {
+    navigation: any
+}
 
-    state = {
-        isLoading: false,
-        data: [],
-        offset: 0
-    };
+interface State {
+    isLoading: boolean,
+    data: PostModel[],
+    offset: number
+}
 
-    constructor(props: any) {
-        super(props);
+export default class HelpScreen extends React.Component<Props, State> {
+
+    state: State;
+
+    constructor(props: Props, state: State) {
+        super(props, state);
+        this.state = {
+            data: [],
+            isLoading: false,
+            offset: 0
+        }
     }
 
     componentDidMount() {
@@ -30,36 +40,57 @@ export default class HelpScreen extends React.Component<any, any> {
     getGuides() {
         if(!this.state.isLoading) {
             
-            this.state.isLoading = true;
-            bodyfull(ApiDictionary.getGuides, {
-                offs: this.state.offset //offset for loading more posts
-            })
-            .then(
-                (result: {data:Array<PostModel>}) => {
-                    this.setState({data: result.data})
+            this.setState({isLoading:true}, () => {
+                bodyfull(ApiDictionary.getGuides, {
+                    offs: this.state.offset //offset for loading more posts
                 })
-            .catch ((error) => {
-                console.log(error);
+                .then(
+                    (result: {data:Array<PostModel>}) => {
+                        this.setState({
+                            isLoading: false,
+                            data: result.data
+                        })
+                    })
+                .catch ((error) => {
+                    console.log(error);
+                })
             })
-            this.state.isLoading = false;
         }
     }
+
+    handleDelete(postId: string) {
+        console.log("helemaal hier: ");
+        const newData = this.state.data.filter(
+            (post) => post.postId.toString() !== postId
+        );
+
+        this.setState({
+            data: newData
+        })
+    };
 
     render() {
         return(
             <View style={this.styles.screen}>
-                <NewButton/>
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
                 {this.state.isLoading ? (
-                        <View style={this.styles.loading}>
-                            <ActivityIndicator size="large" color={colors.primary}/>
-                        </View>
-                    ) : null }
+                    <View style={this.styles.loading}>
+                        <ActivityIndicator size="large" color={colors.primary}/>
+                    </View>
+                    ) : null}
                 <View style={this.styles.scrollable}>
-                    <List
-                        dataArray={this.state.data}
-                        renderRow={(item) => {
-                            return <Post data={item}/>
-                        }}
+                <FlatList
+                        refreshing={false}
+                        onRefresh={() => this.getGuides()}
+                        contentContainerStyle={this.styles.list}
+                        data={this.state.data}
+                        keyExtractor={(item, index) => item.postId.toString()}
+                        renderItem={itemData =>
+                            <Post
+                                data={itemData.item}
+                                onDelete={this.handleDelete}
+                            />
+                        }
                     />
                 </View>
             </View>
@@ -109,9 +140,11 @@ export default class HelpScreen extends React.Component<any, any> {
             height: '100%'
         },
         loading: {
-            flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        list: {
+            width: '100%',
         }
     });
 }    

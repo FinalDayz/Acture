@@ -1,8 +1,7 @@
 import React from 'react';
-import {ScrollView, Button} from 'react-native';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import {Container, List} from 'native-base';
+import {Container} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
@@ -10,7 +9,7 @@ import {Post} from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NewPostButton } from '../components/NewPostButton';
 
 export interface Props {
     navigation: any
@@ -42,7 +41,6 @@ export default class FeedScreen extends React.Component<Props, State> {
         if(!this.state.isLoading) {
             
             this.setState({isLoading:true}, () => {
-                console.log("De state 1 is nu: " + this.state.isLoading)
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
@@ -79,7 +77,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
                 {this.state.isLoading ? (
                     <View style={this.styles.loading}>
                         <ActivityIndicator size="large" color={colors.primary}/>
