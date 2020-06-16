@@ -103,7 +103,7 @@ export default class FeedScreen extends React.Component<Props, State> {
             </Container>
         );
     }
-
+ 
                     // {/* <View>
                     //     <TouchableOpacity onPress={this.getMorePosts}>
                     //         <Text style={this.styles.postloader}>Meer posts laden</Text>
