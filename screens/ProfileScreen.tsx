@@ -40,7 +40,7 @@ export default class ProfileScreen extends React.Component<any, any> {
                     title={'Privacy instellingen'}
                     leftIcon={{ name: 'lock' }}
                     chevron
-                    onPress = {() => this.props.navigation.navigate('PostAddScreen')}
+                    onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}
                 />
                 <List
                     dataArray={this.state.blogs}

@@ -6,6 +6,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 import PostAddScreen from "../screens/PostAddScreen";
 import BlogAddScreen from "../screens/BlogAddScreen";
+import userPrivacyScreen from "../screens/userPrivacyScreen";
 
 
 
