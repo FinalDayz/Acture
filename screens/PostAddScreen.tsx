@@ -21,7 +21,7 @@ import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
 // import {error} from "util";
 import {Input} from "../components/input/standardInput";
-
+import {User} from "../models/User";
 
 export interface Props {
 }
@@ -34,6 +34,7 @@ interface State {
     text: string
     categoryId: number
     image: string
+   
     imageName: string
     isLoading: boolean
 
@@ -50,6 +51,7 @@ interface State {
     // height: string
 }
 
+const user = User.getLoggedInUser();
 const isSmallWindow = (Dimensions.get('window').height > 450 && Dimensions.get('window').height < 550)
 
 export default class PostAddScreen extends React.Component<Props, State> {
@@ -73,8 +75,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
             image: '',
             imageName: '',
 
-            descriptionIsValid: true,
-            titleIsValid: true
+            // descriptionIsValid: true,
+            // titleIsValid: true
             // wrongInputs: false
             // componentContainer: {},
             // isSmallWindow: Dimensions.get('window').height > 0 &&  Dimensions.get('window').height < 550
@@ -158,23 +160,23 @@ export default class PostAddScreen extends React.Component<Props, State> {
     //     }
     // };
     // public myFilter = (d: Date): boolean =>
-    CheckTextInput = (): boolean => {
-        // const {title, text} = this.state;
-        console.log(this.state.title)
-        if (this.state.title.trim().length == 0) {
-            this.state.titleIsValid = false
-        }
-
-        if (this.state.text.trim().length == 0) {
-            this.state.descriptionIsValid = false
-        }
-
-        if (!this.state.titleIsValid || !this.state.descriptionIsValid) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    // CheckTextInput = (): boolean => {
+    //     // const {title, text} = this.state;
+    //     console.log(this.state.title)
+    //     if (this.state.title.trim().length == 0) {
+    //         this.state.titleIsValid = false
+    //     }
+    //
+    //     if (this.state.text.trim().length == 0) {
+    //         this.state.descriptionIsValid = false
+    //     }
+    //
+    //     if (!this.state.titleIsValid || !this.state.descriptionIsValid) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
 
     _addPost = () => {
         if (!this.state.isLoading) {
@@ -188,29 +190,44 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     if (data.success === 1) {
                         console.log("INSERTED")
                     }
-                    this.setState({isLoading : false})
+                    this.setState({isLoading: false})
                 }
             ).catch(err => {
                 console.log(err)
-                this.setState({isLoading:false})
+                this.setState({isLoading: false})
             });
         }
     }
-
+    
 
 
     _getAllCategories = () => {
+        let noNews: Category[] = new Array<Category>()
         if (!this.state.isLoading) {
             this.state.isLoading = true;
             bodyless(ApiDictionary.getAllCategories)
                 .then(
                     (result) => {
-                        this.setState({
-                            categories: result.data
-                        });
-                        this.setState({
-                            isLoading: false
-                        });
+                        if (User.getRole() == 'member') {
+                            for (var i = 0; i < result.data.length; i++) {
+                                if (result.data[i].name === "Nieuws") {
+                                    continue;
+                                }
+                                noNews.push(result.data[i]);
+
+                            }
+                            this.setState({
+                                categories: noNews
+                            });
+                        } else {
+                            this.setState({
+                                categories: result.data
+                            });
+                            this.setState({
+                                isLoading: false
+                            });
+                        }
+                        console.log(noNews)
                     },
                 ).catch(err => {
                 console.log(err);
@@ -233,14 +250,14 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     // onLayout={(event) => this.measureView(event)}
 
-    getStyle(){
-        let componentContainerStyle = styles.componentContainerBig;
+    // getStyle(){
+    //     let componentContainerStyle = styles.componentContainerBig;
+    //
+    //     if(Dimensions.get('window').height > 450 &&  Dimensions.get('window').height < 550){
+    //         componentContainerStyle = styles.componentContainerSmall;
+    // }
+    //  return componentContainerStyle;
 
-        if(Dimensions.get('window').height > 450 &&  Dimensions.get('window').height < 550){
-            componentContainerStyle = styles.componentContainerSmall;
-    }
-     return componentContainerStyle;
-}
 
     // setStyleContainer(){
     //     if( this.state.isSmallWindow){
@@ -254,7 +271,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     render() {
         // this.setStyleContainer()
         return (
-            
+
             <View style={styles.screen}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     {/*<View style = {this.state.componentContainer}>*/}
@@ -281,7 +298,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         </View>
                         <View
                             // style={this.state.descriptionIsValid ? styles.beschrijvingBox : styles.wrongBeschrijvingBox}
-                            style= {styles.beschrijvingBox}
+                            style={styles.beschrijvingBox}
                         >
                             {/*<Input*/}
                             {/*errorText = 'veld mag niet leeg zijn'*/}
@@ -314,7 +331,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         </View>
 
                         <View style={{
-                            marginTop: 30,
+                            marginTop: 50,
                             marginHorizontal: 10,
                             flexDirection: 'row',
                             justifyContent: 'space-between',
@@ -328,7 +345,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
                         <View style={styles.line}></View>
 
-                        <View style={styles.belowButtons} >
+                        <View style={styles.belowButtons}>
                             <Ionicons name='md-trash' size={27} color={"grey"}/>
                             <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
                         </View>
@@ -355,7 +372,7 @@ const styles = StyleSheet.create({
     },
     componentContainerBig: {
         // backgroundColor: "red",
-        
+
         paddingVertical: 5,
         width: '100%',
         // height: 550,
@@ -417,7 +434,7 @@ const styles = StyleSheet.create({
 
     beschrijvingBox: {
         // backgroundColor: 'red',
-        height: 100,
+        height: 250,
         // height: "65%",
         marginVertical: 5,
         borderBottomWidth: 1,
@@ -443,7 +460,8 @@ const styles = StyleSheet.create({
         // height: 50,
         borderRadius: 3,
         padding: 5,
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        marginTop: 25
 
     },
 
@@ -499,7 +517,7 @@ const styles = StyleSheet.create({
     },
     belowButtons: {
         borderColor: "#20232a",
-        // paddingHorizontal: 150,
+        paddingHorizontal: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 60,

@@ -11,7 +11,7 @@ export class User {
     register: Date = new Date();
     unregister: Date = new Date();
     password: string = '';
-    role: UserRole = UserRole.admin;
+    role: UserRole = UserRole.member;
     email: string = '';
     image: string = '';
     telephone: number = 0;

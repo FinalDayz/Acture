@@ -1,8 +1,9 @@
 export class Post {
-    title?: string = '';
-    text?: string = '';
-    // image: string
-    categoryId?: number= 0;
+    postId: number = 0;
+    text: string = '';
+    categoryId: number = 0;
+    title: string = '';
+    // image: 
 }
 
 

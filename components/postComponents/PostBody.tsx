@@ -13,10 +13,11 @@ import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorS
 
 
 export interface Props {
-    title: string
-    text: string
-    userId: string
-    postId: string
+    title: String
+    text: String
+    userId: String
+    postId: number
+    onClickEdit: () => void
     onDelete(postId: string): void
 }
 
@@ -46,11 +47,31 @@ export class PostBody extends React.Component<Props> {
                             size={27}
                             color="black"
                             style={this.styles.icon}
-                            onPress={() => {this.createConfirmAlert()}}/>
+                            onPress={() => {this.options()}}/>
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
             </View>
+        );
+    }
+
+    
+    
+    options(){
+        Alert.alert(
+            'Wat wilt U doen',
+            '',
+            [
+                {
+                    text: 'Wijzigen',
+                    onPress:()=> this.props.onClickEdit()
+                },
+                {
+                    text: 'Verwijderen',
+                    onPress: () => this.deletePost()
+                }
+            ],
+            { cancelable: true }
         );
     }
 
@@ -72,6 +93,7 @@ export class PostBody extends React.Component<Props> {
             { cancelable: true }
         );
     }
+    
 
     styles = StyleSheet.create ({
         body: {

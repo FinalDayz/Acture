@@ -12,9 +12,11 @@ export default {
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
     deleteUser: {destination: '/api/users/', type: 'DELETE'},
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
+    
 
     addPost: {destination: '/api/feed/addPost/', type: 'POST'},
     getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
+    getPostToEdit:{destination: '/api/feed/getPostToEdit' , type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
     followUsers: {destination: '/api/follow/', type: 'GET'},

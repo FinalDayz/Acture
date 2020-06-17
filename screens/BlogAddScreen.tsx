@@ -19,9 +19,15 @@ import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
+import { PostModel } from "../models/PostModel";
+
+
 
 
 export interface Props {
+
+    navigation: any
+
 }
 
 interface State {
@@ -34,19 +40,29 @@ interface State {
     image: string
     imageName: string
     isLoading: boolean
+    canEdit: boolean
     // blogCategoryId: number
 
 }
 
+let canEdit: boolean = false;
 
-export default class PostAddScreen extends React.Component<Props, State> {
-    state: State;
+
+
+export default class BlogAddScreen extends React.Component<Props, State> {
+
+
+   state: State;
+    title: string = ''
+    data: any;
+
 
 
     constructor(props: Props, state: State) {
         super(props);
 
         this.state = {
+            ...props,
             ...state,
             isLoading: false,
             textareaHeight: 250,
@@ -54,7 +70,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
             hasError: false,
             categories: [],
 
-            title: '',
+            // title: '',
             text: '',
             categoryId: 0,
             image: '',
@@ -62,8 +78,32 @@ export default class PostAddScreen extends React.Component<Props, State> {
             // blogCategoryId: 0
 
         }
-
+        // const { navigation } = this.props;
+        // const data = .getParam('data','default value')
+        // this.props.getParam('data','default value')
     }
+
+
+
+
+
+
+
+
+   // public getPostToEdit(postId: number) {
+   //                      console.log("okkk" + this.props.data.title)
+   //                      this.setState({
+   //                          text: this.props.data.text,
+   //                          title: this.props.data.title,
+   //                          categoryId: this.props.data.categoryId,
+   //                          // image: result.data.image
+   //                      });
+   //  }
+
+
+
+
+
 
 
     // postToAdd = {
@@ -165,24 +205,41 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     }
 
+    // getPostToEdit = (postId: number) => {
+    //
+    // }
+    componentWillMount(){
+
+        const { navigation} = this.props;
+        const dataProps = navigation.getParam('data','default value')
+        this.title = dataProps.title
+        console.log("PROPS: " + this.title)
+    }
+
 
 
 
     render() {
+
+        
         return (
             <View style={styles.screen}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.componentContainer} >
                         <View style = {styles. titleBox}>
                             <Text style={{
+                               // width:  Dimensions.get('window').width >  300 ? 30 : 5,
                                 fontStyle: 'italic',
-                               width:  Dimensions.get('window').width >  300 ? 30 : 5
+                                fontWeight: "bold",
+                                width: "13%",
+                                marginRight: 1
                             }}>Titel:</Text>
                             <TextInput
                                 style={{
                                     width: "95%"}}
-                                value={this.state.title}
-                                onChangeText={(title) => this.setState({title: title})}/>
+                                value={this.title}
+                                // onChangeText={(title) => {this.title = title}}
+                            />
                              <TextInput/>
                         </View>
                         <View style = {styles.beschrijvingBox}>
@@ -191,7 +248,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                                     // backgroundColor: colors.textLight,
                                     // height: this.state.textareaHeight
                                 }}
-                                placeholder="Beschrijving...deded3"
+                                placeholder="Beschrijving..."
                                 value={this.state.text}
                                 onChangeText={text => this.setState({text: text})}
                                 multiline/>

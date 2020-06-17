@@ -11,6 +11,11 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {User} from '../models/User'
+
+
+
+
 
 export interface Props {
     navigation: any
@@ -77,9 +82,10 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     render() {
+        
         return (
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
+                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('BlogAddScreen')}/>
                 {this.state.isLoading ? (
                         <View style={this.styles.loading}>
                             <ActivityIndicator size="large" color={colors.primaryLight}/>
@@ -94,11 +100,12 @@ export default class FeedScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
+                                navigation = {this.props.navigation}
                                 data={itemData.item}
                                 onDelete={this.handleDelete}
                             />
                         }
-                    />
+                       /> 
                 </View>
             </Container>
         );

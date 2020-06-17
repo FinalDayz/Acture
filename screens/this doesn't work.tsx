@@ -203,8 +203,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     }
 
-
-
     _getAllCategories = () => {
         if (!this.state.isLoading) {
             this.state.isLoading = true;
@@ -226,6 +224,10 @@ export default class PostAddScreen extends React.Component<Props, State> {
             return null
         }
     }
+
+
+
+
 
     // measureView(event: any) {
     //     console.log('event peroperties: ', event);

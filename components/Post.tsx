@@ -11,6 +11,7 @@ import { bodyfull } from './HttpClient';
 
 
 export interface Props {
+    navigation: any
     data: any
     onDelete(postId: string): void
 }
@@ -19,6 +20,12 @@ export class Post extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
+    }
+
+    editPost(){
+        // console.log(this.props.data.text)
+        // console.log("this is editPost props " + this.props.data.text + "ok")
+        this.props.navigation.navigate('BlogAddScreen', {data: this.props.data})
     }
 
     state = {
@@ -49,6 +56,7 @@ export class Post extends React.Component<Props> {
     };
 
     render() {
+        // console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
                 <ListItem style={this.styles.listContainer}>
@@ -78,6 +86,7 @@ export class Post extends React.Component<Props> {
             );
         }
         else {
+            // console.log(this.props.data.title)
             return (
                 <ListItem style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
@@ -91,6 +100,7 @@ export class Post extends React.Component<Props> {
                             LastName={this.props.data.lastname}
                             insertion={this.props.data.tussenvoegsel}/>
                         <PostBody
+                            onClickEdit = {this.editPost.bind(this)}
                             text={this.props.data.text}
                             title={this.props.data.title}
                             userId={this.props.data.userId}
