@@ -65,9 +65,8 @@ export class PostHeader extends React.Component<Props> {
                             <AccountImage
                                 image={this.props.profileImage}/>
                         </View>
-                        <View style={this.styles.verticalFlex}>
+                        <View style={this.styles.nameContainer}>
                             <Text style={this.styles.name}>{this.makeName()}</Text>
-                            <Text style={this.styles.topic}>Vakgebied</Text>
                         </View>
                         <View style={this.styles.verticalFlex}>
                             <View style={this.styles.textContainer}>
@@ -116,16 +115,14 @@ export class PostHeader extends React.Component<Props> {
             justifyContent: 'center',
             marginRight: 5
         },
+        nameContainer: {
+            flex: 4,
+            justifyContent: 'center'
+        },
         name: {
             marginLeft: 10,
             color: colors.textLight,
-            fontSize: 16
-        },
-        topic: {
-            marginLeft: 10,
-            color: colors.textLight,
             fontSize: 16,
-            fontStyle: 'italic'
         },
         postType: {
             paddingHorizontal: 15,

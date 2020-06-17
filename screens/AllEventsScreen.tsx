@@ -28,8 +28,9 @@ export default class AllEventsScreen extends React.Component<any, any> {
     
     getEvents() {
         if(!this.state.isLoading) {
-            
+            console.log("De state is nu: " + this.state.isLoading)
             this.state.isLoading = true;
+            console.log("De state is nu: " + this.state.isLoading)
             bodyfull(ApiDictionary.getEvents, {})
             .then(
                 (result: {data:Array<PostModel>}) => {

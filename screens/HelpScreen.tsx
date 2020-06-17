@@ -1,14 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import {Container} from 'native-base';
 
-import colors from '../constants/colors';
-import HeaderButton from '../components/HeaderButton';
-import {Post} from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
+import colors from '../constants/colors';
+import HeaderButton from '../components/HeaderButton';
 import {PostModel} from '../models/PostModel';
+import { Post } from '../components/Post';
 import { NewPostButton } from '../components/NewPostButton';
 
 export interface Props {
@@ -21,7 +20,8 @@ interface State {
     offset: number
 }
 
-export default class FeedScreen extends React.Component<Props, State> {
+export default class HelpScreen extends React.Component<Props, State> {
+
     state: State;
 
     constructor(props: Props, state: State) {
@@ -34,14 +34,14 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.getFeed()
+        this.getGuides()
     }
 
-    getFeed() {
+    getGuides() {
         if(!this.state.isLoading) {
             
             this.setState({isLoading:true}, () => {
-                bodyfull(ApiDictionary.getFeed, {
+                bodyfull(ApiDictionary.getGuides, {
                     offs: this.state.offset //offset for loading more posts
                 })
                 .then(
@@ -69,19 +69,15 @@ export default class FeedScreen extends React.Component<Props, State> {
         })
     };
 
-    getMorePosts() {
-        let tempOffset = 15;
-        this.setState({offset:tempOffset}, () => {this.getFeed()});
-    }
-
     render() {
-        return (
-            <Container style={this.styles.screen}>
+        return(
+            <View style={this.styles.screen}>
                 <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                
                 <View style={this.styles.scrollable}>
-                    <FlatList
+                <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getFeed()}
+                        onRefresh={() => this.getGuides()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -92,45 +88,38 @@ export default class FeedScreen extends React.Component<Props, State> {
                             />
                         }
                     />
-                    
                 </View>
-            </Container>
+            </View>
         );
     }
- 
-    // <View>
-    //     <TouchableOpacity onPress={this.getMorePosts}>
-    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-    //     </TouchableOpacity>
-    // </View>
-                    
+
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Feed',
+            headerTitle: 'Guides',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item
-                        title='profile'
-                        iconName='md-person' //TODO: change to profile picture
-                        onPress={() => {
-                            navData.navigation.navigate('Profile');
+                    <Item 
+                    title='profile'
+                    iconName='md-person' //TODO: change to profile picture
+                    onPress={() => {
+                        navData.navigation.navigate('Profile');
                     }}/>
                 </HeaderButtons>
             ),
             headerLeft: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item
+                    <Item 
                         title='menu'
                         iconName='md-menu'
                         onPress={() => {
                             navData.navigation.toggleDrawer();
-                        }}
+                        }} 
                     />
                 </HeaderButtons>
             )
-        };
+        }
     };
 
     styles = StyleSheet.create ({
@@ -138,6 +127,7 @@ export default class FeedScreen extends React.Component<Props, State> {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
+            fontSize: 30,
             backgroundColor: colors.backgroundPrimary
         },
         scrollable: {
@@ -145,12 +135,8 @@ export default class FeedScreen extends React.Component<Props, State> {
             width: '100%',
             height: '100%'
         },
-        postloader: {
-            color: colors.textDark,
-            marginBottom: 50
-        },
         list: {
             width: '100%',
         }
     });
-}
+}    
