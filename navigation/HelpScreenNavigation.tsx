@@ -5,6 +5,9 @@ import HelpScreen from '../screens/HelpScreen';
 import colors from '../constants/colors';
 import ProfileScreen from '../screens/ProfileScreen';
 
+import PostAddScreen from "../screens/PostAddScreen";
+import BlogAddScreen from "../screens/BlogAddScreen";
+
 const HelpScreenNavigation = createStackNavigator(
     {
         Help: {
@@ -12,6 +15,12 @@ const HelpScreenNavigation = createStackNavigator(
         },
         Profile: {
             screen: ProfileScreen
+        },
+        PostAddScreen:{
+            screen: PostAddScreen
+        },
+        BlogAddScreen:{
+            screen: BlogAddScreen
         }
     },
     {
