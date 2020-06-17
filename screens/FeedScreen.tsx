@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container} from 'native-base';
 
@@ -92,7 +92,6 @@ export default class FeedScreen extends React.Component<Props, State> {
                             />
                         }
                     />
-                    
                 </View>
             </Container>
         );
