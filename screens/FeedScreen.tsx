@@ -107,7 +107,8 @@ export default class FeedScreen extends React.Component<Props, State> {
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Feed',
+            headerTitle: 'Feed', //Title in header bar
+            title: 'Mijn feed', //Title in tab
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
