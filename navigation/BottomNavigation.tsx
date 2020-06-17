@@ -53,7 +53,7 @@ const BottomNavigation = createMaterialBottomTabNavigator({
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return(
-                    <Ionicons name='md-mail' size={27} color={tabInfo.tintColor}/>
+                    <Ionicons name='md-person' size={27} color={tabInfo.tintColor}/>
                 );
             }
         }
