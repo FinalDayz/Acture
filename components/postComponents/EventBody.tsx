@@ -92,7 +92,7 @@ export class EventBody extends React.Component<Props> {
             }).then((data) => {
                 alert("Verwijderen succesvol");
                 this.render();
-                this.setState({isLoading:false})
+                this.setState({isLoading:false});
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 alert(err.message);
