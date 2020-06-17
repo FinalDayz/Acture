@@ -149,7 +149,7 @@ const styles = StyleSheet.create ({
         paddingTop: 20,
         flex: 1,
         width: '100%',
-        backgroundColor: '#FFF'
+        backgroundColor: colors.backgroundPrimary
     },
     searchBar: {
         paddingHorizontal: '7%',
