@@ -26,7 +26,7 @@ export class Post extends React.Component<Props> {
     };
 
     handleDelete() {
-        this.deletePost()
+        this.deletePost() 
     }
 
     private deletePost() {
