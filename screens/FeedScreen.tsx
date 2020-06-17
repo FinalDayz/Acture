@@ -41,7 +41,6 @@ export default class FeedScreen extends React.Component<Props, State> {
     getFeed() {
         if(!this.state.isLoading) {
             this.setState({isLoading:true}, () => {
-                console.log("De state 1 is nu: " + this.state.isLoading)
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
@@ -61,14 +60,13 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     handleDelete(postId: string) {
-        console.log("helemaal hier, id: " + postId);
-        // const newData = this.state.data.filter(
-        //     (post) => post.postId.toString() !== postId
-        // );
-        //
-        // this.setState({
-        //     data: newData
-        // })
+        const newData = this.state.data.filter(
+            (post) => post.postId.toString() != postId
+        );
+
+        this.setState({
+            data: newData
+        })
     };
 
     getMorePosts() {
@@ -95,7 +93,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
-                                onDelete={this.handleDelete}
+                                onDelete={this.handleDelete.bind(this)}
                             />
                         }
                     />
