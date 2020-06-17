@@ -52,10 +52,6 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
         });
     }
 
-    navigationOptions() {
-
-    }
-
     private searchFilter(account: UserWithFollow) {
         return UserWithFollow.searchFilter(account, this.state.searchQuery);
     }

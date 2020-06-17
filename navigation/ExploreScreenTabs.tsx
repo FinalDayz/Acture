@@ -9,9 +9,9 @@ import HeaderButton from "../components/HeaderButton";
 
 const exploreTabs = createMaterialTopTabNavigator(
     {
-        'Personen': ExploreUsersScreen,
-        'Startups': ExploreUsersScreen,
-        'Vakgebieden': ExploreUsersScreen,
+        Personen: ExploreUsersScreen,
+        Startups: ExploreUsersScreen,
+        Vakgebieden: ExploreUsersScreen,
     }, {
         initialRouteName: 'Personen',
         tabBarOptions: {
