@@ -73,14 +73,10 @@ export default class HelpScreen extends React.Component<Props, State> {
         return(
             <View style={this.styles.screen}>
                 <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
-                {this.state.isLoading ? (
-                    <View style={this.styles.loading}>
-                        <ActivityIndicator size="large" color={colors.primary}/>
-                    </View>
-                    ) : null}
+                
                 <View style={this.styles.scrollable}>
                 <FlatList
-                        refreshing={false}
+                        refreshing={this.state.isLoading}
                         onRefresh={() => this.getGuides()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
@@ -138,10 +134,6 @@ export default class HelpScreen extends React.Component<Props, State> {
             flex: 1,
             width: '100%',
             height: '100%'
-        },
-        loading: {
-            justifyContent: 'center',
-            alignItems: 'center'
         },
         list: {
             width: '100%',

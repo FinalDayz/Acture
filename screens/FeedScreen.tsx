@@ -78,14 +78,9 @@ export default class FeedScreen extends React.Component<Props, State> {
         return (
             <Container style={this.styles.screen}>
                 <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
-                {this.state.isLoading ? (
-                    <View style={this.styles.loading}>
-                        <ActivityIndicator size="large" color={colors.primary}/>
-                    </View>
-                    ) : null}
                 <View style={this.styles.scrollable}>
                     <FlatList
-                        refreshing={false}
+                        refreshing={this.state.isLoading}
                         onRefresh={() => this.getFeed()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
@@ -153,11 +148,6 @@ export default class FeedScreen extends React.Component<Props, State> {
         postloader: {
             color: colors.textDark,
             marginBottom: 50
-        },
-        loading: {
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginVertical: 1
         },
         list: {
             width: '100%',
