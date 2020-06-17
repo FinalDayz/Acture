@@ -106,7 +106,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
 
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Explore',
+            headerTitle: 'Ontdekken',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item

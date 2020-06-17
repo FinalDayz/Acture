@@ -1,6 +1,5 @@
 import React from 'react';
-import {ScrollView, Button} from 'react-native';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -107,7 +106,8 @@ export default class FeedScreen extends React.Component<Props, State> {
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Feed',
+            headerTitle: 'Feed', //Title in header bar
+            title: 'Mijn feed', //Title in tab
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
