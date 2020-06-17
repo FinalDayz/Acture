@@ -10,7 +10,7 @@ import {Post} from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NewPostButton } from '../components/NewPostButton';
 
 export interface Props {
     navigation: any
@@ -70,22 +70,17 @@ export default class FeedScreen extends React.Component<Props, State> {
     };
 
     getMorePosts() {
-        this.state.offset + 15;
-        this.getFeed();
+        let tempOffset = 15;
+        this.setState({offset:tempOffset}, () => {this.getFeed()});
     }
 
     render() {
         return (
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('PostAddScreen')}/>
-                {this.state.isLoading ? (
-                        <View style={this.styles.loading}>
-                            <ActivityIndicator size="large" color={colors.primaryLight}/>
-                        </View>
-                    ) : (<View></View>)}
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
                 <View style={this.styles.scrollable}>
                     <FlatList
-                        refreshing={false}
+                        refreshing={this.state.isLoading}
                         onRefresh={() => this.getFeed()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
@@ -102,11 +97,12 @@ export default class FeedScreen extends React.Component<Props, State> {
         );
     }
  
-                    // {/* <View>
-                    //     <TouchableOpacity onPress={this.getMorePosts}>
-                    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-                    //     </TouchableOpacity>
-                    // </View>  */}
+    // <View>
+    //     <TouchableOpacity onPress={this.getMorePosts}>
+    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
+    //     </TouchableOpacity>
+    // </View>
+                    
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
@@ -151,11 +147,6 @@ export default class FeedScreen extends React.Component<Props, State> {
         postloader: {
             color: colors.textDark,
             marginBottom: 50
-        },
-        loading: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
         },
         list: {
             width: '100%',

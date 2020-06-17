@@ -4,9 +4,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import colors from '../constants/colors';
 
-export interface Props {}
+export interface Props {
+    onPress: () => void;
+}
 
-export class NewButton extends React.Component<Props> {
+export class NewPostButton extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
@@ -15,8 +17,8 @@ export class NewButton extends React.Component<Props> {
     render() {
         return(
             <View style={this.styles.container}>
-                <TouchableOpacity style={this.styles.button} onPress={() => {}}>
-                    <Text style={this.styles.text}>+  Nieuw</Text>
+                <TouchableOpacity style={this.styles.button} onPress={this.props.onPress}>
+                    <Text style={this.styles.text}>+   Nieuw</Text>
                 </TouchableOpacity>
             </View>
         )
