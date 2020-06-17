@@ -1,7 +1,8 @@
 import React from 'react';
+import {ScrollView, Button} from 'react-native';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import {Container} from 'native-base';
+import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
@@ -39,13 +40,12 @@ export default class FeedScreen extends React.Component<Props, State> {
 
     getFeed() {
         if(!this.state.isLoading) {
-            
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
                 .then(
-                    (result: {data:Array<PostModel>}) => {
+                    (result) => {
                         this.setState({
                             isLoading: false,
                             data: result.data
@@ -53,15 +53,15 @@ export default class FeedScreen extends React.Component<Props, State> {
                     })
                 .catch ((error) => {
                     console.log(error);
+                    this.setState({isLoading : false});
                 })
             })
         }
     }
 
     handleDelete(postId: string) {
-        console.log("helemaal hier: ");
         const newData = this.state.data.filter(
-            (post) => post.postId.toString() !== postId
+            (post) => post.postId.toString() != postId
         );
 
         this.setState({
@@ -88,11 +88,10 @@ export default class FeedScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
-                                onDelete={this.handleDelete}
+                                onDelete={this.handleDelete.bind(this)}
                             />
                         }
                     />
-                    
                 </View>
             </Container>
         );

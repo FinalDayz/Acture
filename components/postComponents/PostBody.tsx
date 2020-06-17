@@ -17,7 +17,7 @@ export interface Props {
     text: string
     userId: string
     postId: string
-    onDelete(postId: string): void
+    onDelete(): void
 }
 
 export class PostBody extends React.Component<Props> {
@@ -32,7 +32,7 @@ export class PostBody extends React.Component<Props> {
 
     deletePost() {
         console.log("id here 1: " + this.props.postId);
-        this.props.onDelete(this.props.postId);
+        this.props.onDelete();
     }
 
     render() {
