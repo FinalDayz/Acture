@@ -64,7 +64,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
 
-    showAttendance = (eventId: any) => {
+    showAttendance (eventId: any)  {
         console.log('printing eventId: ')
         console.log(eventId)
         // console.log("THIS IS " + eventId)
@@ -110,9 +110,10 @@ export default class FeedScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={(itemData) => {
                            // this.showAttendance(itemData.item.evenementId)
-                            {console.log("HALLO" + (JSON.stringify(itemData.item))}
+                           //  {console.log("HALLO" + (JSON.stringify(itemData.item))}
                              return <Post
-                                navigation={this.props.navigation}
+                                 handlePress = {this.showAttendance(itemData.item.evenementId)}
+                                 navigation={this.props.navigation}
                                 data={itemData.item}
                                 onDelete={this.handleDelete}
                             />

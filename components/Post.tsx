@@ -17,7 +17,8 @@ export interface Props {
     navigation: any
     data: any
     onDelete(postId: string): void
-    // handlePress(item: any): void
+    // handlePress: () => void
+    handlePress () : void
     //
     
     // onClickEdit: () => void
