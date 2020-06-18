@@ -86,7 +86,6 @@ export default class ChangePasswordScreen extends React.Component<{navigation:an
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.contentContainer}>
                         <View><Text style={styles.headerText}>Wachtwoord Veranderen</Text></View>
-                        
 
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>

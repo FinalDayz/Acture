@@ -41,10 +41,8 @@ export class Post extends React.Component<Props> {
         isLoading: false
     };
 
-    handleDelete(postId: string) {
-        console.log("id here 2: " + postId);
-        // this.deletePost()
-        this.props.onDelete(postId);
+    handleDelete() {
+        this.deletePost() 
     }
     
     componentDidMount(){
@@ -70,6 +68,7 @@ export class Post extends React.Component<Props> {
             }).then((data) => {
                 alert("Verwijderen succesvol");
                 this.setState({isLoading:false});
+                this.props.onDelete(this.props.data.postId);
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 alert(err.message);

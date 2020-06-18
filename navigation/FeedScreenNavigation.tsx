@@ -2,6 +2,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
 import FeedScreen from '../screens/FeedScreen';
+import FeedScreenTabs from './FeedScreenTabs'
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 import PostAddScreen from "../screens/PostAddScreen";
@@ -13,7 +14,7 @@ import AttendanceScreen from '../screens/AttendanceScreen';
 const FeedScreenNavigation = createStackNavigator(
     {
         Feed: {
-            screen: FeedScreen
+            screen: FeedScreenTabs
         },
         Profile: {
             screen: ProfileScreen

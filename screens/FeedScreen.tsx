@@ -2,6 +2,9 @@ import React, {Fragment} from 'react';
 import {ScrollView, Button} from 'react-native';
 import {View, Text, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
@@ -13,6 +16,7 @@ import {PostModel} from '../models/PostModel';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {User} from '../models/User'
 
+import { NewPostButton } from '../components/NewPostButton';
 
 export interface Props {
     navigation: any
@@ -32,7 +36,6 @@ export default class FeedScreen extends React.Component<Props, State> {
     constructor(props: Props, state: State) {
         super(props, state);
         this.state = {
-            eventData: {},
             data: [],
             isLoading: false,
             offset: 0
@@ -44,9 +47,8 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     getFeed() {
-        if (!this.state.isLoading) {
-            this.setState({isLoading: true}, () => {
-                console.log("De state 1 is nu: " + this.state.isLoading)
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
@@ -75,38 +77,28 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     handleDelete(postId: string) {
-        console.log("helemaal hier, id: " + postId);
-        // const newData = this.state.data.filter(
-        //     (post) => post.postId.toString() !== postId
-        // );
-        //
-        // this.setState({
-        //     data: newData
-        // })
+        const newData = this.state.data.filter(
+            (post) => post.postId.toString() != postId
+        );
+
+        this.setState({
+            data: newData
+        })
     };
 
     getMorePosts() {
-        this.state.offset + 15;
-        this.getFeed();
+        let tempOffset = 15;
+        this.setState({offset:tempOffset}, () => {this.getFeed()});
     }
 
 
     render() {
-        if (this.state.data[0] != null) {
-            console.log(this.state.data[0].categoryId);
-        }
-
         return (
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress={() => this.props.navigation.navigate('BlogAddScreen')}/>
-                {this.state.isLoading ? (
-                    <View style={this.styles.loading}>
-                        <ActivityIndicator size="large" color={colors.primaryLight}/>
-                    </View>
-                ) : (<View></View>)}
+                <NewPostButton onPress={() => this.props.navigation.navigate('BlogAddScreen')} />
                 <View style={this.styles.scrollable}>
                     <FlatList
-                        refreshing={false}
+                        refreshing={this.state.isLoading}
                         onRefresh={() => this.getFeed()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
@@ -122,7 +114,7 @@ export default class FeedScreen extends React.Component<Props, State> {
 
                                  navigation={this.props.navigation}
                                 data={itemData.item}
-                                onDelete={this.handleDelete}
+                                onDelete={this.handleDelete.bind(this)}
                             />
 
                         }}
@@ -139,6 +131,13 @@ export default class FeedScreen extends React.Component<Props, State> {
             </Container>
         );
     }
+ 
+    // <View>
+    //     <TouchableOpacity onPress={this.getMorePosts}>
+    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
+    //     </TouchableOpacity>
+    // </View>
+                    
 
     // {/* <View>
     //     <TouchableOpacity onPress={this.getMorePosts}>
@@ -149,7 +148,8 @@ export default class FeedScreen extends React.Component<Props, State> {
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData: any) => {
         return {
-            headerTitle: 'Feed',
+            headerTitle: 'Feed', //Title in header bar
+            title: 'Mijn feed', //Title in tab
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
@@ -189,11 +189,6 @@ export default class FeedScreen extends React.Component<Props, State> {
         postloader: {
             color: colors.textDark,
             marginBottom: 50
-        },
-        loading: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
         },
         list: {
             width: '100%',

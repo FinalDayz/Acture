@@ -72,7 +72,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.wrapper}>
-                <View style={{paddingHorizontal: '7%'}}>
+                <View style={styles.searchBar}>
                     <IconInput
                         onChangeText={text => {
                             this.setState({searchQuery: text})
@@ -106,7 +106,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
 
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Explore',
+            headerTitle: 'Ontdekken',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
@@ -149,6 +149,11 @@ const styles = StyleSheet.create ({
         paddingTop: 20,
         flex: 1,
         width: '100%',
+        backgroundColor: colors.backgroundPrimary
+    },
+    searchBar: {
+        paddingHorizontal: '7%',
+        marginBottom: 8
     }
 });
 

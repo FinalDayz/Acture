@@ -11,15 +11,20 @@ export interface Props {
     userId: number
 }
 
-export default class ProfileScreen extends React.Component<any, any> {
+export interface State {
+    isLoading: boolean,
+    blogs: PostModel[]
+}
 
-    state = {
-        isLoading: false,
-        blogs: []
-    };
+export default class ProfileScreen extends React.Component<Props, State> {
+    state: State;
 
-    constructor (props: Props) {
-        super(props);
+    constructor (props: Props, state: State) {
+        super(props, state);
+        this.state = {
+            isLoading: false,
+            blogs: []
+        }
     }
 
     componentDidMount() {
@@ -37,7 +42,9 @@ export default class ProfileScreen extends React.Component<any, any> {
                 <List
                     dataArray={this.state.blogs}
                     renderRow={(item) => {
-                        return <Post data={item}/>
+                        return <Post
+                                    data={item}
+                                    onDelete={this.handleDelete.bind(this)}/>
                     }}
                 />
             </View>
@@ -50,26 +57,34 @@ export default class ProfileScreen extends React.Component<any, any> {
     };
 
     getBlogs = () => {
-        console.log("hier 1");
         if (!this.state.isLoading) {
-            this.setState({isLoading:true});
-
+            this.setState({isLoading:true}, ()=> {
             bodyfull(ApiDictionary.getUserBlogs, {
                 userId: 1 // TODO: meegeven bij navigatie
             })
                 .then(
-                    (result: {data: Array<PostModel>}) => {
-                        console.log("hier 3: " + result);
-                        console.log("result.data: " + result.data.toString());
-                    this.setState({blogs: result.data})
+                    (result) => {
+                    this.setState({
+                        isLoading: false,
+                        blogs: result.data})
                 })
                 .catch((error) => {
                     console.log(error);
+                    this.setState({isLoading: false})
                 })
+            });
+
         }
-        else {
-            return null;
-        }
+    };
+
+    handleDelete(postId: string) {
+        const newData = this.state.blogs.filter(
+            (post) => post.postId.toString() != postId
+        );
+
+        this.setState({
+            blogs: newData
+        })
     };
 
     styles = StyleSheet.create ({
