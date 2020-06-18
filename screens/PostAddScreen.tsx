@@ -334,6 +334,13 @@ export default class PostAddScreen extends React.Component<Props, State> {
         );
     }
 
+    //options for header bar
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Bericht plaatsen'
+        }
+    };
+
 }
 
 const styles = StyleSheet.create({

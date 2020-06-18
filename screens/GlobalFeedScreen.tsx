@@ -5,36 +5,46 @@ import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
-import { Post } from "../components/Post";
+import {Post} from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
-import { PostModel } from '../models/PostModel';
+import {PostModel} from '../models/PostModel';
+import { NewPostButton } from '../components/NewPostButton';
 
-export default class AllEventsScreen extends React.Component<any, any> {
+export interface Props {
+    navigation: any
+}
 
-    state = {
-        isLoading: false,
-        data: [],
-        offset: 0
-    };
+interface State {
+    isLoading: boolean,
+    data: PostModel[],
+    offset: number
+}
 
-    constructor(props: any) {
-        super(props);
+export default class GlobalFeedScreen extends React.Component<Props, State> {
+    state: State;
+
+    constructor(props: Props, state: State) {
+        super(props, state);
+        this.state = {
+            data: [],
+            isLoading: false,
+            offset: 0
+        }
     }
 
     componentDidMount() {
-        this.getEvents()
+        this.getFeed()
     }
-    
-    getEvents() {
+
+    getFeed() {
         if(!this.state.isLoading) {
-            
             this.setState({isLoading:true}, () => {
-                bodyfull(ApiDictionary.getEvents, {
+                bodyfull(ApiDictionary.getGlobalFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
                 .then(
-                    (result: {data:Array<PostModel>}) => {
+                    (result) => {
                         this.setState({
                             isLoading: false,
                             data: result.data
@@ -42,15 +52,15 @@ export default class AllEventsScreen extends React.Component<any, any> {
                     })
                 .catch ((error) => {
                     console.log(error);
+                    this.setState({isLoading : false});
                 })
             })
         }
     }
 
     handleDelete(postId: string) {
-        console.log("helemaal hier: ");
         const newData = this.state.data.filter(
-            (post) => post.postId.toString() !== postId
+            (post) => post.postId.toString() != postId
         );
 
         this.setState({
@@ -58,32 +68,39 @@ export default class AllEventsScreen extends React.Component<any, any> {
         })
     };
 
+    getMorePosts() {
+        let tempOffset = 15;
+        this.setState({offset:tempOffset}, () => {this.getFeed()});
+    }
+
     render() {
-        return(
+        return (
             <Container style={this.styles.screen}>
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
                 <View style={this.styles.scrollable}>
-                <FlatList
+                    <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getEvents()}
+                        onRefresh={() => this.getFeed()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
-                                onDelete={this.handleDelete}
+                                onDelete={this.handleDelete.bind(this)}
                             />
                         }
                     />
-                </View>     
+                </View>
             </Container>
         );
-    }
+    }                    
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Evenementen',
+            headerTitle: 'Feed', //Title in header bar
+            title: 'Algemeen', //Title in tab
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
@@ -120,10 +137,9 @@ export default class AllEventsScreen extends React.Component<any, any> {
             width: '100%',
             height: '100%'
         },
-        loading: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
+        postloader: {
+            color: colors.textDark,
+            marginBottom: 50
         },
         list: {
             width: '100%',

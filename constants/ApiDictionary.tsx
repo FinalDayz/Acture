@@ -25,6 +25,7 @@ export default {
     insertAttendant: {destination: '/api/attendance/addAttendant/', type: 'POST'},
 
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
+    getGlobalFeed: {destination: '/api/feedposts/globalFeed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
     getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
 
