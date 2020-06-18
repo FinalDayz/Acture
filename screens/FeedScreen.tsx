@@ -10,6 +10,9 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { User } from '../models/User';
+
 
 export interface Props {
     navigation: any
@@ -114,8 +117,9 @@ export default class FeedScreen extends React.Component<Props, State> {
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile');
-                    }}/>
+                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
+                        }}
+                    />
                 </HeaderButtons>
             ),
             headerLeft: () => (
