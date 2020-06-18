@@ -53,7 +53,7 @@ export default class BlogAddScreen extends React.Component<Props, State> {
 
 
    state: State;
-    title: string = ''
+
     data: any;
 
 
@@ -70,7 +70,7 @@ export default class BlogAddScreen extends React.Component<Props, State> {
             hasError: false,
             categories: [],
 
-            // title: '',
+            title: '',
             text: '',
             categoryId: 0,
             image: '',
@@ -158,22 +158,22 @@ export default class BlogAddScreen extends React.Component<Props, State> {
     _addPost = () =>
     {
         if (!this.state.isLoading) {
+            this.state.isLoading = true;
             bodyfull(ApiDictionary.addPost, {
                 'text': this.state.text,
                 'title': this.state.title,
                 'image': this.state.image,
-                'userId': 1,
                 'categoryId': this.state.categoryId
-            })
-                .then(res => res.json())
-                .then((data) => {
-                        if (data.success === 1) {
-                            console.log("INSERTED")
-                        }
+            }).then((data) => {
+                    if (data.success === 1) {
+                        console.log("INSERTED")
                     }
-                );
-        }else {
-            return null
+                    this.setState({isLoading: false})
+                }
+            ).catch(err => {
+                console.log(err)
+                this.setState({isLoading: false})
+            });
         }
 
     }
@@ -192,7 +192,10 @@ export default class BlogAddScreen extends React.Component<Props, State> {
                         });
                         for (let entry of this.state.categories){
                             if (entry.name = 'Blog'){
-                                this.state.categoryId = entry.categoryId;
+                                this.setState({
+                                    categoryId: entry.categoryId
+                                });
+                              
                             }
                         }
                     },
@@ -209,11 +212,11 @@ export default class BlogAddScreen extends React.Component<Props, State> {
     //
     // }
     componentWillMount(){
-
         const { navigation} = this.props;
         const dataProps = navigation.getParam('data','default value')
-        this.title = dataProps.title
-        console.log("PROPS: " + this.title)
+        this.state.title = dataProps.title
+        this.state.text = dataProps.text
+        // console.log("PROPS: " + this.title)
     }
 
 
@@ -237,8 +240,8 @@ export default class BlogAddScreen extends React.Component<Props, State> {
                             <TextInput
                                 style={{
                                     width: "95%"}}
-                                value={this.title}
-                                // onChangeText={(title) => {this.title = title}}
+                                value={this.state.title}
+                                onChangeText={(title) => this.setState({title: title})}
                             />
                              <TextInput/>
                         </View>

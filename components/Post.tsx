@@ -8,12 +8,20 @@ import {EventBody} from './postComponents/EventBody';
 
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from './HttpClient';
+// import PostModel from '.'
 
 
 export interface Props {
+    // onHandlePress(eventId: number): void
+    // eventId: any
     navigation: any
     data: any
     onDelete(postId: string): void
+    // handlePress(item: any): void
+    //
+    
+    // onClickEdit: () => void
+    // data: any
 }
 
 export class Post extends React.Component<Props> {
@@ -37,6 +45,21 @@ export class Post extends React.Component<Props> {
         // this.deletePost()
         this.props.onDelete(postId);
     }
+    
+    componentDidMount(){
+        // this.props.handlePress();
+        // console.log("AHH " + this.props.handlePress())
+    }
+    
+    // handlePress = () => {
+    //     // console.log(id);
+    //     console.log("THIS IS " + this.props.eventId)
+    //     console.log(this.props.navigation.navigate('Attendance', {eventId: this.props.eventId}))
+    // }
+
+    // showAttendance = (item: any) => {
+    //
+    // }
 
     private deletePost() {
         if(!this.state.isLoading) {
@@ -59,7 +82,7 @@ export class Post extends React.Component<Props> {
         // console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
-                <ListItem style={this.styles.listContainer}>
+                <ListItem style={this.styles.listContainer}  onPress={this.props.data.handlePress} >
                     <View style={this.styles.postContainer}>
                         <PostHeader
                             profileImage={this.props.data.profileImage}
@@ -69,7 +92,7 @@ export class Post extends React.Component<Props> {
                             postDate={new Date(this.props.data.postDate)}
                             firstName={this.props.data.firstname}
                             LastName={this.props.data.lastname}
-                            insertion={this.props.data.tussenvoegsel}/>
+                            insertion={this.props.data.tussenvoegsel} />
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
@@ -80,7 +103,7 @@ export class Post extends React.Component<Props> {
                             attendance={this.props.data.total_people}
                             evenementId={this.props.data.evenementId}
                             doesAttend={this.props.data.doesAttend}
-                            postId={this.props.data.postId}/>
+                            postId={this.props.data.postId} />
                     </View>
                 </ListItem>
             );

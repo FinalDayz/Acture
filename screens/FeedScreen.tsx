@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {ScrollView, Button} from 'react-native';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import {View, Text, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
 import colors from '../constants/colors';
@@ -10,11 +10,8 @@ import {Post} from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {User} from '../models/User'
-
-
-
 
 
 export interface Props {
@@ -23,7 +20,7 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    data: PostModel[],
+    data: any; // PostModel[],
     offset: number
 }
 
@@ -44,25 +41,34 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     getFeed() {
-        if(!this.state.isLoading) {
-            this.setState({isLoading:true}, () => {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, () => {
                 console.log("De state 1 is nu: " + this.state.isLoading)
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
-                .then(
-                    (result) => {
-                        this.setState({
-                            isLoading: false,
-                            data: result.data
+                    .then(
+                        (result) => {
+                            // JSON.stringify(result.data.evenementId))
+                            this.setState({
+                                isLoading: false,
+                                data: result.data
+                            })
                         })
+                    .catch((error) => {
+                        console.log(error);
+                        this.setState({isLoading: false});
                     })
-                .catch ((error) => {
-                    console.log(error);
-                    this.setState({isLoading : false});
-                })
             })
         }
+    }
+
+
+    showAttendance = (eventId: any) => {
+        console.log('printing eventId: ')
+        console.log(eventId)
+        // console.log("THIS IS " + eventId)
+        this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
 
     handleDelete(postId: string) {
@@ -81,16 +87,20 @@ export default class FeedScreen extends React.Component<Props, State> {
         this.getFeed();
     }
 
+
     render() {
-        
+        if (this.state.data[0] != null) {
+            console.log(this.state.data[0].categoryId);
+        }
+
         return (
             <Container style={this.styles.screen}>
-                <Button title='nieuw' onPress = {() => this.props.navigation.navigate('BlogAddScreen')}/>
+                <Button title='nieuw' onPress={() => this.props.navigation.navigate('BlogAddScreen')}/>
                 {this.state.isLoading ? (
-                        <View style={this.styles.loading}>
-                            <ActivityIndicator size="large" color={colors.primaryLight}/>
-                        </View>
-                    ) : (<View></View>)}
+                    <View style={this.styles.loading}>
+                        <ActivityIndicator size="large" color={colors.primaryLight}/>
+                    </View>
+                ) : (<View></View>)}
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={false}
@@ -98,27 +108,38 @@ export default class FeedScreen extends React.Component<Props, State> {
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={itemData =>
-                            <Post
-                                navigation = {this.props.navigation}
+                        renderItem={(itemData) => {
+                           // this.showAttendance(itemData.item.evenementId)
+                            {console.log("HALLO" + (JSON.stringify(itemData.item))}
+                             return <Post
+                                navigation={this.props.navigation}
                                 data={itemData.item}
                                 onDelete={this.handleDelete}
                             />
-                        }
-                       /> 
+
+                        }}
+
+                        /*
+                        * renderRow={(item) => {
+                            item.handlePress= () => this.showAttendance(item)
+                            return <Post data={item} />
+                        }}
+                        * 
+                        * */
+                    />
                 </View>
             </Container>
         );
     }
- 
-                    // {/* <View>
-                    //     <TouchableOpacity onPress={this.getMorePosts}>
-                    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-                    //     </TouchableOpacity>
-                    // </View>  */}
+
+    // {/* <View>
+    //     <TouchableOpacity onPress={this.getMorePosts}>
+    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
+    //     </TouchableOpacity>
+    // </View>  */}
 
     //options for header bar. Default options are in the navigator.
-    static navigationOptions = (navData:any) => {
+    static navigationOptions = (navData: any) => {
         return {
             headerTitle: 'Feed',
             headerRight: () => (
@@ -128,7 +149,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
                             navData.navigation.navigate('Profile');
-                    }}/>
+                        }}/>
                 </HeaderButtons>
             ),
             headerLeft: () => (
@@ -145,7 +166,7 @@ export default class FeedScreen extends React.Component<Props, State> {
         };
     };
 
-    styles = StyleSheet.create ({
+    styles = StyleSheet.create({
         screen: {
             flex: 1,
             alignItems: 'center',

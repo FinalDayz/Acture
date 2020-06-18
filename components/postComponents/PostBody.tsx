@@ -13,10 +13,10 @@ import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorS
 
 
 export interface Props {
-    title: String
-    text: String
-    userId: String
-    postId: number
+    title: string
+    text: string
+    userId: string
+    postId: string
     onClickEdit: () => void
     onDelete(postId: string): void
 }
