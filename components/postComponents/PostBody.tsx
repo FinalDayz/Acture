@@ -13,10 +13,11 @@ import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorS
 
 
 export interface Props {
-    title: String
-    text: String
-    userId: String
-    postId: String
+    title: string
+    text: string
+    userId: string
+    postId: string
+    onDelete(): void
 }
 
 export class PostBody extends React.Component<Props> {
@@ -28,6 +29,11 @@ export class PostBody extends React.Component<Props> {
     state = {
         isLoading: false
     };
+
+    deletePost() {
+        console.log("id here 1: " + this.props.postId);
+        this.props.onDelete();
+    }
 
     render() {
         return(
@@ -55,38 +61,17 @@ export class PostBody extends React.Component<Props> {
             [
                 {
                     text: 'Annuleren',
+                    style: "cancel"
                 },
                 {
                     text: 'Verwijderen',
-                    onPress: () => this.deletePost()
+                    onPress: () => this.deletePost(),
+                    style: "destructive"
                 }
             ],
             { cancelable: true }
         );
     }
-
-    deletePost() {
-        if(!this.state.isLoading) {
-            this.setState({isLoading:true});
-            bodyfull(ApiDictionary.deletePost, {
-                postId: this.props.postId
-            }).then((data) => {
-                alert("Verwijderen succesvol");
-                this.render();
-                this.setState({isLoading:false})
-            }).catch(err => {
-                console.log("fetch error" + err.message);
-                alert(err.message);
-                this.setState({isLoading:false})
-            })
-        }
-    };
-
-    alertStyles = StyleSheet.create({
-        cancel: {
-
-        }
-    });
 
     styles = StyleSheet.create ({
         body: {

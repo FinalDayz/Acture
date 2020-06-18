@@ -30,6 +30,7 @@ export default {
 
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
+    getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,

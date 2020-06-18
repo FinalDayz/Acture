@@ -119,7 +119,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 </View> */}
                 <View style={this.styles.separator} />
 
-
                 
                  {/* TODO: Tab-specific content on top*/}
 
@@ -148,14 +147,14 @@ export default class ProfileScreen extends React.Component<Props, State> {
         headerTitle: 'Profiel'
     };
 
+
     getBlogs() {
         if(!this.state.isLoading) {
             this.setState({isLoading:true})
-
             bodyfull(ApiDictionary.getUserBlogs, {
                 userId: this.state.currentUser.userId
             })
-            .then((result) => {
+               .then((result) => {
                 if(result.success === 1) {
                     this.setState({blogs: result.data, isLoading: false})
                 } else {
@@ -167,6 +166,16 @@ export default class ProfileScreen extends React.Component<Props, State> {
             this.setState({isLoading : false});
         }
     }
+
+    handleDelete(postId: string) {
+        const newData = this.state.blogs.filter(
+            (post) => post.postId.toString() != postId
+        );
+
+        this.setState({
+            blogs: newData
+        })
+    };
 
     styles = StyleSheet.create ({
         screen: {
