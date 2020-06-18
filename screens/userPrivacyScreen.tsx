@@ -1,10 +1,10 @@
 import React from "react";
-import {StyleSheet, View, Text} from "react-native";
+import {StyleSheet, View, Text, RefreshControl} from "react-native";
 import colors from "../constants/colors";
 import {CheckBox} from "react-native-elements";
 import {Hr} from "../components/Hr";
 import {List} from "native-base";
-import bodyless from "../components/HttpClient";
+import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 
 export interface Props {
@@ -29,7 +29,9 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
         this.state = {
             ...state,
         };
+    }
 
+    componentDidMount() {
         this.fetchSettings();
     }
 
@@ -63,12 +65,12 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
         telephone: boolean,
     } {
         return {
-            firstname: false,
-            lastname: false,
-            address: false,
-            tussenvoegsel: false,
-            email: false,
-            telephone: false,
+            firstname: true,
+            lastname: true,
+            address: true,
+            tussenvoegsel: true,
+            email: true,
+            telephone: true
         };
     }
 
@@ -79,12 +81,12 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                 [setting]: !this.state.settings[setting]
             }
         }, () => {
-            this.postSettings
+            this.postSettings();
         })
     }
 
     postSettings() {
-
+        bodyfull(ApiDictionary.changePrivacySettings, this.state.settings);
     }
 
     render() {
@@ -97,21 +99,9 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                 <Hr/>
                 <View style={styles.break}/>
                 {this.state.settings !== undefined ? (
-                    <List>
-                        <CheckBox
-                            key={'voornaam'}
-                            title='Voornaam'
-                            checked={this.state.settings.firstname}
-                            onPress={() => this.pressedCheckbox('firstname')
-                            }
-                        />
-                        <CheckBox
-                            key={'achternaam'}
-                            title='achternaam'
-                            checked={this.state.settings.lastname}
-                            onPress={() => this.pressedCheckbox('lastname')
-                            }
-                        />
+                    <List
+                    refreshControl={<RefreshControl refreshing={this.state.isLoading} />}
+                    >
                         <CheckBox
                             key={'address'}
                             title='Adres'
