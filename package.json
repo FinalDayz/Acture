@@ -31,6 +31,7 @@
     "react-native-image-base64": "^0.1.4",
     "react-native-input-scroll-view": "^1.10.1",
     "react-native-network-info": "^5.2.1",
+    "react-native-options-menu": "^2.0.2",
     "react-native-paper": "^3.10.1",
     "react-native-picker-select": "latest",
     "react-native-reanimated": "~1.7.0",

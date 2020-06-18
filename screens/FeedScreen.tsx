@@ -46,12 +46,15 @@ export default class FeedScreen extends React.Component<Props, State> {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
-                .then(
-                    (result) => {
+                .then((result) => {
+                    if(result.success === 1) {
                         this.setState({
                             isLoading: false,
                             data: result.data
                         })
+                    } else {
+                        this.setState({isLoading:false})
+                    }
                     })
                 .catch ((error) => {
                     console.log(error);
