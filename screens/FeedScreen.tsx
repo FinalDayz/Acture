@@ -16,9 +16,11 @@ import {User} from '../models/User'
 
 export interface Props {
     navigation: any
+
 }
 
 interface State {
+    eventData: any
     isLoading: boolean,
     data: any; // PostModel[],
     offset: number
@@ -30,6 +32,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     constructor(props: Props, state: State) {
         super(props, state);
         this.state = {
+            eventData: {},
             data: [],
             isLoading: false,
             offset: 0
@@ -64,9 +67,9 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
 
-    showAttendance (eventId: any)  {
+    showAttendance= (eventId: any) => {
         console.log('printing eventId: ')
-        console.log(eventId)
+        // console.log(eventId)
         // console.log("THIS IS " + eventId)
         this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
@@ -111,8 +114,12 @@ export default class FeedScreen extends React.Component<Props, State> {
                         renderItem={(itemData) => {
                            // this.showAttendance(itemData.item.evenementId)
                            //  {console.log("HALLO" + (JSON.stringify(itemData.item))}
+                           //   this.state.eventData = itemData.item.data
+                            console.log(itemData.item.evenementId)
                              return <Post
-                                 handlePress = {this.showAttendance(itemData.item.evenementId)}
+                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                 // handlePress= {this.showAttendance.bind(this)}
+
                                  navigation={this.props.navigation}
                                 data={itemData.item}
                                 onDelete={this.handleDelete}

@@ -17,9 +17,9 @@ export interface Props {
     navigation: any
     data: any
     onDelete(postId: string): void
-    // handlePress: () => void
-    handlePress () : void
-    //
+    handlePress: () => void
+    // handlePress() : void
+    // //
     
     // onClickEdit: () => void
     // data: any
@@ -83,8 +83,8 @@ export class Post extends React.Component<Props> {
         // console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
-                <ListItem style={this.styles.listContainer}  onPress={this.props.data.handlePress} >
-                    <View style={this.styles.postContainer}>
+                <ListItem style={this.styles.listContainer} onPress={this.props.handlePress}>
+                    <View style={this.styles.postContainer} >
                         <PostHeader
                             profileImage={this.props.data.profileImage}
                             userId={this.props.data.userId}
