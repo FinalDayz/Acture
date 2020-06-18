@@ -1,7 +1,4 @@
-import React, {Fragment} from 'react';
-import {ScrollView, Button} from 'react-native';
-import {View, Text, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -24,7 +21,7 @@ export interface Props {
 }
 
 interface State {
-    eventData: any
+  
     isLoading: boolean,
     data: any; // PostModel[],
     offset: number
@@ -95,7 +92,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('BlogAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
@@ -104,28 +101,16 @@ export default class FeedScreen extends React.Component<Props, State> {
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={(itemData) => {
-                           // this.showAttendance(itemData.item.evenementId)
-                           //  {console.log("HALLO" + (JSON.stringify(itemData.item))}
-                           //   this.state.eventData = itemData.item.data
                             console.log(itemData.item.evenementId)
                              return <Post
                                  handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
-                                 // handlePress= {this.showAttendance.bind(this)}
-
                                  navigation={this.props.navigation}
                                 data={itemData.item}
                                 onDelete={this.handleDelete.bind(this)}
                             />
 
                         }}
-
-                        /*
-                        * renderRow={(item) => {
-                            item.handlePress= () => this.showAttendance(item)
-                            return <Post data={item} />
-                        }}
-                        * 
-                        * */
+                        
                     />
                 </View>
             </Container>

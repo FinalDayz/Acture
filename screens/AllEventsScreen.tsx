@@ -10,16 +10,23 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import { PostModel } from '../models/PostModel';
 
+interface State {
+
+    isLoading: boolean,
+    data: any; // PostModel[],
+    offset: number
+}
+
 export default class AllEventsScreen extends React.Component<any, any> {
-
-    state = {
-        isLoading: false,
-        data: [],
-        offset: 0
-    };
-
+    state : State;
+ 
     constructor(props: any) {
         super(props);
+        this.state = {
+            data: [],
+            isLoading: false,
+            offset: 0
+        }
     }
 
     componentDidMount() {
@@ -58,18 +65,27 @@ export default class AllEventsScreen extends React.Component<any, any> {
         })
     };
 
+    showAttendance= (eventId: any) => {
+        console.log('printing eventId: ')
+        // console.log(eventId)
+        // console.log("THIS IS " + eventId)
+        this.props.navigation.navigate('Attendance', {eventId: eventId})
+    }
+
     render() {
         return(
             <Container style={this.styles.screen}>
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getFeed()}
+                        onRefresh={() => this.getEvents()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
+                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                navigation={this.props.navigation}
                                 data={itemData.item}
                                 onDelete={this.handleDelete}
                             />
@@ -124,6 +140,9 @@ export default class AllEventsScreen extends React.Component<any, any> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        list: {
+            width: '100%',
         }
     });
 }
