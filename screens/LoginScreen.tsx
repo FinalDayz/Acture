@@ -1,6 +1,6 @@
 
 import React, { Props } from 'react';
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert, Button } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
@@ -22,16 +22,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this._isMounted = false;
     }
 
-    componentWillMount(): void {
-        this.setState({
-            password: 'test',
-            email: 'test@gmail.com'
-        }, () => {
-            console.log("blabla") ;
-            this.login()
-        });
-    }
-
     state={
         email:"",
         password:"",
@@ -46,6 +36,12 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     }
 
     componentDidMount() {
+        this.setState({
+            password: 'test',
+            email: 'test@gmail.com'
+        }, () => {
+            this.login()
+        });
         this._isMounted = true;
     }
 

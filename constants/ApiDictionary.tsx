@@ -16,6 +16,10 @@ export default {
     addPost: {destination: '/api/feed/addPost/', type: 'POST'},
     getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
 
+    //vergeet niet id in de header te pompen
+    getUserById: {destination: '/api/users/byid/', type: 'GET'},
+    getStartupById: {destination: '/api/startup/byid/', type: 'GET'},
+
     //dit is de defaults van de api server (verander dit naar je home pc)
     followUsers: {destination: '/api/follow/', type: 'GET'},
     changeFollow: {destination: '/api/follow/', type: 'PATCH'},
@@ -25,7 +29,9 @@ export default {
     insertAttendant: {destination: '/api/attendance/addAttendant/', type: 'POST'},
 
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
+    getGlobalFeed: {destination: '/api/feedposts/globalFeed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
+    getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
 
     getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
     changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},

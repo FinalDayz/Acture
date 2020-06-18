@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -29,35 +29,52 @@ export default class AllEventsScreen extends React.Component<any, any> {
     getEvents() {
         if(!this.state.isLoading) {
             
-            this.state.isLoading = true;
-            bodyfull(ApiDictionary.getEvents, {})
-            .then(
-                (result: {data:Array<PostModel>}) => {
-                    this.setState({data: result.data})
+            this.setState({isLoading:true}, () => {
+                bodyfull(ApiDictionary.getEvents, {
+                    offs: this.state.offset //offset for loading more posts
                 })
-                .catch ((error) => {
-                        console.log(error);
+                .then(
+                    (result: {data:Array<PostModel>}) => {
+                        this.setState({
+                            isLoading: false,
+                            data: result.data
+                        })
                     })
-        } else {
-            return null
+                .catch ((error) => {
+                    console.log(error);
+                })
+            })
         }
     }
+
+    handleDelete(postId: string) {
+        console.log("helemaal hier: ");
+        const newData = this.state.data.filter(
+            (post) => post.postId.toString() !== postId
+        );
+
+        this.setState({
+            data: newData
+        })
+    };
 
     render() {
         return(
             <Container style={this.styles.screen}>
                 <View style={this.styles.scrollable}>
-                    {!this.state.isLoading ? (
-                        <View style={this.styles.loading}>
-                            <ActivityIndicator size="large" color={colors.primaryLight}/>
-                        </View>
-                    ) : (<View></View>)}
-                    <List
-                        dataArray={this.state.data}
-                        renderRow={(item) => {
-                            return <Post data={item}/>
-                        }}
-                    /> 
+                <FlatList
+                        refreshing={this.state.isLoading}
+                        onRefresh={() => this.getEvents()}
+                        contentContainerStyle={this.styles.list}
+                        data={this.state.data}
+                        keyExtractor={(item, index) => item.postId.toString()}
+                        renderItem={itemData =>
+                            <Post
+                                data={itemData.item}
+                                onDelete={this.handleDelete}
+                            />
+                        }
+                    />
                 </View>     
             </Container>
         );
@@ -107,6 +124,9 @@ export default class AllEventsScreen extends React.Component<any, any> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        list: {
+            width: '100%',
         }
     });
 }

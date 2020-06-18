@@ -10,8 +10,7 @@ import HeaderButton from "../components/HeaderButton";
 const exploreTabs = createMaterialTopTabNavigator(
     {
         Personen: ExploreUsersScreen,
-        Startups: ExploreUsersScreen,
-        Vakgebieden: ExploreUsersScreen,
+        Startups: ExploreUsersScreen
     }, {
         initialRouteName: 'Personen',
         tabBarOptions: {
@@ -23,7 +22,7 @@ const exploreTabs = createMaterialTopTabNavigator(
             tabStyle: {},
             style: {
 
-                backgroundColor: 'white',
+                backgroundColor: colors.backgroundPrimary,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
             },
@@ -31,34 +30,5 @@ const exploreTabs = createMaterialTopTabNavigator(
         navigationOptions: ExploreUsersScreen.navigationOptions
     }
 );
-
-
-// Options for header bar. Default options are in the navigator.
-// exploreTabs.navigationOptions = (navData:any) => {
-//     return {
-//         headerTitle: 'Explore (Placeholder)',
-//         headerRight: () => (
-//             <HeaderButtons HeaderButtonComponent={HeaderButton}>
-//                 <Item
-//                     title='profile'
-//                     iconName='md-person' //TODO: change to profile picture
-//                     onPress={() => {
-//                         navData.navigation.navigate('Profile');
-//                     }}/>
-//             </HeaderButtons>
-//         ),
-//         headerLeft: () => (
-//             <HeaderButtons HeaderButtonComponent={HeaderButton}>
-//                 <Item
-//                     title='menu'
-//                     iconName='md-menu'
-//                     onPress={() => {
-//                         navData.navigation.toggleDrawer();
-//                     }}
-//                 />
-//             </HeaderButtons>
-//         )
-//     }
-// };
 
 export default exploreTabs;
