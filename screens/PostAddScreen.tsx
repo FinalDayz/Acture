@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {
+    Alert,
     Image,
     StyleSheet,
     TextInput,
@@ -19,35 +20,31 @@ import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
-// import {error} from "util";
 import {Input} from "../components/input/standardInput";
+import { Container } from "native-base";
 
 
 export interface Props {
+    data:any
 }
 
 interface State {
-    textareaHeight: number,
-    hasError: boolean,
-    categories: Array<Category>,
     title: string
+    titleValid: boolean
     text: string
+    textValid: boolean
     categoryId: number
+    categoryValid: boolean
+    categories: Array<Category>
     image: string
     imageName: string
+
     isLoading: boolean
 
-    descriptionIsValid: boolean
-    titleIsValid: boolean
-    // componentContainer: Object
-    // isSmallWindow: boolean
-    // wrongInputs: boolean
+    isValid: boolean,
 
+    editMode: boolean
 
-    // x: string
-    // y: string
-    // width: string
-    // height: string
 }
 
 const isSmallWindow = (Dimensions.get('window').height > 450 && Dimensions.get('window').height < 550)
@@ -60,46 +57,24 @@ export default class PostAddScreen extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            ...state,
             isLoading: false,
-            textareaHeight: 250,
-            // image: "",
-            hasError: false,
-            categories: [],
-
+            isValid: false,
             title: '',
+            titleValid: true,
             text: '',
+            textValid: true,
             categoryId: 0,
+            categoryValid: true,
+            categories: [],
             image: '',
             imageName: '',
 
-            descriptionIsValid: true,
-            titleIsValid: true
-            // wrongInputs: false
-            // componentContainer: {},
-            // isSmallWindow: Dimensions.get('window').height > 0 &&  Dimensions.get('window').height < 550
-
-            // x: '',
-            // y: '',
-            // width: '',
-            // height: '',
-
+            editMode: false
         }
-        // this._getAllCategories();
-
     }
 
-
-    // postToAdd = {
-    //    text: this.state.text,
-    //    title: this.state.title,
-    //    image: this.state.image,
-    //    userId: 1,
-    //    categoryId: 1};
-
-
     componentDidMount() {
-        this._getAllCategories();
+        this.getAllCategories();
         this.getPermissionAsync();
         // this.getStyle();
     }
@@ -114,7 +89,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     };
 
-    _pickImage = async () => {
+    pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -139,44 +114,54 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     };
 
-    // CheckTextInput = () => {
-    //     const {title, text} = this.state;
-    //     if(text.trim().length == 0){
-    //         this..setNativeProps({
-    //             borderColor:'red',
-    //             borderWidth:1
-    //         });
-    //         return;
-    //     }
-    //
-    //     if(lastName.trim().length == 0){
-    //         this.lastNameInput.setNativeProps({
-    //             borderColor:'red',
-    //             borderWidth:1
-    //         });
-    //         return;
-    //     }
-    // };
-    // public myFilter = (d: Date): boolean =>
-        CheckTextInput = (): boolean => {
-        // const {title, text} = this.state;
-        console.log(this.state.title)
-        if (this.state.title.trim().length == 0) {
-            this.state.titleIsValid = false
-        }
-
-        if (this.state.text.trim().length == 0) {
-            this.state.descriptionIsValid = false
-        }
-
-        if (!this.state.titleIsValid || !this.state.descriptionIsValid) {
-            return false;
-        } else {
-            return true;
-        }
+    checkTitleInput(title: string) {
+        this.setState({
+            titleValid: (title.trim().length > 0),
+            title: title
+        });
+    }
+    
+    checkTextInput(text: string) {
+        this.setState({
+            textValid: (text.trim().length > 0),
+            text: text
+        });
     }
 
-    _addPost = () => {
+    checkCategoryInput(id: number) {
+        this.setState({
+            categoryValid: (id != 0),
+            categoryId: id
+        });
+    }
+
+    updateValid() {
+        this.checkTitleInput(this.state.title);
+        this.checkTextInput(this.state.text);
+        this.checkCategoryInput(this.state.categoryId)
+
+        this.setState({isValid: (
+            this.state.titleValid
+            && this.state.textValid
+            && this.state.categoryValid
+        )});
+    }
+
+    checkValid(): boolean {
+        this.updateValid();
+        if (
+            !this.state.isValid
+        ) {
+            Alert.alert(
+                'Invoer onjuist',
+                'Controleer of alle velden correct zijn ingevuld.',
+                [{text: 'OK'}])
+            return false;
+        }
+        return true;
+    }
+
+    addPost = () => {
         if (!this.state.isLoading) {
             this.state.isLoading = true;
             bodyfull(ApiDictionary.addPost, {
@@ -197,9 +182,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     }
 
-
-
-    _getAllCategories = () => {
+    getAllCategories = () => {
         if (!this.state.isLoading) {
             this.state.isLoading = true;
             bodyless(ApiDictionary.getAllCategories)
@@ -221,124 +204,92 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     }
 
-    // measureView(event: any) {
-    //     console.log('event peroperties: ', event);
-    //     this.setState({
-    //         x: event.nativeEvent.layout.x,
-    //         y: event.nativeEvent.layout.y,
-    //         width: event.nativeEvent.layout.width,
-    //         height: event.nativeEvent.layout.height
-    //     })
-    // }
-
-    // onLayout={(event) => this.measureView(event)}
-
-    // getStyle(){
-    //     let componentContainerStyle = styles.componentContainerBig;
-    //
-    //     if(Dimensions.get('window').height > 450 &&  Dimensions.get('window').height < 550){
-    //         componentContainerStyle = styles.componentContainerSmall;
-    // }
-    //  return componentContainerStyle;
-// }
-
-    // setStyleContainer(){
-    //     if( this.state.isSmallWindow){
-    //         this.state.componentContainer = styles.componentContainerSmall;
-    //     }else {
-    //         this.state.componentContainer = styles.componentContainerBig
-    //     }
-    // }
+    submitPostHandler(){
+        if (!this.checkValid) {
+            return
+        }
+    }
 
 
     render() {
-        // this.setStyleContainer()
         return (
-            <ScrollView style={styles.screen}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    {/*<View style = {this.state.componentContainer}>*/}
-                    <View style={styles.componentContainerBig}>
-                        <View style={styles.titleBox}>
-                            {/*style={this.state.titleIsValid ? styles.titleBox : styles.wrongTitleBox}*/}
-                            <Text style={{
-                                fontStyle: 'italic',
-                                fontWeight: "bold",
-                                width: "13%",
-                                marginRight: 1
-                            }}>Titel: </Text>
-                            <TextInput
-                                style={{
-                                    width: "95%"
-                                }}
-                                value={this.state.title}
-                                onChangeText={(title) => this.setState({title: title})}/>
-                            <TextInput/>
-                            {/*{!this.state.titleIsValid &&*/}
-                            {/*<Text style={{  marginBottom: 6,*/}
-
-                            {/*    fontSize: 12,color: "red" }}>Vul een titel in</Text>}       */}
-                        </View>
-                        <View
-                            // style={this.state.descriptionIsValid ? styles.beschrijvingBox : styles.wrongBeschrijvingBox}
-                            style= {styles.beschrijvingBox}
-                        >
-                            {/*<Input*/}
-                            {/*errorText = 'veld mag niet leeg zijn'*/}
-                            {/*type = 'default'*/}
-                            {/*// ref={r=>this.beschrijvingBox=r}*/}
-                            {/*placeholder="Beschrijving..."*/}
-                            {/*value={this.state.text}*/}
-                            {/*changed = {(text,isValid) => this.setState({text: text})}*/}
-                            {/*multiline/>*/}
-                            <TextInput
-                                placeholder="Beschrijving..."
-                                value={this.state.text}
-                                onChangeText={text => this.setState({text: text})}
-                                multiline/>
-                            {/*{!this.state.descriptionIsValid &&*/}
-                            {/*    <Text style={{ color: "red" }}>Vul een beschrijving in</Text>}*/}
-                        </View>
-
-                        <View style={styles.categoryBox}>
-                            <RNPickerSelect
-                                style={styles.pickerSelect}
-                                placeholder={{
-                                    label: 'Categorie selecteren'
-                                }}
-                                onValueChange={id => this.setState({categoryId: id})}
-                                items={this.state.categories.map(obj =>
-                                    ({label: obj.name, value: obj.categoryId})
-                                )}
-                            />
-                        </View>
-                        <View style={{
-                            marginTop: 30,
-                            marginHorizontal: 10,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between'
-                        }}>
-                            <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera'
-                                      size={27} color={"grey"}/>
-                            <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>
-                                {this.state.imageName.slice(this.state.imageName.length - 10)}
-                            </Text>
-                        </View>
-                        <View style={styles.line}></View>
-                        <View style={styles.belowButtons}>
-                            <Ionicons name='md-trash' size={27} color={"grey"}/>
-                            <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
-                        </View>
+            <ScrollView>
+                <View style={styles.componentContainerBig} >
+                    <View style={styles.inputBox}>
+                        <TextInput
+                            style={ styles.input }
+                            placeholder="Titel..."
+                            value={this.state.title}
+                            onChangeText={title => this.checkTitleInput(title)}
+                            autoCorrect
+                            returnKeyType='next'
+                        />
+                        {!this.state.titleValid &&
+                            <Text style={styles.error}>Veld mag niet leeg zijn</Text>
+                        }
                     </View>
-                </TouchableWithoutFeedback>
+                    <View style={styles.inputBox}>
+                        <TextInput
+                            style={ styles.input }
+                            placeholder="Beschrijving..."
+                            value={this.state.text}
+                            onChangeText={text => this.checkTextInput(text)}
+                            autoCorrect
+                            returnKeyType='next'
+                            multiline={true}
+                            numberOfLines={5}
+                        />
+                        {!this.state.textValid &&
+                        <Text style={styles.error}>Veld mag niet leeg zijn</Text>
+                        }
+                    </View>
+
+                    <View style={styles.inputBox}>
+                        <RNPickerSelect
+                            style={{
+                                placeholder: {
+                                    color: 'black',
+                                    fontSize: 12,
+                                },
+                            }}
+                            placeholder={{
+                                label: 'Categorie selecteren',
+                                value: 0,
+                                color: '#D3D3D3'
+                            }}
+                            onValueChange={id => this.checkCategoryInput(id)}
+                            items={this.state.categories.map(obj => ({
+                                label: obj.name, value: obj.categoryId
+                            }))}
+                        />
+                        <View style={styles.separator}></View>
+                        {!this.state.categoryValid &&
+                        <Text style={styles.error }>Kies een categorie</Text>
+                        }
+                    </View>
+
+                    {/*<View style={{*/}
+                    {/*    marginTop: 30,*/}
+                    {/*    marginHorizontal: 10,*/}
+                    {/*    flexDirection: 'row',*/}
+                    {/*    justifyContent: 'space-between'*/}
+                    {/*}}>*/}
+
+                    {/*    <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera'*/}
+                    {/*              size={27} color={"grey"}/>*/}
+                    {/*    <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>*/}
+                    {/*        {this.state.imageName.slice(this.state.imageName.length - 10)}*/}
+                    {/*    </Text>*/}
+                    {/*</View>*/}
+                    {/*<View style={styles.line}></View>*/}
+                </View>
             </ScrollView>
         );
     }
 
     //options for header bar
     static navigationOptions = (navData:any) => {
-        return {
-            headerTitle: 'Bericht plaatsen'
-        }
+        return {headerTitle: 'Bericht plaatsen'}
     };
 
 }
@@ -348,7 +299,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
         padding: 28,
-        //         // paddingTop: 100
     },
     warningTest: {
         marginBottom: 6,
@@ -356,11 +306,8 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     componentContainerBig: {
-        paddingVertical: 5,
-        width: '100%',
-        height: 550,
+        margin: 20,
         backgroundColor: '#F4F4F4',
-        // backgroundColor: 'white',
         borderRadius: 10,
         shadowColor: "#000",
         shadowOffset: {
@@ -394,47 +341,29 @@ const styles = StyleSheet.create({
         borderBottomColor: '#D3D3D3',
         marginHorizontal: 10
     },
-    titleBox: {
-        // backgroundColor: 'red',
-        flexDirection: 'row',
+    inputBox: {
+        width: '100%',
+        // backgroundColor: 'blue',
         paddingVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: '#D3D3D3',
-        justifyContent: 'space-between',
-        marginHorizontal: 10
+        paddingHorizontal: 10
     },
 
-    wrongTitleBox: {
-        // backgroundColor: 'red',
-        flexDirection: 'row',
+    input: {
+        textAlignVertical: 'top',
+        paddingHorizontal: 2,
         paddingVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: 'red',
-        justifyContent: 'space-between',
-        marginHorizontal: 10
-    },
-
-
-    beschrijvingBox: {
-        // backgroundColor: 'red',
-        height: "65%",
-        marginVertical: 5,
-        borderBottomWidth: 1,
         borderBottomColor: '#D3D3D3',
-
-        marginHorizontal: 10
+        borderBottomWidth: 1
     },
-    wrongBeschrijvingBox: {
-        // backgroundColor: 'red',
-        height: "65%",
-        marginVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: 'red',
 
-        marginHorizontal: 10
+    error: {
+        color: '#AA0000',
+        fontSize: 12
     },
-    pickerSelect: {
-        // placeholderTextColor: "black"
+
+    separator: {
+        borderTopColor: '#D3D3D3',
+        borderTopWidth: 1
     },
 
     categoryBox: {
@@ -460,7 +389,6 @@ const styles = StyleSheet.create({
         color: "white",
         backgroundColor: colors.primaryLight,
         borderRadius: 10,
-        // marginTop:Dimensions.get('window').height > 600? 30 : -500,
         flexDirection: 'row',
         justifyContent: "center",
         alignItems: "center",
@@ -521,14 +449,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 30,
+        // marginTop: 30,
     }
-    // descriptionBox:{
-    //     backgroundColor:colors.inputfieldLight
-    //     width:'100%',
-    //     borderRadius:3,
-    //     padding: 10,
-    //
-    // }
-
 });

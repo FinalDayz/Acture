@@ -20,6 +20,7 @@ export interface Props {
     userId: string
     postId: string
     onDelete(): void
+    onEdit(): void
 }
 
 export class PostBody extends React.Component<Props> {
@@ -33,7 +34,7 @@ export class PostBody extends React.Component<Props> {
     };
     
     editPost() {
-        console.log("bewerken!");
+        this.props.onEdit();
     }
 
     deletePost() {

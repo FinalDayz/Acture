@@ -63,6 +63,11 @@ export default class FeedScreen extends React.Component<Props, State> {
             })
         }
     }
+    
+    handleEdit(postId: string) {
+        console.log("bewerken1")
+        this.props.navigation.navigate('PostAddScreen', {postId: postId})
+    }
 
     handleDelete(postId: string) {
         const newData = this.state.data.filter(
@@ -93,6 +98,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
                         }

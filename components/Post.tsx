@@ -13,6 +13,7 @@ import { bodyfull } from './HttpClient';
 export interface Props {
     data: any
     onDelete(postId: string): void
+    onEdit(postId: string): void
 }
 
 export class Post extends React.Component<Props> {
@@ -24,6 +25,10 @@ export class Post extends React.Component<Props> {
     state = {
         isLoading: false
     };
+
+    handleEdit() {
+        this.props.onEdit(this.props.data.postId)
+    }
 
     handleDelete() {
         this.deletePost() 
@@ -94,6 +99,7 @@ export class Post extends React.Component<Props> {
                             title={this.props.data.title}
                             userId={this.props.data.userId}
                             postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
                             onDelete={this.handleDelete.bind(this)}
                         />
                     </View>
