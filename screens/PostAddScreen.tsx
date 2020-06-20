@@ -24,10 +24,11 @@ import { Container } from "native-base";
 
 
 export interface Props {
-    data:any
+    navigation:any
 }
 
 interface State {
+    postId: string
     title: string
     titleValid: boolean
     text: string
@@ -37,9 +38,10 @@ interface State {
     categories: Array<Category>
     image: string
     imageName: string
-    catName: string
-    catCity: string
-    catAddress: string
+    eventName: string
+    eventCity: string
+    eventAddress: string
+    eventDate: Date
 
     isLoading: boolean
 
@@ -59,6 +61,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         this.state = {
             isLoading: false,
             isValid: false,
+            postId: '',
             title: '',
             titleValid: true,
             text: '',
@@ -68,9 +71,10 @@ export default class PostAddScreen extends React.Component<Props, State> {
             categories: [],
             image: '',
             imageName: '',
-            catName: '',
-            catCity: '',
-            catAddress: '',
+            eventName: '',
+            eventCity: '',
+            eventAddress: '',
+            eventDate: new Date(),
 
             editMode: false
         }
@@ -81,6 +85,32 @@ export default class PostAddScreen extends React.Component<Props, State> {
     componentDidMount() {
         this.getAllCategories();
         this.getPermissionAsync();
+        if (this.props.navigation.state.params.edit) {
+            this.fillStateOnEdit(this.props.navigation.state.params.data);
+        }
+    }
+
+    fillStateOnEdit(data: any) {
+        console.log(JSON.stringify(data));
+        this.setState({
+            postId: data.postId,
+            title: data.title,
+            text: data.text,
+            categoryId: data.categoryId,
+            image: data.image,
+            imageName: 'image.jpg',
+
+            editMode: true
+        }, () => {
+            if (this.state.categoryId === 4) {
+                this.setState({
+                    eventName: data.name,
+                    eventCity: data.city,
+                    eventAddress: data.adress,
+                    eventDate: data.date,
+                })
+            }
+        });
     }
 
     getPermissionAsync = async () => {
@@ -300,8 +330,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         <TextInput
                             style={styles.input}
                             placeholder="Naam..."
-                            value={this.state.catName}
-                            onChangeText={name => this.setState({catName: name})}
+                            value={this.state.eventName}
+                            onChangeText={name => this.setState({eventName: name})}
                             autoCorrect
                             returnKeyType='next'
                         />
@@ -314,16 +344,16 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         <TextInput
                             style={styles.input}
                             placeholder="Plaats..."
-                            value={this.state.catCity}
-                            onChangeText={city => this.setState({catCity: city})}
+                            value={this.state.eventCity}
+                            onChangeText={city => this.setState({eventCity: city})}
                             autoCorrect
                             returnKeyType='next'
                         />
                         <TextInput
                             style={styles.input}
                             placeholder="Adres..."
-                            value={this.state.catAddress}
-                            onChangeText={address => this.setState({catAddress: address})}
+                            value={this.state.eventAddress}
+                            onChangeText={address => this.setState({eventAddress: address})}
                             autoCorrect
                             returnKeyType='next'
                         />
@@ -341,16 +371,18 @@ export default class PostAddScreen extends React.Component<Props, State> {
     };
 
 }
+const headerMessage = 'Bericht plaatsen'
 
 //options for image picker
 const options = {
     title: 'Select Avatar',
-    customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+    customButtons: [{name: 'fb', title: headerMessage}],
     storageOptions: {
         skipBackup: true,
         path: 'images',
     }
 }
+
 
 const styles = StyleSheet.create({
     screen: {

@@ -35,5 +35,5 @@ export default {
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
-    timeoutTimings: 7000, //in miliseconds
+    timeoutTimings: 20000, //in miliseconds
 };

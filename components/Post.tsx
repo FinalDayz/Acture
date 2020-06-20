@@ -27,7 +27,7 @@ export class Post extends React.Component<Props> {
     };
 
     handleEdit() {
-        this.props.onEdit(this.props.data.postId)
+        this.props.onEdit(this.props.data)
     }
 
     handleDelete() {
@@ -69,6 +69,7 @@ export class Post extends React.Component<Props> {
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
+                            userId={this.props.data.userId}
                             eventDate={new Date(this.props.data.date)}
                             adress={this.props.data.adress}
                             city={this.props.data.city}
@@ -76,7 +77,10 @@ export class Post extends React.Component<Props> {
                             attendance={this.props.data.total_people}
                             evenementId={this.props.data.evenementId}
                             doesAttend={this.props.data.doesAttend}
-                            postId={this.props.data.postId}/>
+                            postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
+                            onDelete={this.deletePost.bind(this)}
+                        />
                     </View>
                 </ListItem>
             );

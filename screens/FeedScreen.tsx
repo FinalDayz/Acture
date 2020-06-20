@@ -42,6 +42,7 @@ export default class FeedScreen extends React.Component<Props, State> {
 
     getFeed() {
         if(!this.state.isLoading) {
+
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
@@ -64,9 +65,8 @@ export default class FeedScreen extends React.Component<Props, State> {
         }
     }
     
-    handleEdit(postId: string) {
-        console.log("bewerken1")
-        this.props.navigation.navigate('PostAddScreen', {postId: postId})
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
     handleDelete(postId: string) {
@@ -87,7 +87,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false}) } />
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
