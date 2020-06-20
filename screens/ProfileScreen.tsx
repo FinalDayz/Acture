@@ -12,6 +12,7 @@ import { User } from '../models/User';
 import { UserRole } from '../models/UserRole';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { runInThisContext } from 'vm';
+import { Startup } from '../models/Startup';
 
 export interface Props {
     navigation: any
@@ -21,7 +22,8 @@ interface State {
     isLoading: boolean,
     blogs: PostModel[],
     currentUser: User,
-    selectedTab: string
+    selectedTab: string,
+    startups: Startup[],
 };
 
 export default class ProfileScreen extends React.Component<Props, State> {
@@ -37,7 +39,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
             ...state,
             currentUser: new User(undefined),
             isLoading: false,
-            selectedTab: 'Over'
+            selectedTab: 'Over',
+            startups: []
         }
 
         this._isMounted = false;
@@ -126,7 +129,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             />
                         </View>
                         <Container style={this.styles.nameBox}>
-                            <Text style={[this.styles.text, {textAlign: "center"}]} adjustsFontSizeToFit numberOfLines={2}>{this.getFullName()}</Text>
+                            <Text style={[this.styles.text, {textAlign: "center"}]} adjustsFontSizeToFit numberOfLines={2}>{this.state.currentUser.getFullName()}</Text>
                         </Container>
                     </View>
             </Container>
@@ -178,17 +181,16 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         this.setState({isLoading: false})
                     }
                 })
-                bodyless
+                bodyless(HttpHelper.addUrlParameter(
+                    ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])
+                ).then(result => {
+                    this.setState({
+                        isLoading: false,
+                        startups: result.data
+                    });
+                });
             })
         }   
-    }
-
-    getFullName() {
-        if(this.state.currentUser.tussenvoegsel !== undefined) {
-            return this.state.currentUser.firstname + " " + this.state.currentUser.tussenvoegsel + " " + this.state.currentUser.lastname
-        } else {
-            return this.state.currentUser.firstname + " " + this.state.currentUser.lastname
-        }
     }
 
     tabGenerator(category: string[]) {
