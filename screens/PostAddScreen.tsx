@@ -7,7 +7,6 @@ import {
     TouchableOpacity,
     View,
     Text,
-    Dimensions,
     Platform,
     TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView
 } from "react-native";
@@ -38,6 +37,9 @@ interface State {
     categories: Array<Category>
     image: string
     imageName: string
+    catName: string
+    catCity: string
+    catAddress: string
 
     isLoading: boolean
 
@@ -46,8 +48,6 @@ interface State {
     editMode: boolean
 
 }
-
-const isSmallWindow = (Dimensions.get('window').height > 450 && Dimensions.get('window').height < 550)
 
 export default class PostAddScreen extends React.Component<Props, State> {
     state: State;
@@ -68,15 +68,19 @@ export default class PostAddScreen extends React.Component<Props, State> {
             categories: [],
             image: '',
             imageName: '',
+            catName: '',
+            catCity: '',
+            catAddress: '',
 
             editMode: false
         }
+
+
     }
 
     componentDidMount() {
         this.getAllCategories();
         this.getPermissionAsync();
-        // this.getStyle();
     }
 
     getPermissionAsync = async () => {
@@ -89,10 +93,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     };
 
+
     pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 base64: true,
                 aspect: [4, 3],
@@ -113,6 +118,13 @@ export default class PostAddScreen extends React.Component<Props, State> {
             console.log(E);
         }
     };
+
+    deleteImage() {
+        this.setState({
+            image: '',
+            imageName: ''
+        })
+    }
 
     checkTitleInput(title: string) {
         this.setState({
@@ -268,20 +280,56 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         }
                     </View>
 
-                    {/*<View style={{*/}
-                    {/*    marginTop: 30,*/}
-                    {/*    marginHorizontal: 10,*/}
-                    {/*    flexDirection: 'row',*/}
-                    {/*    justifyContent: 'space-between'*/}
-                    {/*}}>*/}
+                    <View style={styles.inputBox}>
+                        {this.state.imageName === '' &&
+                            <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this.pickImage} name='md-camera'
+                            size={27} color={"grey"}/>
+                        }
+                        {this.state.imageName !== '' &&
+                            <Ionicons style={{width: '35%', paddingTop: 5}} onPress={this.deleteImage} name='md-trash'
+                                      size={27} color={"grey"}/>
+                        }
+                        <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>
+                            {this.state.imageName.slice(this.state.imageName.length - 10)}
+                        </Text>
+                    </View>
 
-                    {/*    <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera'*/}
-                    {/*              size={27} color={"grey"}/>*/}
-                    {/*    <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>*/}
-                    {/*        {this.state.imageName.slice(this.state.imageName.length - 10)}*/}
-                    {/*    </Text>*/}
-                    {/*</View>*/}
-                    {/*<View style={styles.line}></View>*/}
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Naam evenement</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Naam..."
+                            value={this.state.catName}
+                            onChangeText={name => this.setState({catName: name})}
+                            autoCorrect
+                            returnKeyType='next'
+                        />
+                    </View>
+                    }
+
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Locatie</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Plaats..."
+                            value={this.state.catCity}
+                            onChangeText={city => this.setState({catCity: city})}
+                            autoCorrect
+                            returnKeyType='next'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Adres..."
+                            value={this.state.catAddress}
+                            onChangeText={address => this.setState({catAddress: address})}
+                            autoCorrect
+                            returnKeyType='next'
+                        />
+                    </View>
+                    }
+
                 </View>
             </ScrollView>
         );
@@ -292,6 +340,16 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return {headerTitle: 'Bericht plaatsen'}
     };
 
+}
+
+//options for image picker
+const options = {
+    title: 'Select Avatar',
+    customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+    storageOptions: {
+        skipBackup: true,
+        path: 'images',
+    }
 }
 
 const styles = StyleSheet.create({
@@ -345,7 +403,13 @@ const styles = StyleSheet.create({
         width: '100%',
         // backgroundColor: 'blue',
         paddingVertical: 5,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+    },
+    headLine: {
+        fontStyle: 'italic',
+        fontWeight: "bold",
+        flex: 10,
+        marginRight: 1
     },
 
     input: {
@@ -374,15 +438,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
 
     },
-    buttonFotoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-
-
-        marginTop: Dimensions.get('window').height > 600 ? 30 : 5,
-
-    },
     addPhotoButtonContainer: {
         width: 50,
         height: 45,
@@ -407,8 +462,6 @@ const styles = StyleSheet.create({
         color: "white",
         backgroundColor: colors.primaryLight,
         borderRadius: 10,
-        marginTop: Dimensions.get('window').height > 600 ? 50 : 35,
-        marginLeft: Dimensions.get('window').width > 50 ? 185 : 150,
         flexDirection: "row",
         justifyContent: "space-between"
     },
