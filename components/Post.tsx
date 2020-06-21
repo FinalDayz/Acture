@@ -17,7 +17,7 @@ export interface Props {
     data: any
     onDelete(postId: string): void
     handlePress: () => void
-    refreshEvents: () => void
+    // refreshEvents: () => void
     
 }
 
@@ -90,7 +90,7 @@ export class Post extends React.Component<Props> {
                             LastName={this.props.data.lastname}
                             insertion={this.props.data.tussenvoegsel} />
                         <EventBody
-                            refreshEvents = {()=>this.props.refreshEvents}
+                            // refreshEvents = {()=>this.props.refreshEvents}
                             text={this.props.data.text}
                             title={this.props.data.title}
                             eventDate={new Date(this.props.data.date)}

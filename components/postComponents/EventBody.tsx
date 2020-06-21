@@ -14,23 +14,32 @@ export interface Props {
     adress: String
     city: String
     price: String
-    attendance: String
+    attendance: number
     evenementId: number
     doesAttend: number
     postId: String
-    refreshEvents: () => void
+    // refreshEvents: () => void
 }
 
 export class EventBody extends React.Component<Props> {
 
     state = {
         isLoading: false,
-        attendButtonPressed: false
+        attendButtonPressed: false,
+        attendance: this.props.attendance
     };
 
     constructor(props: Props) {
         super(props);
+        // console.log("this is attendance: " + (this.state.attendance + 1))
     }
+
+    // updateTotalPeople(): {
+    //     this.state.attendance + 1
+    //  return this.state.attendance
+    // }
+
+
 
     addUserToEvent() {
         if(!this.state.isLoading) {
@@ -38,12 +47,14 @@ export class EventBody extends React.Component<Props> {
             this.state.isLoading = true;
             bodyfull(ApiDictionary.insertAttendant, {
                 eventId: this.props.evenementId
+            }).then(response => {
+                this.state.attendance+1
+                this.setState({attendance: this.state.attendance + 1})
             })
             .catch ((error) => {
                     console.log("Dit is de error joehoeeee: " + error);
             })
             this.setState({isLoading : false});
-            this.props.refreshEvents();
         }
     }
 
@@ -71,7 +82,7 @@ export class EventBody extends React.Component<Props> {
                 <Text style={this.styles.bodyText}>{this.props.text}</Text>
                 <View style={this.styles.bottomContent}>
                     <View style={this.styles.attendanceContainer}>
-                        <Text style={this.styles.attendance}>totaal aanmeldingen: {this.props.attendance} </Text>
+                        <Text style={this.styles.attendance}>totaal aanmeldingen: {this.state.attendance} </Text>
                     </View>
 
                     { (this.props.doesAttend == 0 && !this.state.attendButtonPressed) &&
