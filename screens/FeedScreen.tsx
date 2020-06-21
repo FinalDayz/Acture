@@ -102,7 +102,8 @@ export default class FeedScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={(itemData) => {
                             console.log(itemData.item.evenementId)
-                             return <Post
+                             // @ts-ignore
+                            return <Post
                                  handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                  navigation={this.props.navigation}
                                 data={itemData.item}
