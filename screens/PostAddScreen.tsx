@@ -8,7 +8,7 @@ import {
     View,
     Text,
     Platform,
-    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView
+    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Button
 } from "react-native";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
@@ -17,10 +17,14 @@ import RNPickerSelect from 'react-native-picker-select';
 import Constants from 'expo-constants';
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
+// @ts-ignore
+import DatePicker from 'react-native-datepicker';
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
 import {Input} from "../components/input/standardInput";
 import { Container } from "native-base";
+import { HttpHelper } from "../components/HttpHelper";
+import { User } from "../models/User";
 
 
 export interface Props {
@@ -35,7 +39,10 @@ interface State {
     textValid: boolean
     categoryId: number
     categoryValid: boolean
+    startupId: number
+    startupValid: boolean
     categories: Array<Category>
+    startups: Array<any>
     image: string
     imageName: string
     eventName: string
@@ -68,13 +75,17 @@ export default class PostAddScreen extends React.Component<Props, State> {
             textValid: true,
             categoryId: 0,
             categoryValid: true,
-            categories: [],
+            startupId: 0,
+            startupValid: true,
             image: '',
             imageName: '',
             eventName: '',
             eventCity: '',
             eventAddress: '',
             eventDate: new Date(),
+            
+            categories: [],
+            startups: [],
 
             editMode: false
         }
@@ -84,7 +95,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     componentDidMount() {
         this.getAllCategories();
-        this.getPermissionAsync();
         if (this.props.navigation.state.params.edit) {
             this.fillStateOnEdit(this.props.navigation.state.params.data);
         }
@@ -97,8 +107,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
             title: data.title,
             text: data.text,
             categoryId: data.categoryId,
-            image: data.image,
-            imageName: 'image.jpg',
 
             editMode: true
         }, () => {
@@ -113,40 +121,65 @@ export default class PostAddScreen extends React.Component<Props, State> {
         });
     }
 
-    getPermissionAsync = async () => {
-        // @ts-ignore
-        if (Constants.platform.ios) {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
+    getCameraPermissionAsync() {
+        Permissions.askAsync(Permissions.CAMERA_ROLL).then((result) => {
+            if (result.status !== 'granted') {
+                Alert.alert(
+                    'Kon camera niet openen',
+                    'De app heeft toestemming nodig om de camera te mogen gebruiken.',
+                    [{text: 'OK'}]);
+                return;
             }
-        }
-    };
-
-
-    pickImage = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
+            ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 base64: true,
-                aspect: [4, 3],
-                quality: 0.01,
-
-            });
-            if (result && !result.cancelled) {
-                console.log(result.uri);
-                const bas64 = result.base64;
-                if (bas64) {
-                    this.setState({image: bas64.toString()})
-                    this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)})
+                quality: 0.1,
+            }).then((result) => {
+                if (result && !result.cancelled && result.base64)
+                    this.setState({
+                        image: result.base64,
+                        imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)
+                    })
+            }).catch((error) => {
+                    Alert.alert('Oeps!',
+                        'Kon de foto niet laden...',
+                        [{text: 'OK'}],
+                        {cancelable: true})
+                    console.log("image error: " + error);
                 }
+            )
+        });
+    };
 
+    getGalleryPermissionAsync() {
+        Permissions.askAsync(Permissions.CAMERA_ROLL).then((result) => {
+            if (result.status !== 'granted') {
+                Alert.alert(
+                    'Kon camera niet openen',
+                    'De app heeft toestemming nodig om de camera te mogen gebruiken.',
+                    [{text: 'OK'}]);
+                return;
             }
-
-        } catch (E) {
-            console.log(E);
-        }
+            ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                base64: true,
+                quality: 0.1,
+            }).then((result) => {
+                if (result && !result.cancelled && result.base64)
+                    this.setState({
+                        image: result.base64,
+                        imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)
+                    })
+            }).catch((error) => {
+                Alert.alert('Oeps!',
+                    'Kon de foto niet laden...',
+                    [{text: 'OK'}],
+                    {cancelable: true})
+                console.log("image error: " + error);
+            })
+        });
     };
 
     deleteImage() {
@@ -154,6 +187,26 @@ export default class PostAddScreen extends React.Component<Props, State> {
             image: '',
             imageName: ''
         })
+    }
+
+    makeData() {
+        let startupId = null;
+        if (this.state.categoryId === 1) {
+            startupId = this.state.startupId;
+        }
+
+        const data = {
+            title: this.state.title,
+            text: this.state.text,
+            categoryId: this.state.categoryId,
+            image: this.state.image,
+            startupId: startupId,
+            eventName: this.state.eventName,
+            eventCity: this.state.eventCity,
+            eventAddress: this.state.eventAddress,
+            eventDate: this.state.eventDate,
+        }
+        return data;
     }
 
     checkTitleInput(title: string) {
@@ -177,16 +230,33 @@ export default class PostAddScreen extends React.Component<Props, State> {
         });
     }
 
+    checkStartupInput(id: number) {
+        this.setState({
+            startupValid: (id != 0),
+            startupId: id
+        })
+    }
+
     updateValid() {
+        // Controleer alle velden
         this.checkTitleInput(this.state.title);
         this.checkTextInput(this.state.text);
         this.checkCategoryInput(this.state.categoryId)
+        this.checkStartupInput(this.state.startupId)
 
-        this.setState({isValid: (
+
+        let validity = (
             this.state.titleValid
             && this.state.textValid
             && this.state.categoryValid
-        )});
+        )
+
+        // Alleen als categorie startup is, wordt startupId gevalideerd
+        if (this.state.categoryId === 1 && !this.state.startupValid) {
+            validity = false
+        }
+
+        this.setState({isValid: validity});
     }
 
     checkValid(): boolean {
@@ -203,39 +273,95 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return true;
     }
 
-    addPost = () => {
+
+    submitPostHandler(){
+        if (!this.checkValid) {
+            return
+        }
+        this.addPost(this.makeData());
+    }
+
+    editPostHandler() {
+        if (!this.checkValid()) {
+            return
+        }
+        this.editPost(this.makeData());
+    }
+
+    addPost(data: any) {
         if (!this.state.isLoading) {
-            this.state.isLoading = true;
-            bodyfull(ApiDictionary.addPost, {
-                'text': this.state.text,
-                'title': this.state.title,
-                'image': this.state.image,
-                'categoryId': this.state.categoryId
-            }).then((data) => {
-                    if (data.success === 1) {
-                        console.log("INSERTED")
+            this.setState({isLoading: true}, () => {
+                bodyfull(ApiDictionary.addPost, {data}
+                ).then((result) => {
+                        if (result.success === 1) {
+                            console.log("INSERTED")
+                        }
+                        this.setState({isLoading : false}, () => {
+                            Alert.alert(
+                                'Succes!',
+                                'Uw post is succesvol opgeslagen.',
+                                [{text: 'OK'}])
+                        })
                     }
-                    this.setState({isLoading : false})
-                }
-            ).catch(err => {
-                console.log(err)
-                this.setState({isLoading:false})
-            });
+                ).catch(err => {
+                    console.log(err)
+                    this.setState({isLoading:false})
+                    Alert.alert(
+                        'Er is een fout opgetreden',
+                        'Probeer het later opnieuw...',
+                        [{text: 'OK'}])
+                });
+            })
         }
     }
 
-    getAllCategories = () => {
+    editPost(data: any) {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, () => {
+                bodyfull(ApiDictionary.editPost, {data}
+                ).then((result) => {
+                        if (result.success === 1) {
+                            this.setState({isLoading : false}, () => {
+
+                            })
+                        }
+                    }
+                ).catch(err => {
+                    console.log(err)
+                    this.setState({isLoading:false})
+
+                });
+            })
+        }
+    }
+
+    failMessage() {
+        Alert.alert(
+            'Er is een fout opgetreden',
+            'Probeer het later opnieuw...',
+            [{text: 'OK'}])
+    }
+
+    successMessage() {
+        Alert.alert(
+            'Succes!',
+            'Uw post is succesvol opgeslagen.',
+            [{text: 'OK'}])
+    }
+
+    getAllCategories () {
         if (!this.state.isLoading) {
             this.state.isLoading = true;
             bodyless(ApiDictionary.getAllCategories)
                 .then(
                     (result) => {
                         this.setState({
+                            isLoading: false,
                             categories: result.data
+                        }, () => {
+                            this.getAllStartups();
                         });
-                        this.setState({
-                            isLoading: false
-                        });
+
                     },
                 ).catch(err => {
                 console.log(err);
@@ -246,9 +372,26 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     }
 
-    submitPostHandler(){
-        if (!this.checkValid) {
-            return
+    getAllStartups() {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, ()=> {
+                bodyless(HttpHelper.addUrlParameter(
+                    ApiDictionary.getStartupByUserId, [User.getUserId()]))
+                    .then((result) => {
+                        this.setState({
+                            isLoading: false,
+                            startups: result.data
+                        }, () => {
+                            console.log(this.state.startups)
+                        });
+                    }).catch(err => {
+                    console.log(err);
+                    this.setState({isLoading: false})
+                })
+
+            })
+        } else {
+            return null
         }
     }
 
@@ -258,6 +401,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
             <ScrollView>
                 <View style={styles.componentContainerBig} >
                     <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Titel</Text>
                         <TextInput
                             style={ styles.input }
                             placeholder="Titel..."
@@ -271,6 +415,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         }
                     </View>
                     <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Beschrijving</Text>
                         <TextInput
                             style={ styles.input }
                             placeholder="Beschrijving..."
@@ -287,6 +432,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     </View>
 
                     <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Categorie</Text>
                         <RNPickerSelect
                             style={{
                                 placeholder: {
@@ -310,18 +456,52 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         }
                     </View>
 
+                    {this.state.categoryId === 1 &&
                     <View style={styles.inputBox}>
-                        {this.state.imageName === '' &&
-                            <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this.pickImage} name='md-camera'
-                            size={27} color={"grey"}/>
+                        <Text style={styles.headLine}>Startup</Text>
+                        <RNPickerSelect
+                            style={{
+                                placeholder: {
+                                    color: 'black',
+                                    fontSize: 12,
+                                },
+                            }}
+                            placeholder={{
+                                label: 'Startup selecteren',
+                                value: 0,
+                                color: '#D3D3D3'
+                            }}
+                            onValueChange={id => this.checkStartupInput(id)}
+                            items={this.state.startups.map(obj => ({
+                                label: obj.name, value: obj.startupId
+                            }))}
+                        />
+                        <View style={styles.separator}></View>
+                        {!this.state.startupValid &&
+                        <Text style={styles.error }>Kies een startup</Text>
                         }
-                        {this.state.imageName !== '' &&
-                            <Ionicons style={{width: '35%', paddingTop: 5}} onPress={this.deleteImage} name='md-trash'
-                                      size={27} color={"grey"}/>
-                        }
-                        <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>
-                            {this.state.imageName.slice(this.state.imageName.length - 10)}
-                        </Text>
+                    </View>
+                    }
+
+                    <View style={styles.inputBox}>
+                        <View style={{flexDirection: 'row'}}>
+                            {this.state.imageName === '' ? (
+                                <Ionicons
+                                    style={{width: "35%", paddingTop: 5, flex: 1}}
+                                    onPress={this.getGalleryPermissionAsync}
+                                    name='md-camera' size={27} color={"grey"}/>
+                            ) : (
+                                <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
+                                          onPress={this.deleteImage}
+                                          name='md-trash' size={27} color={"grey"}/>
+                            )}
+                            <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
+                                  numberOfLines={1}
+                                  ellipsizeMode={'head'}
+                            >
+                                {this.state.imageName}
+                            </Text>
+                        </View>
                     </View>
 
                     {this.state.categoryId === 4 &&
@@ -359,9 +539,59 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         />
                     </View>
                     }
-
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Datum evenement</Text>
+                        <View style={{paddingVertical: 10}}>
+                            <DatePicker
+                                customStyles={{
+                                    dateInput: {
+                                        borderRadius: 20,
+                                        borderColor: '#D3D3D3'
+                                    }
+                                }}
+                                date={this.state.eventDate}
+                                placeholder='Selecteer datum'
+                                format='DD/MM/YYYY'
+                                minDate={new Date()}
+                                confirmBtnText='Bevestigen'
+                                cancelBtnText='Annuleren'
+                                showIcon={false}
+                                onDateChange={(date: Date) => {this.setState({eventDate: date})}}
+                            />
+                        </View>
+                        <View style={styles.separator}></View>
+                    </View>
+                    }
+                    {this.state.editMode? (
+                        <Button title={'Wijzigen'} onPress={this.editPostHandler}/>
+                    ) : (
+                        <Button title={'Opslaan'} onPress={this.submitPostHandler}/>
+                    ) }
                 </View>
             </ScrollView>
+        );
+    }
+
+    createImageAlert() {
+        Alert.alert(
+            'Hoe wilt u een afbeelding toevoegen?',
+            '',
+            [
+                {
+                    text: 'Annuleren',
+                    style: "cancel"
+                },
+                {
+                    text: 'Camera',
+                    onPress: () => this.getCameraPermissionAsync()
+                },
+                {
+                    text: 'Galerij',
+                    onPress: () => this.getGalleryPermissionAsync()
+                }
+            ],
+            { cancelable: true }
         );
     }
 
@@ -383,7 +613,6 @@ const options = {
     }
 }
 
-
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
@@ -397,6 +626,7 @@ const styles = StyleSheet.create({
     },
     componentContainerBig: {
         margin: 20,
+        paddingVertical: 20,
         backgroundColor: '#F4F4F4',
         borderRadius: 10,
         shadowColor: "#000",
