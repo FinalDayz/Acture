@@ -17,8 +17,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Constants from 'expo-constants';
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
-// @ts-ignore
-import DatePicker from 'react-native-datepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
 import {Input} from "../components/input/standardInput";
@@ -49,10 +48,13 @@ interface State {
     eventCity: string
     eventAddress: string
     eventDate: Date
+    eventPrice: string
 
     isLoading: boolean
 
     isValid: boolean,
+
+    datePickerVisibility: boolean
 
     editMode: boolean
 
@@ -83,9 +85,12 @@ export default class PostAddScreen extends React.Component<Props, State> {
             eventCity: '',
             eventAddress: '',
             eventDate: new Date(),
+            eventPrice: 'Gratis',
             
             categories: [],
             startups: [],
+
+            datePickerVisibility: false,
 
             editMode: false
         }
@@ -101,7 +106,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     fillStateOnEdit(data: any) {
-        console.log(JSON.stringify(data));
+        headerMessage = 'Bericht wijzigen';
         this.setState({
             postId: data.postId,
             title: data.title,
@@ -119,6 +124,20 @@ export default class PostAddScreen extends React.Component<Props, State> {
                 })
             }
         });
+    }
+
+    prepareDate(date: Date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0');
+        let year = date.getFullYear();
+        return year + '-' + month + '-' + day;
+    }
+
+    parseDate(date: Date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0');
+        let year = date.getFullYear();
+        return day + '/' + month + '/' + year;
     }
 
     getCameraPermissionAsync() {
@@ -189,6 +208,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         })
     }
 
+
     makeData() {
         let startupId = null;
         if (this.state.categoryId === 1) {
@@ -196,6 +216,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
 
         const data = {
+            postId: this.state.postId,
             title: this.state.title,
             text: this.state.text,
             categoryId: this.state.categoryId,
@@ -204,7 +225,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
             eventName: this.state.eventName,
             eventCity: this.state.eventCity,
             eventAddress: this.state.eventAddress,
-            eventDate: this.state.eventDate,
+            eventDate: this.prepareDate(this.state.eventDate),
+            eventPrice: this.state.eventPrice
         }
         return data;
     }
@@ -283,6 +305,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     editPostHandler() {
         if (!this.checkValid()) {
+            this.forceUpdate()
             return
         }
         this.editPost(this.makeData());
@@ -294,22 +317,17 @@ export default class PostAddScreen extends React.Component<Props, State> {
                 bodyfull(ApiDictionary.addPost, {data}
                 ).then((result) => {
                         if (result.success === 1) {
-                            console.log("INSERTED")
+                            this.successMessage();
                         }
-                        this.setState({isLoading : false}, () => {
-                            Alert.alert(
-                                'Succes!',
-                                'Uw post is succesvol opgeslagen.',
-                                [{text: 'OK'}])
-                        })
+                        else {
+                            this.failMessage()
+                        }
                     }
                 ).catch(err => {
                     console.log(err)
-                    this.setState({isLoading:false})
-                    Alert.alert(
-                        'Er is een fout opgetreden',
-                        'Probeer het later opnieuw...',
-                        [{text: 'OK'}])
+                    this.setState({isLoading:false}, () => {
+                        this.failMessage()
+                    })
                 });
             })
         }
@@ -322,14 +340,18 @@ export default class PostAddScreen extends React.Component<Props, State> {
                 ).then((result) => {
                         if (result.success === 1) {
                             this.setState({isLoading : false}, () => {
-
+                                this.successMessage()
                             })
+                        }
+                        else {
+                            this.failMessage()
                         }
                     }
                 ).catch(err => {
                     console.log(err)
-                    this.setState({isLoading:false})
-
+                    this.setState({isLoading:false}, () => {
+                        this.failMessage()
+                    })
                 });
             })
         }
@@ -346,7 +368,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         Alert.alert(
             'Succes!',
             'Uw post is succesvol opgeslagen.',
-            [{text: 'OK'}])
+            [{text: 'OK', onPress: () => this.props.navigation.pop()}],)
     }
 
     getAllCategories () {
@@ -407,8 +429,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
                             placeholder="Titel..."
                             value={this.state.title}
                             onChangeText={title => this.checkTitleInput(title)}
-                            autoCorrect
                             returnKeyType='next'
+                            maxLength={45}
                         />
                         {!this.state.titleValid &&
                             <Text style={styles.error}>Veld mag niet leeg zijn</Text>
@@ -421,7 +443,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
                             placeholder="Beschrijving..."
                             value={this.state.text}
                             onChangeText={text => this.checkTextInput(text)}
-                            autoCorrect
                             returnKeyType='next'
                             multiline={true}
                             numberOfLines={5}
@@ -484,23 +505,26 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     }
 
                     <View style={styles.inputBox}>
-                        <View style={{flexDirection: 'row'}}>
-                            {this.state.imageName === '' ? (
-                                <Ionicons
-                                    style={{width: "35%", paddingTop: 5, flex: 1}}
-                                    onPress={this.getGalleryPermissionAsync}
-                                    name='md-camera' size={27} color={"grey"}/>
-                            ) : (
-                                <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
-                                          onPress={this.deleteImage}
-                                          name='md-trash' size={27} color={"grey"}/>
-                            )}
-                            <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
-                                  numberOfLines={1}
-                                  ellipsizeMode={'head'}
-                            >
-                                {this.state.imageName}
-                            </Text>
+                        <Text style={styles.headLine}>Afbeelding</Text>
+                        <View style={{padding: 10, borderBottomColor: '#D3D3D3', borderBottomWidth: 1}}>
+                            <View style={{flexDirection: 'row'}}>
+                                {this.state.imageName === '' ? (
+                                    <Ionicons
+                                        style={{width: "35%", paddingTop: 5, flex: 1}}
+                                        onPress={this.getGalleryPermissionAsync}
+                                        name='md-camera' size={27} color={"grey"}/>
+                                ) : (
+                                    <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
+                                              onPress={this.deleteImage}
+                                              name='md-trash' size={27} color={"grey"}/>
+                                )}
+                                <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
+                                      numberOfLines={1}
+                                      ellipsizeMode={'head'}
+                                >
+                                    {this.state.imageName}
+                                </Text>
+                            </View>
                         </View>
                     </View>
 
@@ -512,8 +536,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
                             placeholder="Naam..."
                             value={this.state.eventName}
                             onChangeText={name => this.setState({eventName: name})}
-                            autoCorrect
                             returnKeyType='next'
+                            maxLength={45}
                         />
                     </View>
                     }
@@ -523,54 +547,83 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         <Text style={styles.headLine}>Locatie</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Plaats..."
-                            value={this.state.eventCity}
-                            onChangeText={city => this.setState({eventCity: city})}
-                            autoCorrect
-                            returnKeyType='next'
-                        />
-                        <TextInput
-                            style={styles.input}
                             placeholder="Adres..."
                             value={this.state.eventAddress}
                             onChangeText={address => this.setState({eventAddress: address})}
-                            autoCorrect
                             returnKeyType='next'
+                            maxLength={50}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Plaats..."
+                            value={this.state.eventCity}
+                            onChangeText={city => this.setState({eventCity: city})}
+                            returnKeyType='next'
+                            maxLength={30}
                         />
                     </View>
                     }
+
                     {this.state.categoryId === 4 &&
                     <View style={styles.inputBox}>
                         <Text style={styles.headLine}>Datum evenement</Text>
-                        <View style={{paddingVertical: 10}}>
-                            <DatePicker
-                                customStyles={{
-                                    dateInput: {
-                                        borderRadius: 20,
-                                        borderColor: '#D3D3D3'
-                                    }
-                                }}
-                                date={this.state.eventDate}
-                                placeholder='Selecteer datum'
-                                format='DD/MM/YYYY'
-                                minDate={new Date()}
-                                confirmBtnText='Bevestigen'
-                                cancelBtnText='Annuleren'
-                                showIcon={false}
-                                onDateChange={(date: Date) => {this.setState({eventDate: date})}}
-                            />
-                        </View>
+                        <TouchableOpacity
+                            style={{padding: 10}}
+                            onPress={() => {this.toggleDatePicker()}}
+                        >
+                            <View style={{flexDirection: 'row'}}>
+                                <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
+                                          name='md-calendar' size={30} color={"grey"}/>
+                                <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
+                                      numberOfLines={1}
+                                      ellipsizeMode={'head'}
+                                >{this.parseDate(this.state.eventDate)}</Text>
+                            </View>
+                            <DateTimePickerModal
+                                isVisible={this.state.datePickerVisibility}
+                                mode="date"
+                                onConfirm={(date) => {this.setState({
+                                    eventDate: date,
+                                    datePickerVisibility: false
+                                })}}
+                                onCancel={() => {
+                                    this.setState({datePickerVisibility: false})
+                                }}/>
+                        </TouchableOpacity>
                         <View style={styles.separator}></View>
                     </View>
                     }
+
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Kosten toegang</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Bedrag..."
+                            value={this.state.eventPrice}
+                            onChangeText={price => this.setState({eventPrice: price})}
+                            returnKeyType='next'
+                            maxLength={10}
+                        />
+                    </View>
+                    }
+
                     {this.state.editMode? (
-                        <Button title={'Wijzigen'} onPress={this.editPostHandler}/>
+                        <Button title={'Wijzigen'} onPress={this.editPostHandler.bind(this)}/>
                     ) : (
-                        <Button title={'Opslaan'} onPress={this.submitPostHandler}/>
+                        <Button title={'Opslaan'} onPress={this.submitPostHandler.bind(this)}/>
                     ) }
                 </View>
             </ScrollView>
         );
+    }
+
+    toggleDatePicker() {
+        this.setState({
+            datePickerVisibility: !this.state.datePickerVisibility
+        }, () => {
+            this.forceUpdate()
+        })
     }
 
     createImageAlert() {
@@ -597,11 +650,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     //options for header bar
     static navigationOptions = (navData:any) => {
-        return {headerTitle: 'Bericht plaatsen'}
+        return {headerTitle: headerMessage}
     };
 
 }
-const headerMessage = 'Bericht plaatsen'
+let headerMessage = 'Bericht plaatsen'
 
 //options for image picker
 const options = {

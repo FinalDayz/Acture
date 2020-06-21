@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
+    "@react-native-community/datetimepicker": "2.2.2",
     "@react-native-community/masked-view": "0.1.6",
     "@react-navigation/material-top-tabs": "^5.2.9",
     "@react-navigation/native": "^5.4.0",
@@ -31,6 +32,7 @@
     "react-native-hideable-view": "^1.0.3",
     "react-native-image-base64": "^0.1.4",
     "react-native-input-scroll-view": "^1.10.1",
+    "react-native-modal-datetime-picker": "^8.7.1",
     "react-native-network-info": "^5.2.1",
     "react-native-options-menu": "^2.0.2",
     "react-native-paper": "^3.10.1",
