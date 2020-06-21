@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -21,6 +21,8 @@ interface State {
     offset: number
 }
 
+let offSet = 0;
+
 export default class FeedScreen extends React.Component<Props, State> {
     state: State;
 
@@ -38,16 +40,18 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     getFeed() {
+        console.log("ik voer de feed uit.")
         if(!this.state.isLoading) {
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
-                    offs: this.state.offset //offset for loading more posts
+                    offs: offSet //offset for loading more posts
                 })
                 .then(
                     (result) => {
+                        var addedData = this.state.data.concat(result.data);
                         this.setState({
                             isLoading: false,
-                            data: result.data
+                            data: addedData
                         })
                     })
                 .catch ((error) => {
@@ -68,9 +72,20 @@ export default class FeedScreen extends React.Component<Props, State> {
         })
     };
 
+    increaseOffset() {
+        offSet = offSet + 10;
+    }
+
+    resetOffset() {
+        offSet = 0;
+    }
+
     getMorePosts() {
-        let tempOffset = 15;
-        this.setState({offset:tempOffset}, () => {this.getFeed()});
+        //let tempOffset = 15;
+        //this.setState({offset:tempOffset});
+        offSet = offSet + 10;
+        console.log(offSet)
+        //this.getFeed.bind(this)
     }
 
     render() {
@@ -80,7 +95,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getFeed()}
+                        onRefresh={() => {this.resetOffset(); this.getFeed()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -90,18 +105,23 @@ export default class FeedScreen extends React.Component<Props, State> {
                                 onDelete={this.handleDelete.bind(this)}
                             />
                         }
+                        ListFooterComponent={
+                            <View>
+                                {!this.state.isLoading ? (
+                                    <View style={this.styles.postloader}>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}>
+                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : null }
+                            </View>
+                        }
                     />
                 </View>
             </Container>
         );
     }
- 
-    // <View>
-    //     <TouchableOpacity onPress={this.getMorePosts}>
-    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-    //     </TouchableOpacity>
-    // </View>
-                    
+                   
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
@@ -145,8 +165,13 @@ export default class FeedScreen extends React.Component<Props, State> {
             height: '100%'
         },
         postloader: {
+            width: '100%',
+            marginVertical: 10,
+            alignItems: 'center'
+        },
+        postloaderText: {
             color: colors.textDark,
-            marginBottom: 50
+            textDecorationLine: 'underline'
         },
         list: {
             width: '100%',
