@@ -30,6 +30,20 @@ export class User {
         User.loggedInUser = user;
     }
 
+    setUser(data: any) {
+        //console.log("de data: ", data)
+
+        this.userId = data.userId
+        this.firstname = data.firstname;
+        this.lastname = data.lastname;
+        this.role = data.role;
+        this.tussenvoegsel = data.insertion;
+        this.email = data.email;
+        this.image = data.image;
+        this.telephone = data.telephone;
+        this.description = data.description;
+    }
+
     public static getRole() {
         return User.getLoggedInUser().role;
 

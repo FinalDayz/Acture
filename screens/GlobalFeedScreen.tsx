@@ -10,22 +10,18 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { User } from '../models/User';
-
 
 export interface Props {
     navigation: any
 }
 
 interface State {
-  
     isLoading: boolean,
-    data: any; // PostModel[],
+    data: PostModel[],
     offset: number
 }
 
-export default class FeedScreen extends React.Component<Props, State> {
+export default class GlobalFeedScreen extends React.Component<Props, State> {
     state: State;
 
     constructor(props: Props, state: State) {
@@ -44,7 +40,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     getFeed() {
         if(!this.state.isLoading) {
             this.setState({isLoading:true}, () => {
-                bodyfull(ApiDictionary.getFeed, {
+                bodyfull(ApiDictionary.getGlobalFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
                 .then(
@@ -62,14 +58,6 @@ export default class FeedScreen extends React.Component<Props, State> {
         }
     }
 
-
-    showAttendance= (eventId: any) => {
-        console.log('printing eventId: ')
-        // console.log(eventId)
-        // console.log("THIS IS " + eventId)
-        this.props.navigation.navigate('Attendance', {eventId: eventId})
-    }
-
     handleDelete(postId: string) {
         const newData = this.state.data.filter(
             (post) => post.postId.toString() != postId
@@ -85,7 +73,6 @@ export default class FeedScreen extends React.Component<Props, State> {
         this.setState({offset:tempOffset}, () => {this.getFeed()});
     }
 
-
     render() {
         return (
             <Container style={this.styles.screen}>
@@ -97,45 +84,31 @@ export default class FeedScreen extends React.Component<Props, State> {
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={(itemData) => {
-                            console.log(itemData.item.evenementId)
-                             // @ts-ignore
-                            return <Post
-                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
-                                 navigation={this.props.navigation}
+                        renderItem={itemData =>
+                            <Post
                                 data={itemData.item}
                                 onDelete={this.handleDelete.bind(this)}
                             />
-
-                        }}
-                        
+                        }
                     />
                 </View>
             </Container>
         );
-    }
- 
-    // <View>
-    //     <TouchableOpacity onPress={this.getMorePosts}>
-    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-    //     </TouchableOpacity>
-    // </View>
-                    
+    }                    
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
             headerTitle: 'Feed', //Title in header bar
-            title: 'Mijn feed', //Title in tab
+            title: 'Algemeen', //Title in tab
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
-                        }}
-                    />
+                            navData.navigation.navigate('Profile');
+                    }}/>
                 </HeaderButtons>
             ),
             headerLeft: () => (
