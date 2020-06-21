@@ -44,9 +44,9 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this.state.password = "";
     }
 
-    // componentDidMount() {
-    //     this._isMounted = true;
-    // }
+    componentDidMount() {
+        this._isMounted = true;
+    }
 
     componentWillUnmount() {
         this._isMounted = false;

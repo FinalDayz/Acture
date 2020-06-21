@@ -53,10 +53,7 @@ export default class AttendanceScreen extends React.Component<any, State> {
                 isLoading: false,
                 accounts: result.data
             });
-        })     .catch((error) => {
-            console.log(error);
-            this.setState({isLoading: false});
-        });
+        })
     }
 
     navigationOptions() {

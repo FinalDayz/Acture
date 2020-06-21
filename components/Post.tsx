@@ -12,17 +12,13 @@ import { bodyfull } from './HttpClient';
 
 
 export interface Props {
-    // onHandlePress(eventId: number): void
-    // eventId: any
+
     navigation: any
     data: any
     onDelete(postId: string): void
     handlePress: () => void
-    // handlePress() : void
-    // //
+    refreshEvents: () => void
     
-    // onClickEdit: () => void
-    // data: any
 }
 
 export class Post extends React.Component<Props> {
@@ -94,6 +90,7 @@ export class Post extends React.Component<Props> {
                             LastName={this.props.data.lastname}
                             insertion={this.props.data.tussenvoegsel} />
                         <EventBody
+                            refreshEvents = {()=>this.props.refreshEvents}
                             text={this.props.data.text}
                             title={this.props.data.title}
                             eventDate={new Date(this.props.data.date)}

@@ -75,3 +75,8 @@ export async function bodyfull(details: { destination: string; type: string; }, 
             ],
             {cancelable: false}
          ))}
+
+export function expireJWT(){
+    state.jwt = "";
+    state.getjwt = false;
+}

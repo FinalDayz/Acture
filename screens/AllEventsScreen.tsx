@@ -84,6 +84,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
+                                refreshEvents = {() =>this.getEvents()}
                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                 navigation={this.props.navigation}
                                 data={itemData.item}

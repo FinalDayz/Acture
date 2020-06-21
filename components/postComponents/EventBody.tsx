@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
+
 import {bodyfull} from '../../components/HttpClient';
 import ApiDictionary from '../../constants/ApiDictionary';
 
@@ -17,6 +18,7 @@ export interface Props {
     evenementId: number
     doesAttend: number
     postId: String
+    refreshEvents: () => void
 }
 
 export class EventBody extends React.Component<Props> {
@@ -41,6 +43,7 @@ export class EventBody extends React.Component<Props> {
                     console.log("Dit is de error joehoeeee: " + error);
             })
             this.setState({isLoading : false});
+            this.props.refreshEvents();
         }
     }
 
@@ -68,7 +71,7 @@ export class EventBody extends React.Component<Props> {
                 <Text style={this.styles.bodyText}>{this.props.text}</Text>
                 <View style={this.styles.bottomContent}>
                     <View style={this.styles.attendanceContainer}>
-                        <Text style={this.styles.attendance}>{this.props.attendance}  aanmeldingen</Text>
+                        <Text style={this.styles.attendance}>totaal aanmeldingen: {this.props.attendance} </Text>
                     </View>
 
                     { (this.props.doesAttend == 0 && !this.state.attendButtonPressed) &&
