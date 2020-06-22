@@ -64,7 +64,6 @@ export default class FeedScreen extends React.Component<Props, State> {
                         }
                     })
                 .catch ((error) => {
-                    console.log(" gaat nu feed ophalen3")
                     console.log(error);
                     this.setState({isLoading : false});
                 })

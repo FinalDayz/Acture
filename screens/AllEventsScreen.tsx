@@ -44,20 +44,21 @@ export default class AllEventsScreen extends React.Component<Props, State> {
                 bodyfull(ApiDictionary.getEvents, {
                     offs: offSet //offset for loading more posts
                 })
-                    .then((result) => {
+                .then((result) => {
                         if(result.success === 1) {
-                            var addedData = this.state.data.concat(result.data);
-                            this.setState({
-                                isLoading: false,
-                                data: result.data
-                            })
-                        } else {
-                            this.setState({isLoading:false})
+                        var addedData = this.state.data.concat(result.data);
+                        this.setState({
+                            isLoading: false,
+                            data: addedData
+                        })
+                    } else {
+                        this.setState({isLoading:false})
                         }
                     })
-                    .catch ((error) => {
-                        console.log(error);
-                    })
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })
             })
         }
     }
@@ -86,7 +87,6 @@ export default class AllEventsScreen extends React.Component<Props, State> {
     }
 
     showAttendance = (eventId: any) => {
-        console.log('printing eventId: ')
         this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
 
@@ -115,7 +115,7 @@ export default class AllEventsScreen extends React.Component<Props, State> {
                                 {!this.state.isLoading ? (
                                     <View style={this.styles.postloader}>
                                         <TouchableOpacity onPress={() => {this.increaseOffset(); this.getEvents() }}>
-                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                            <Text style={this.styles.postloaderText}>Oudere evenementen laden</Text>
                                         </TouchableOpacity>
                                     </View>
                                 ) : null }
