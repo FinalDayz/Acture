@@ -11,6 +11,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {UserWithFollow} from "../models/UserWithFollow";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
+import { User } from "../models/User";
 
 
 export interface Props {
@@ -119,7 +120,7 @@ export default class AttendanceScreen extends React.Component<any, State> {
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile');
+                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
                         }}/>
                 </HeaderButtons>
             ),

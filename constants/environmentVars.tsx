@@ -1,4 +1,5 @@
 export default class enviromentsVars {
-    static address: string = 'http://192.168.178.32'; //hier geen / zetten
+    //verander naar je eigen ip
+    static address: string = 'http://192.168.178.248'; //hier geen / zetten
     static port: number = 3000;
 }
