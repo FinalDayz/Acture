@@ -39,10 +39,22 @@ export default class AttendanceScreen extends React.Component<any, State> {
 
     componentDidMount() {
         this.fetchAttendance();
+        console.log("DID MOUNT")
     }
 
+    componentDidUpdate(prevProps: any){
+        console.log(prevProps.navigation)
+        if (prevProps !== undefined) {
+            // console.log(this.props.navigation.isFocused())
+            if (prevProps.navigation.state.params.eventId !== this.props.navigation.state.params.eventId) {
+                this.fetchAttendance();
+            }
+        }
+    }
     componentWillUnmount() {
-        this.setState({accounts: []})
+        // this.setState({accounts: []})
+        console.log("WILL UNMOUNT")
+        // this.fetchAttendance()
     }
 
     fetchAttendance() {
@@ -130,7 +142,7 @@ export default class AttendanceScreen extends React.Component<any, State> {
                         title='menu'
                         iconName='md-arrow-round-back'
                         onPress={() => {
-                            navData.navigation.goBack();
+                            navData.navigation.goBack(null);
                         }}
                     />
                 </HeaderButtons>

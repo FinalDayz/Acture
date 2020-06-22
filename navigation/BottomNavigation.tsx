@@ -10,7 +10,11 @@ import HelpScreenNavigation from './HelpScreenNavigation';
 import ExploreScreenNavigation from './ExploreScreenNavigation';
 
 import colors from '../constants/colors';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'
+
+export interface Props {
+accounts: []
+}
 
 const BottomNavigation = createMaterialBottomTabNavigator({
     Help: {screen: HelpScreenNavigation,
