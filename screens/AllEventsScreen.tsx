@@ -37,27 +37,27 @@ export default class AllEventsScreen extends React.Component<Props, State> {
     componentDidMount() {
         this.getEvents()
     }
-    
+
     getEvents() {
         if(!this.state.isLoading) {
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getEvents, {
                     offs: offSet //offset for loading more posts
                 })
-                .then((result) => {
-                    if(result.success === 1) {
-                        var addedData = this.state.data.concat(result.data);
-                        this.setState({
-                            isLoading: false,
-                            data: result.data
-                        })
-                    } else {
-                        this.setState({isLoading:false})
+                    .then((result) => {
+                        if(result.success === 1) {
+                            var addedData = this.state.data.concat(result.data);
+                            this.setState({
+                                isLoading: false,
+                                data: result.data
+                            })
+                        } else {
+                            this.setState({isLoading:false})
                         }
                     })
-                .catch ((error) => {
-                    console.log(error);
-                })
+                    .catch ((error) => {
+                        console.log(error);
+                    })
             })
         }
     }
@@ -85,11 +85,17 @@ export default class AllEventsScreen extends React.Component<Props, State> {
         offSet = 0;
     }
 
+    showAttendance = (eventId: any) => {
+        console.log('printing eventId: ')
+        this.props.navigation.navigate('Attendance', {eventId: eventId})
+    }
+
+
     render() {
         return(
             <Container style={this.styles.screen}>
                 <View style={this.styles.scrollable}>
-                <FlatList
+                    <FlatList
                         refreshing={this.state.isLoading}
                         onRefresh={() => {this.resetOffset(); this.getEvents()}}
                         contentContainerStyle={this.styles.list}
@@ -97,6 +103,8 @@ export default class AllEventsScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
+                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                navigation={this.props.navigation}
                                 data={itemData.item}
                                 onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete}
@@ -114,7 +122,7 @@ export default class AllEventsScreen extends React.Component<Props, State> {
                             </View>
                         }
                     />
-                </View>     
+                </View>
             </Container>
         );
     }
@@ -130,7 +138,7 @@ export default class AllEventsScreen extends React.Component<Props, State> {
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
                             navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
-                    }}/>
+                        }}/>
                 </HeaderButtons>
             ),
             headerLeft: () => (

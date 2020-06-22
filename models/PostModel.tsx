@@ -10,4 +10,5 @@ export class PostModel {
     categoryId: number = 0;
     startupId: number = 0;
     title: string = '';
+    evenementId: number=0;
 }
