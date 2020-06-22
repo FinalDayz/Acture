@@ -72,6 +72,10 @@ export default class ProfileScreen extends React.Component<Props, State> {
         this._isMounted = true;
     }
 
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -103,6 +107,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             renderItem={itemData =>
                                 <Post
                                     data={itemData.item}
+                                    onEdit={this.handleEdit.bind(this)}
                                     onDelete={this.handleDelete.bind(this)}
                                 />
                             }
