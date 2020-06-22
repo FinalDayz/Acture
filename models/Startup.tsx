@@ -1,5 +1,4 @@
 export class Startup {
-
     startupId: number = 1;
     name: string = '';
     telephone?: number = 1;

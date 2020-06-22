@@ -1,18 +1,19 @@
-import React from 'react';
-import { View, StyleSheet, Text, Image, Dimensions, FlatList } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet, Text, Image, Dimensions, FlatList, Linking, Alert, Button } from 'react-native';
 import colors from '../constants/colors';
 import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {PostModel} from "../models/PostModel";
-import {List, Container} from "native-base";
+import { Container} from "native-base";
 import {Post} from "../components/Post";
-import { ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import  { HttpHelper } from '../components/HttpHelper';
 import { User } from '../models/User';
-import { UserRole } from '../models/UserRole';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { runInThisContext } from 'vm';
-import { Startup } from '../models/Startup';
+import { Ionicons } from '@expo/vector-icons';
+import { AccountRow } from '../components/startup/AccountRow';
+import { StartupWithFollow } from '../models/StartupWithFollow';
+import { ContactInfo } from '../models/ContactInfo';
+import { ActivityIndicator } from 'react-native-paper';
 
 export interface Props {
     navigation: any
@@ -23,8 +24,22 @@ interface State {
     blogs: PostModel[],
     currentUser: User,
     selectedTab: string,
-    startups: Startup[],
+    startups: StartupWithFollow[],
+    contactItems: ContactInfo[]
 };
+
+const OpenURLButton = ( url: string, children: string ) => {
+    const handlePress = useCallback(async () => {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+      }
+    }, [url]);
+  
+    return <Button title={children} onPress={handlePress} />;
+  };
 
 export default class ProfileScreen extends React.Component<Props, State> {
 
@@ -40,7 +55,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             currentUser: new User(undefined),
             isLoading: false,
             selectedTab: 'Over',
-            startups: []
+            startups: [],
         }
 
         this._isMounted = false;
@@ -51,6 +66,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
     componentDidMount() {
         this.getCurrentUser()
+        this.fetchUserLinkedStartups()
+        this.getBlogs()
+
         this._isMounted = true;
     }
 
@@ -58,62 +76,41 @@ export default class ProfileScreen extends React.Component<Props, State> {
         this._isMounted = false;
     }
 
-    
     //options for header bar. Default options are in the navigator.
     navigationOptions = {
         headerTitle: 'Profiel'
     };
 
-    // getStartupData() {
-    //     bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupById, [this.state.id]))
-    // }
-
     render() {
-        
-        return(
-            <View style={this.styles.screen}>
-                {/* <Container style={this.styles.topScrollable}>                
-                    <View style={this.styles.imagestyling}>
-                        <View>
-                            <Image
-                            style={this.styles.image}
-                            source={{uri: 'https://i.imgur.com/Ngq9RoP.jpg'}}
-                            resizeMode="cover"
-                            />
-                        </View>
-                        <Container style={this.styles.nameBox}>
-                            <Text style={this.styles.text} adjustsFontSizeToFit numberOfLines={2}>{this.getFullName()}</Text>
-                        </Container>
-                    </View>
-                </Container> */}
-                {/* {this.tabGenerator(['Over', 'Startups', 'Contact'])} */}
-                
-                 {/* TODO: Tab-specific content on top*/}
-                {/* <View>
-                    <View style={this.styles.separator} />
-                </View> */}
-                
-                
-
-                <View style={this.styles.lowerScrollable}>
-                    <FlatList
-                        ListHeaderComponent={(
-                            this.headerBinder()
-                        )}
-                        refreshing={this.state.isLoading}
-                        contentContainerStyle={this.styles.list}
-                        data={this.state.blogs}
-                        keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={itemData =>
-                            <Post
-                                data={itemData.item}
-                                onDelete={this.handleDelete.bind(this)}
-                            />
-                        }
-                    />
+        if(this.state.isLoading) {
+            return (
+                <View style={this.styles.screen}>
+                    <ActivityIndicator size="large" color={colors.textLight}/>
                 </View>
-            </View>
-        );
+            )
+        } else {
+            return(
+                <View style={this.styles.screen}>
+                    <View style={this.styles.lowerScrollable}>
+                        <FlatList
+                            ListHeaderComponent={(
+                                this.headerBinder()
+                            )}
+                            refreshing={this.state.isLoading}
+                            contentContainerStyle={this.styles.list}
+                            data={this.state.blogs}
+                            keyExtractor={(item, index) => item.postId.toString()}
+                            renderItem={itemData =>
+                                <Post
+                                    data={itemData.item}
+                                    onDelete={this.handleDelete.bind(this)}
+                                />
+                            }
+                        />
+                    </View>
+                </View>
+            );
+        } 
     }
 
     headerBinder() {
@@ -124,7 +121,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         <View>
                             <Image
                             style={this.styles.image}
-                            source={{uri: 'https://i.imgur.com/Ngq9RoP.jpg'}}
+                            source={{uri: 'https://frc.research.vub.be/sites/default/files/styles/large/public/thumbnails/image/basic-profile-picture_5.jpg'}}
                             resizeMode="cover"
                             />
                         </View>
@@ -148,26 +145,93 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         <Text style={this.styles.descriptionText}>{this.state.currentUser.description}</Text>
                         <View style={this.styles.separator} />
                     </View>
-                    
                 );
                 
             case 'Startups':
                 return (
                     <View style={{marginHorizontal: "7%"}}>
                         <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>{this.state.currentUser.firstname + " is aangesloten bij deze startups:"}</Text>
-
+                        <FlatList
+                            refreshing={this.state.isLoading}
+                            onRefresh={() => this.fetchUserLinkedStartups()}
+                            contentContainerStyle={this.styles.flatList}
+                            data={this.state.startups}
+                            keyExtractor={(item, index) => item.startupId.toString()}
+                            renderItem={({item}) =>
+                                <AccountRow
+                                    isExpandable={false}
+                                    account={item}>
+                                    <Ionicons onPress={() => this.clickedFollowStar(item)}
+                                        name={'md-star'} size={35}
+                                            style={this.isFollowing(item)}/>
+                                </AccountRow>
+                        }/>
                         <View style={this.styles.separator} />
                     </View>
                 );
 
             case 'Contact':
                 return (
-                    <View></View>
+                    <View style={{marginHorizontal: "7%"}}>   
+                        <View style={this.styles.separator} />
+                    </View>
                 );
         }
     }
 
-    
+    contentAction(action: string, user: User) {
+        switch(action) {
+            case 'email':
+                break;
+            case 'whatsapp':
+                break;
+        }
+    }
+
+    isFollowing(item: StartupWithFollow) {
+        if(item.isFollowingThem.toString() === 'true') {
+            return this.styles.followStar
+        } else {
+            return this.styles.notFollowStar
+        }
+    }
+
+    fetchUserLinkedStartups() {
+        if(this.state.isLoading == false) {
+            this.setState({isLoading:true}, () => {
+                bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])).then(result => {
+                    if(result.success === 1) {
+                        this.setState({
+                            isLoading: false,
+                            startups: result.data
+                            });
+                    } else {
+                        console.log("bigoof", result)
+                        this.setState({isLoading: false})
+                    }
+                })
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })  
+            })
+            
+        }
+    }
+
+    private clickedFollowStar(account: StartupWithFollow) {
+        if(account.isFollowingThem.toString() === 'true') {
+            account.isFollowingThem = false
+        } else {
+            account.isFollowingThem = true
+        }
+        this.forceUpdate();
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.changeStartupFollow,
+            [account.startupId, account.isFollowingThem ? 1 : 0])
+        );
+    }
+
     getCurrentUser() {
         if(this.state.isLoading == false) {
             this.setState({isLoading:true}, () => {
@@ -175,22 +239,24 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     if(data.success === 1) {
                         this.state.currentUser.setUser(data.data)
                         this.setState({isLoading: false})
-                        this.getBlogs()
                     } else {
                         console.log("bigoof", data)
                         this.setState({isLoading: false})
                     }
                 })
-                bodyless(HttpHelper.addUrlParameter(
-                    ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])
-                ).then(result => {
-                    this.setState({
-                        isLoading: false,
-                        startups: result.data
-                    });
-                });
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })
             })
         }   
+    }
+
+    telephoneComposer() {
+      if(this.state.currentUser.telephone.toString()[0] === '0') {
+          return this.state.currentUser.telephone
+      }  
+      return "0" + this.state.currentUser.telephone
     }
 
     tabGenerator(category: string[]) {
@@ -220,7 +286,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
         if(name === this.state.selectedTab) {
             return selected
-        }
+        } else 
         return notSelected
     }
 
@@ -255,11 +321,31 @@ export default class ProfileScreen extends React.Component<Props, State> {
     };
 
     styles = StyleSheet.create ({
-        descriptionTable: {
-            height: '100%',
-            width: this.windowWidth/2, 
-            padding: 10,
-            alignContent: "center",
+        notFollowStar: {
+            color: colors.favoriteStarInactive
+        },
+        followStar: {
+            color: colors.favoriteStarActive
+        },
+        flatList: {
+            width: '100%',
+            marginTop: 10,
+            paddingHorizontal: '7%',
+        },
+        contactLeftTable: {
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center",
+            textAlign: "left", 
+            fontWeight: 'bold', 
+            marginTop: 5
+        },
+        contactRightTable: {
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center",
+            textAlign: "left",
+            marginTop: 5
         },
         descriptionText: {
             fontStyle: 'italic',
@@ -268,7 +354,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             color: colors.textPostContent,
             alignSelf: "auto", 
             textAlignVertical: "center",
-            textAlign: "left",
+            textAlign: "center",
         },
         category: {
             height: 50,
@@ -289,7 +375,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             borderWidth: 5,
             borderRadius: this.windowWidth/5,
             marginLeft: 10, marginTop: 30,
-            backgroundColor: "yellow",
+            backgroundColor: "white",
             borderColor: 'white',
         },
         imagestyling: {
@@ -311,11 +397,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
             marginHorizontal: 15,
             marginTop: 15
         },
-        scrollable: {
-            flex: 1,
-            width: '100%',
-            height: '100%',
-        },
         topScrollable: {
             flexDirection: 'row',
             flex: 1,
@@ -333,21 +414,17 @@ export default class ProfileScreen extends React.Component<Props, State> {
             width: '100%',
         },
         text: {
-            // marginHorizontal: 15,
-            // fontSize: 15,
             color: colors.textPostContent,
             alignSelf: "auto", 
             textAlignVertical: "center"
         },
         tabText: {
-            // marginHorizontal: 15,
             fontSize: 17,
             margin: 10,
             color: colors.textPostContent,
             alignSelf: "auto", 
             textAlignVertical: "center",
             textAlign: "center",
-            
         }
     });
 }
