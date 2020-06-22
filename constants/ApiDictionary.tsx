@@ -43,7 +43,7 @@ export default {
     getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
     getUserDetails: {destination: '/api/users/getUserDetails', type: 'GET'},
     changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},
-    updateUserDetails: {destination: '/api/users/updateUserDetails', type: 'POST'},
+    updateUserDetails: {destination: '/api/users/updateUserDetails', type: 'PATCH'},
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,

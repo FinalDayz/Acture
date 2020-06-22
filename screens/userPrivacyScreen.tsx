@@ -27,7 +27,6 @@ export interface State {
         firstname: string,
         tussenvoegsel: string,
         lastname: string,
-        telephone: number,
         description: string,
     }
 }
@@ -75,8 +74,6 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
         bodyless(ApiDictionary.getUserDetails)
             .then(result => {
                 const data = result.data;
-                // console.log("data:",Object.keys(data));
-                // console.log(Object.keys(data).length > 0);
                 if (Object.keys(data).length > 0) {
                     this.setState({
                         isLoading: false,
@@ -91,7 +88,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
     }
 
     postDetails(){
-        console.log(this.state.userDetails);
+        bodyfull(ApiDictionary.updateUserDetails, this.state.userDetails);
     }
 
     getDefaultSettings(): {
@@ -208,17 +205,6 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                                     onChangeText={text => this.setState({userDetails: {
                                         ...this.state.userDetails, lastname: text
                                     }})}
-                                    />
-                            </View>
-                            <View style={styles.inputView} >
-                                <TextInput
-                                    value={this.state.userDetails.telephone.toString()}
-                                    style={styles.inputText}
-                                    placeholder="Telefoonnummer.."
-                                    placeholderTextColor="#003f5c"
-                                    // onChangeText={text => this.setState({userDetails: {
-                                    //     ...this.state.userDetails, telephone: text
-                                    // }})}
                                     />
                             </View>
                             <View style={styles.bigInputView} >
