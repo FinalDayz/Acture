@@ -111,8 +111,26 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     }
 
     private resetPassword(account:User){
-        console.log("Password has been reset")
+        const newPassword= this.makeid(10);
+
+        Alert.alert(
+            "Wachtwoord gereset",
+            'Het wachtwoord is veranderd naar: ' + newPassword,
+            [
+                {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
+            ],
+            { cancelable: false })
     }
+
+    private makeid(length: number) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+     }
 
     private changeRole(account: User, newRole: UserRole) {
         bodyless(HttpHelper.addUrlParameter(
