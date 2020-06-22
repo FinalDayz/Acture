@@ -8,6 +8,7 @@ import { Input } from '../components/input/standardInput';
 import { bodyfull } from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import { stringify } from 'querystring';
+import { ThemeConsumer } from 'react-native-elements';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -41,10 +42,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
 
     saveUserData = () => {
         if(this.state.passwordValid){
+            this.registerDate();
             const user = new User(this.state.firstName, this.state.insertion, this.state.lastName, this.state.email, this.state.password);
             var role = 'user';
             this.state.role = role;
-            this.registerDate();
             this.register();
         } else {
             Alert.alert(
@@ -75,14 +76,13 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             month='0'+months;
         } 
         var date = year + "-" + month + "-" + day;
-
-        {() => this.setState({date:date})}
+        return date;
     }
 
     register = () => {
-        console.log(this.state.firstName + ' ' + this.state.insertion + ' ' + this.state.lastName + ', ' + this.state.email, ', ' + this.state.password + ', '+ this.state.role + ', ' + this.state.date);
+        console.log(this.state.firstName + ' ' + this.state.insertion + ' ' + this.state.lastName + ', ' + this.state.email, ', ' + this.state.password + ', '+ this.state.role + ', ' + this.registerDate());
 
-        bodyfull(ApiDictionary.register, {'firstname': this.state.firstName, 'tussenvoegsel': this.state.insertion, 'lastname': this.state.lastName, 'email': this.state.email, 'password': this.state.password, 'role': this.state.role, 'register_date': this.state.date}).then((data) => {
+        bodyfull(ApiDictionary.register, {'firstname': this.state.firstName, 'tussenvoegsel': this.state.insertion, 'lastname': this.state.lastName, 'email': this.state.email, 'password': this.state.password, 'role': this.state.role, 'register_date': this.registerDate()}).then((data) => {
             if(!data.success) {
                 Alert.alert(
                     "Succes!",
@@ -112,57 +112,49 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             </View>
 
                             <View style={styles.inputView} >
-                                <Input
+                                <TextInput
                                     style={styles.inputText}
-                                    type={"default"}
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
-                                    changed={(text, isValid) => {this.setState({firstName:text});
-                                    console.log(text)}}
+                                    onChangeText={text => this.setState({firstName:text})}
+                                    // changed={(text, isValid) => {this.setState({firstName:text});}}
                                     />
                             </View>
 
                             <View style={styles.inputView} >
-                                <Input
+                                <TextInput
                                     style={styles.inputText}
-                                    type="default"
                                     placeholder="Tussenvoegsel.."
                                     placeholderTextColor="#003f5c"
-                                    changed={(text, isValid) => {this.setState({firstName:text});
-                                    console.log(text)}}
+                                    onChangeText={text => this.setState({insertion:text})}
                                     />
                             </View>
 
                             <View style={styles.inputView} >
-                                <Input
+                                <TextInput
                                     style={styles.inputText}
-                                    type="default"
                                     placeholder="Achternaam.."
                                     placeholderTextColor="#003f5c"
-                                    changed={(text, isValid) => {this.setState({firstName:text});
-                                    console.log(text)}}
+                                    onChangeText={text => this.setState({lastName:text})}
                                     />
                             </View>
 
                             <View style={styles.inputView} >
-                                <Input
+                                <TextInput
                                     style={styles.inputText}
-                                    type="email-address"
                                     placeholder="Email.."
                                     placeholderTextColor="#003f5c"
-                                    changed={(text, isValid) => {this.setState({firstName:text});
-                                    console.log(isValid)}}
+                                    onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
 
                             <View style={styles.inputView} >
-                                <Input
+                                <TextInput
                                     secureTextEntry
-                                    type="default"
                                     style={styles.inputText}
                                     placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    changed={(text, isValid) => {this.setState({password1: text}, this.checkPassword);}}
+                                    onChangeText={text => this.setState({password1:text}, this.checkPassword)}
                                     />
                             </View>
 
@@ -170,13 +162,12 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                <Text style={styles.warningTest}>De wachtwoorden komen niet overeen</Text>
                                 ) : null}
                             <View style={styles.inputView} >
-                            <Input
+                            <TextInput
                                     secureTextEntry
-                                    type="default"
                                     style={styles.inputText}
                                     placeholder="Wachtwoord..."
                                     placeholderTextColor="#003f5c"
-                                    changed={(text, isValid) => {this.setState({password2: text}, this.checkPassword);}}
+                                    onChangeText={text => this.setState({password2:text}, this.checkPassword)}
                                     />
                             </View>
 
@@ -201,7 +192,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         contentContainer: {
             flex: 1,
             alignItems: "center",
-            justifyContent: 'center',
+            justifyContent: "center",
         },
         warningTest: {
             marginBottom: 6,
@@ -219,7 +210,8 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         },
         inputText:{
             height:50,
-            color:"black"
+            color:"black",
+            justifyContent: "center"
         },
          textInput: {
             height: 40,

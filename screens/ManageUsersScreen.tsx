@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Button, FlatList, StyleSheet, Text, View} from 'react-native';
+import {Alert, Clipboard, Button, FlatList, StyleSheet, Text, View} from 'react-native';
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
@@ -118,9 +118,9 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             if(data.success) {
                 Alert.alert(
                     "Wachtwoord gereset",
-                    'Het wachtwoord is veranderd naar: ' + newPassword,
+                    'Het wachtwoord is veranderd naar: ' + newPassword + ", ook is het gekopieerd naar je klembord.",
                     [
-                        {text: 'OK', onPress: () => console.log(''), style: 'cancel'},
+                        {text: 'OK', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
                     ],
                     { cancelable: false })
             }
