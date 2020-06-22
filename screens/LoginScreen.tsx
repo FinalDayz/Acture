@@ -1,21 +1,24 @@
 
-import React, { Props } from 'react';
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from '../components/HttpClient';
-
+import {User} from "../models/User";
 
 const windowWidth = Dimensions.get('window').width;
 
 export default class LoginScreen extends React.Component<{navigation:any}> {
+    static navigationOptions = {
+        title: ''
+    };
+
     _isMounted: boolean;
-    
+
     constructor(navigation: Readonly<{ navigation: any; }>) {
         super(navigation);
-
         this._isMounted = false;
     }
 
@@ -25,18 +28,29 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         isLoading: false,
         show: false,
         wrongInputs: false
+    };
+
+    resetLogin() {
+        this.state.email = "";
+        this.state.password = "";
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-    }
+    // componentDidMount() {
+    //     this.setState({
+    //         password: 'test',
+    //         email: 'test@gmail.com'
+    //     }, () => {
+    //         this.login()
+    //     });
+    //     this._isMounted = true;
+    // }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
     ShowHideComponent = () => {
-        if (this.state.show == true) {
+        if (this.state.show) {
           this.setState({ show: false });
         } else {
           this.setState({ show: true });
@@ -44,11 +58,11 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
       };
 
     login = () => {
-
-        this.setState({isLoading:true})
+        this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
+                User.setLoggedInUser(data.user);
                 if(data.success === 1) {
-                    this.setState({isLoading:false})
+                    this.setState({isLoading:false});
                     this.state.wrongInputs = false;
                     this.props.navigation.navigate('Home');
                 } else {
@@ -58,16 +72,20 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
-            })
-            
+            });
+
         this._isMounted && this.setState({
             ready: true
         })
-    }
+    };
 
     openRegisterScreen = () => {
         this.props.navigation.navigate('Register');
-    }
+    };
+
+    openChangePasswordScreen = () => {
+        this.props.navigation.navigate('ChangePassword');
+    };
 
     render() {
         return (
@@ -78,14 +96,15 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={{marginBottom: 80}}>
                                 {/* not a normal Image object, documentation found in: https://www.npmjs.com/package/react-native-scalable-image */}
                                 <Image
-                                width={windowWidth * 0.8} 
+                                width={windowWidth * 0.8}
                                 source={require('../assets/LGS_LOGO_WIT.png')}/>
-
                             </View>
 
+                            <View>
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
+                            </View>
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
@@ -94,10 +113,13 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     onChangeText={text => this.setState({email:text})}
                                     />
                             </View>
-                            
+
+                            <View>
                             {this.state.wrongInputs ? (
                                <Text style={styles.warningTest}>Verkeerde email of password</Text>
                                 ) : null}
+                            </View>
+
                             <View style={styles.inputView} >
                                 <TextInput
                                     secureTextEntry
@@ -128,12 +150,14 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 >
                                 <Text style={styles.RegisterText}>Account aanmaken</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Text style={styles.forgot}>Wachtwoord vergeten</Text>
+                            <TouchableOpacity
+                                onPress={this.openChangePasswordScreen}
+                                >
+                                <Text style={styles.forgot}>Wachtwoord veranderen</Text>
                             </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>     
+                </KeyboardAvoidingView>
             </ScrollView>
         )
     }
@@ -200,4 +224,3 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline"
     },
 });
-    
