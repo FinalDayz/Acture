@@ -26,6 +26,7 @@ interface State {
 
 export default class FeedScreen extends React.Component<Props, State> {
     state: State;
+    _isMounted: boolean;
 
     constructor(props: Props, state: State) {
         super(props, state);
@@ -34,10 +35,16 @@ export default class FeedScreen extends React.Component<Props, State> {
             isLoading: false,
             offset: 0
         }
+        this._isMounted = false;
     }
 
     componentDidMount() {
         this.getFeed()
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     getFeed() {
@@ -54,10 +61,11 @@ export default class FeedScreen extends React.Component<Props, State> {
                             data: result.data
                         })
                     } else {
-                        this.setState({isLoading:false})
-                    }
-                    })
+                        console.log("bigoof", result)
+                        this.setState({isLoading: false})
+                    }})
                 .catch ((error) => {
+                    console.log(" gaat nu feed ophalen3")
                     console.log(error);
                     this.setState({isLoading : false});
                 })

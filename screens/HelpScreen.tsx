@@ -9,6 +9,7 @@ import HeaderButton from '../components/HeaderButton';
 import {PostModel} from '../models/PostModel';
 import { Post } from '../components/Post';
 import { NewPostButton } from '../components/NewPostButton';
+import { User } from '../models/User';
 
 export interface Props {
     navigation: any
@@ -108,7 +109,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                     title='profile'
                     iconName='md-person' //TODO: change to profile picture
                     onPress={() => {
-                        navData.navigation.navigate('Profile');
+                        navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
                     }}/>
                 </HeaderButtons>
             ),

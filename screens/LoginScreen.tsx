@@ -1,11 +1,11 @@
 
-import React, { Props } from 'react';
+import React from 'react';
 import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
-import bodyless, { bodyfull } from '../components/HttpClient';
+import { bodyfull } from '../components/HttpClient';
 import {User} from "../models/User";
 
 const windowWidth = Dimensions.get('window').width;
@@ -36,13 +36,13 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.setState({
             password: 'test',
             email: 'test@gmail.com'
         }, () => {
             this.login()
         });
-        this._isMounted = true;
     }
 
     componentWillUnmount() {

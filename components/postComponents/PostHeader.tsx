@@ -70,7 +70,7 @@ export class PostHeader extends React.Component<Props> {
                         </View>
                         <View style={this.styles.verticalFlex}>
                             <View style={this.styles.textContainer}>
-                                <Text style={this.styles.postType}>{this.props.category}</Text>
+                                <Text style={this.styles.postType} adjustsFontSizeToFit numberOfLines={2}>{this.props.category}</Text>
                             </View>
                             <Text style={this.styles.date}>{this.props.postDate.toLocaleDateString()}</Text>
                         </View>
