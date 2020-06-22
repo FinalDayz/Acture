@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -10,7 +10,6 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import { PostModel } from '../models/PostModel';
 import { User } from '../models/User';
-import {TouchableOpacity } from 'react-native';
 
 export interface Props {
     navigation: any
@@ -33,23 +32,6 @@ export default class AllEventsScreen extends React.Component<Props, State> {
             data: [],
             isLoading: false
         }
-interface State {
-
-    isLoading: boolean,
-    data: any; // PostModel[],
-    offset: number
-}
-
-export default class AllEventsScreen extends React.Component<any, any> {
-    state: State;
-
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            data: [],
-            isLoading: false,
-            offset: 0
-        }
     }
 
     componentDidMount() {
@@ -57,24 +39,23 @@ export default class AllEventsScreen extends React.Component<any, any> {
     }
 
     getEvents() {
-        if (!this.state.isLoading) {
-
-            this.setState({isLoading: true}, () => {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getEvents, {
                     offs: offSet //offset for loading more posts
                 })
                     .then((result) => {
-                        if (result.success === 1) {
+                        if(result.success === 1) {
                             var addedData = this.state.data.concat(result.data);
                             this.setState({
                                 isLoading: false,
                                 data: result.data
                             })
                         } else {
-                            this.setState({isLoading: false})
+                            this.setState({isLoading:false})
                         }
                     })
-                    .catch((error) => {
+                    .catch ((error) => {
                         console.log(error);
                     })
             })
@@ -82,7 +63,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
     }
 
     handleEdit(data: any) {
-        this.props.navigation.navigate('PostAddScreen', {edit: true, data: data})
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
     handleDelete(postId: string) {
@@ -106,29 +87,23 @@ export default class AllEventsScreen extends React.Component<any, any> {
 
     showAttendance = (eventId: any) => {
         console.log('printing eventId: ')
-        // console.log(eventId)
-        // console.log("THIS IS " + eventId)
         this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
 
+
     render() {
-        return (
+        return(
             <Container style={this.styles.screen}>
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => {
-                            this.resetOffset();
-                            this.getEvents()
-                        }}
+                        onRefresh={() => {this.resetOffset(); this.getEvents()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
-                                handlePress={() => {
-                                    this.showAttendance(itemData.item.evenementId)
-                                }}
+                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                 navigation={this.props.navigation}
                                 data={itemData.item}
                                 onEdit={this.handleEdit.bind(this)}
@@ -139,14 +114,11 @@ export default class AllEventsScreen extends React.Component<any, any> {
                             <View>
                                 {!this.state.isLoading ? (
                                     <View style={this.styles.postloader}>
-                                        <TouchableOpacity onPress={() => {
-                                            this.increaseOffset();
-                                            this.getEvents()
-                                        }}>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getEvents() }}>
                                             <Text style={this.styles.postloaderText}>Meer posts laden</Text>
                                         </TouchableOpacity>
                                     </View>
-                                ) : null}
+                                ) : null }
                             </View>
                         }
                     />
@@ -156,7 +128,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
     }
 
     //options for header bar. Default options are in the navigator.
-    static navigationOptions = (navData: any) => {
+    static navigationOptions = (navData:any) => {
         return {
             headerTitle: 'Evenementen',
             headerRight: () => (
@@ -183,7 +155,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
         };
     };
 
-    styles = StyleSheet.create({
+    styles = StyleSheet.create ({
         screen: {
             flex: 1,
             alignItems: 'center',
