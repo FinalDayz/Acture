@@ -41,7 +41,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     };
 
     saveUserData = () => {
-        if(this.state.passwordValid){
+        if(this.state.passwordValid && this.checkInputFields()){
             this.registerDate();
             const user = new User(this.state.firstName, this.state.insertion, this.state.lastName, this.state.email, this.state.password);
             var role = 'user';
@@ -49,8 +49,8 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             this.register();
         } else {
             Alert.alert(
-                "Wachtwoorden komen niet overeen",
-                'Probeer het nogmaals',
+                "Invoer niet geldig",
+                'Zijn alle velden met een * ingevuld? Komen de wachtwoorden overeen?',
                 [
                     {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
                 ],
@@ -97,6 +97,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             console.log("fetch error" + err.message);
         })
     }
+    
+    checkInputFields = () => {
+        return this.state.firstName != "" && this.state.lastName != "" && this.state.email != "" && this.state.password != "";
+    }
 
     render(){
         return (
@@ -114,7 +118,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
-                                    placeholder="Voornaam.."
+                                    placeholder="*Voornaam.."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({firstName:text})}
                                     // changed={(text, isValid) => {this.setState({firstName:text});}}
@@ -133,7 +137,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
-                                    placeholder="Achternaam.."
+                                    placeholder="*Achternaam.."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({lastName:text})}
                                     />
@@ -142,7 +146,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
-                                    placeholder="Email.."
+                                    placeholder="*Email.."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({email:text})}
                                     />
@@ -152,7 +156,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 <TextInput
                                     secureTextEntry
                                     style={styles.inputText}
-                                    placeholder="Wachtwoord..."
+                                    placeholder="*Wachtwoord..."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({password1:text}, this.checkPassword)}
                                     />
@@ -165,7 +169,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                             <TextInput
                                     secureTextEntry
                                     style={styles.inputText}
-                                    placeholder="Wachtwoord..."
+                                    placeholder="*Herhaal wachtwoord..."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({password2:text}, this.checkPassword)}
                                     />
