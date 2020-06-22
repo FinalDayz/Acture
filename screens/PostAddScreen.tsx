@@ -99,14 +99,16 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     componentDidMount() {
+        this.getPermissionAsync();
         this.getAllCategories();
         if (this.props.navigation.state.params.edit) {
+            headerMessage = 'Bericht wijzigen';
             this.fillStateOnEdit(this.props.navigation.state.params.data);
         }
     }
 
     fillStateOnEdit(data: any) {
-        headerMessage = 'Bericht wijzigen';
+        console.log("sfsg");
         this.setState({
             postId: data.postId,
             title: data.title,
@@ -120,7 +122,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     eventName: data.name,
                     eventCity: data.city,
                     eventAddress: data.adress,
-                    eventDate: data.date,
+                    eventDate: new Date(data.date),
                 })
             }
         });
@@ -140,65 +142,40 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return day + '/' + month + '/' + year;
     }
 
-    getCameraPermissionAsync() {
-        Permissions.askAsync(Permissions.CAMERA_ROLL).then((result) => {
-            if (result.status !== 'granted') {
-                Alert.alert(
-                    'Kon camera niet openen',
-                    'De app heeft toestemming nodig om de camera te mogen gebruiken.',
-                    [{text: 'OK'}]);
-                return;
+    getPermissionAsync = async () => {
+        // @ts-ignore
+        if (Constants.platform.ios) {
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
             }
-            ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                base64: true,
-                quality: 0.1,
-            }).then((result) => {
-                if (result && !result.cancelled && result.base64)
-                    this.setState({
-                        image: result.base64,
-                        imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)
-                    })
-            }).catch((error) => {
-                    Alert.alert('Oeps!',
-                        'Kon de foto niet laden...',
-                        [{text: 'OK'}],
-                        {cancelable: true})
-                    console.log("image error: " + error);
-                }
-            )
-        });
+        }
     };
 
-    getGalleryPermissionAsync() {
-        Permissions.askAsync(Permissions.CAMERA_ROLL).then((result) => {
-            if (result.status !== 'granted') {
-                Alert.alert(
-                    'Kon camera niet openen',
-                    'De app heeft toestemming nodig om de camera te mogen gebruiken.',
-                    [{text: 'OK'}]);
-                return;
-            }
-            ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+
+    pickImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
                 base64: true,
-                quality: 0.1,
-            }).then((result) => {
-                if (result && !result.cancelled && result.base64)
-                    this.setState({
-                        image: result.base64,
-                        imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)
-                    })
-            }).catch((error) => {
-                Alert.alert('Oeps!',
-                    'Kon de foto niet laden...',
-                    [{text: 'OK'}],
-                    {cancelable: true})
-                console.log("image error: " + error);
-            })
-        });
+                aspect: [4, 3],
+                quality: 0.01,
+
+            });
+            if (result && !result.cancelled) {
+                console.log(result.uri);
+                const bas64 = result.base64;
+                if(bas64){
+                    this.setState({image: bas64.toString()})
+                    this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/")+1)})
+                }
+
+            }
+
+        } catch (E) {
+            console.log(E);
+        }
     };
 
     deleteImage() {
@@ -267,6 +244,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         this.checkStartupInput(this.state.startupId)
 
 
+
         let validity = (
             this.state.titleValid
             && this.state.textValid
@@ -278,38 +256,31 @@ export default class PostAddScreen extends React.Component<Props, State> {
             validity = false
         }
 
-        this.setState({isValid: validity});
+        this.setState({isValid: validity}, () => {
+            if (
+                !this.state.isValid
+            ) {
+                Alert.alert(
+                    'Invoer onjuist',
+                    'Controleer of alle velden correct zijn ingevuld.',
+                    [{text: 'OK'}])
+                return;
+            }
+            else {
+                if (this.state.editMode) {
+                    this.editPost(this.makeData());
+                } else {
+                    this.addPost(this.makeData());
+                }
+            }
+        });
     }
 
-    checkValid(): boolean {
-        this.updateValid();
-        if (
-            !this.state.isValid
-        ) {
-            Alert.alert(
-                'Invoer onjuist',
-                'Controleer of alle velden correct zijn ingevuld.',
-                [{text: 'OK'}])
-            return false;
-        }
-        return true;
+    submitHandler() {
+        this.updateValid() 
+
     }
 
-
-    submitPostHandler(){
-        if (!this.checkValid) {
-            return
-        }
-        this.addPost(this.makeData());
-    }
-
-    editPostHandler() {
-        if (!this.checkValid()) {
-            this.forceUpdate()
-            return
-        }
-        this.editPost(this.makeData());
-    }
 
     addPost(data: any) {
         if (!this.state.isLoading) {
@@ -403,8 +374,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         this.setState({
                             isLoading: false,
                             startups: result.data
-                        }, () => {
-                            console.log(this.state.startups)
                         });
                     }).catch(err => {
                     console.log(err);
@@ -452,6 +421,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         }
                     </View>
 
+                    {!this.state.editMode &&
                     <View style={styles.inputBox}>
                         <Text style={styles.headLine}>Categorie</Text>
                         <RNPickerSelect
@@ -473,11 +443,12 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         />
                         <View style={styles.separator}></View>
                         {!this.state.categoryValid &&
-                        <Text style={styles.error }>Kies een categorie</Text>
+                        <Text style={styles.error}>Kies een categorie</Text>
                         }
                     </View>
+                    }
 
-                    {this.state.categoryId === 1 &&
+                    {!this.state.editMode && this.state.categoryId === 1 &&
                     <View style={styles.inputBox}>
                         <Text style={styles.headLine}>Startup</Text>
                         <RNPickerSelect
@@ -511,7 +482,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                                 {this.state.imageName === '' ? (
                                     <Ionicons
                                         style={{width: "35%", paddingTop: 5, flex: 1}}
-                                        onPress={this.getGalleryPermissionAsync}
+                                        onPress={this.pickImage}
                                         name='md-camera' size={27} color={"grey"}/>
                                 ) : (
                                     <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
@@ -609,9 +580,9 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     }
 
                     {this.state.editMode? (
-                        <Button title={'Wijzigen'} onPress={this.editPostHandler.bind(this)}/>
+                        <Button title={'Wijzigen'} onPress={this.submitHandler.bind(this)}/>
                     ) : (
-                        <Button title={'Opslaan'} onPress={this.submitPostHandler.bind(this)}/>
+                        <Button title={'Opslaan'} onPress={this.submitHandler.bind(this)}/>
                     ) }
                 </View>
             </ScrollView>
@@ -624,28 +595,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }, () => {
             this.forceUpdate()
         })
-    }
-
-    createImageAlert() {
-        Alert.alert(
-            'Hoe wilt u een afbeelding toevoegen?',
-            '',
-            [
-                {
-                    text: 'Annuleren',
-                    style: "cancel"
-                },
-                {
-                    text: 'Camera',
-                    onPress: () => this.getCameraPermissionAsync()
-                },
-                {
-                    text: 'Galerij',
-                    onPress: () => this.getGalleryPermissionAsync()
-                }
-            ],
-            { cancelable: true }
-        );
     }
 
     //options for header bar
