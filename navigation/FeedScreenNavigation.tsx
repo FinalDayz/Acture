@@ -6,6 +6,7 @@ import FeedScreenTabs from './FeedScreenTabs'
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 import PostAddScreen from "../screens/PostAddScreen";
+import userPrivacyScreen from "../screens/userPrivacyScreen";
 
 
 
@@ -20,6 +21,9 @@ const FeedScreenNavigation = createStackNavigator(
         PostAddScreen:{
             screen: PostAddScreen
         },
+        userPrivacyScreen: {
+            screen: userPrivacyScreen
+        }
 
     },
     {
