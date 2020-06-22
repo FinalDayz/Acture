@@ -369,7 +369,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         if (!this.state.isLoading) {
             this.setState({isLoading: true}, ()=> {
                 bodyless(HttpHelper.addUrlParameter(
-                    ApiDictionary.getStartupByUserId, [User.getUserId()]))
+                    ApiDictionary.getStartupsByUserId, [User.getUserId()]))
                     .then((result) => {
                         this.setState({
                             isLoading: false,
