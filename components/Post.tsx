@@ -13,6 +13,7 @@ import { bodyfull } from './HttpClient';
 export interface Props {
     data: any
     onDelete(postId: string): void
+    onEdit(postId: string): void
 }
 
 export class Post extends React.Component<Props> {
@@ -24,6 +25,10 @@ export class Post extends React.Component<Props> {
     state = {
         isLoading: false
     };
+
+    handleEdit() {
+        this.props.onEdit(this.props.data)
+    }
 
     handleDelete() {
         this.deletePost() 
@@ -64,6 +69,7 @@ export class Post extends React.Component<Props> {
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
+                            userId={this.props.data.userId}
                             eventDate={new Date(this.props.data.date)}
                             adress={this.props.data.adress}
                             city={this.props.data.city}
@@ -71,7 +77,10 @@ export class Post extends React.Component<Props> {
                             attendance={this.props.data.total_people}
                             evenementId={this.props.data.evenementId}
                             doesAttend={this.props.data.doesAttend}
-                            postId={this.props.data.postId}/>
+                            postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
+                            onDelete={this.deletePost.bind(this)}
+                        />
                     </View>
                 </ListItem>
             );
@@ -94,6 +103,7 @@ export class Post extends React.Component<Props> {
                             title={this.props.data.title}
                             userId={this.props.data.userId}
                             postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
                             onDelete={this.handleDelete.bind(this)}
                         />
                     </View>

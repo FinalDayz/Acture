@@ -58,6 +58,10 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
         }
     }
 
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
+    }
+
     handleDelete(postId: string) {
         const newData = this.state.data.filter(
             (post) => post.postId.toString() != postId
@@ -76,7 +80,7 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
@@ -87,6 +91,7 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
                         }

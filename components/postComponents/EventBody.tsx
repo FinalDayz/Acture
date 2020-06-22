@@ -1,33 +1,50 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import {bodyfull} from '../../components/HttpClient';
 import ApiDictionary from '../../constants/ApiDictionary';
 
 import colors from '../../constants/colors';
+import { User } from '../../models/User';
+import { UserRole } from '../../models/UserRole';
+
+// @ts-ignore
+import OptionsMenu from 'react-native-options-menu';
+import {Ionicons} from '@expo/vector-icons';
 
 export interface Props {
-    title: String
-    text: String
+    title: string
+    text: string
+    userId: string
     eventDate: Date
-    adress: String
-    city: String
-    price: String
-    attendance: String
+    adress: string
+    city: string
+    price: string
+    attendance: string
     evenementId: number
     doesAttend: number
-    postId: String
+    postId: string
+    onDelete(): void
+    onEdit(): void
 }
 
 export class EventBody extends React.Component<Props> {
 
+    constructor(props: Props) {
+        super(props);
+    }
+    
     state = {
         isLoading: false,
         attendButtonPressed: false
     };
 
-    constructor(props: Props) {
-        super(props);
+    editPost() {
+        this.props.onEdit();
+    }
+    
+    deletePost() {
+        this.props.onDelete()
     }
 
     addUserToEvent() {
@@ -51,7 +68,23 @@ export class EventBody extends React.Component<Props> {
     render() {
         return(
             <View style={this.styles.body}>
-                <Text style={this.styles.title} >{this.props.title}</Text>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={this.styles.title} >{this.props.title}</Text>
+                    { (User.getRole() === UserRole.admin || User.getUserId().toString() == this.props.userId) &&
+                    <OptionsMenu
+                        customButton={(
+                            <Ionicons
+                                name='md-more'
+                                size={27}
+                                color="black"
+                                style={this.styles.icon}
+                            />
+                        )}
+                        destructiveIndex={1}
+                        options={["Bewerken", "Verwijderen", "Cancel"]}
+                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this)]}/>
+                    }
+                </View>
                 <View style={this.styles.line}/>
                 <View style={this.styles.details}>
                     <View style={this.styles.horizontal}>
@@ -84,22 +117,25 @@ export class EventBody extends React.Component<Props> {
         );
     }
 
-    deletePost() {
-        if(!this.state.isLoading) {
-            this.setState({isLoading:true});
-            bodyfull(ApiDictionary.deletePost, {
-                postId: this.props.postId
-            }).then((data) => {
-                alert("Verwijderen succesvol");
-                this.render();
-                this.setState({isLoading:false});
-            }).catch(err => {
-                console.log("fetch error" + err.message);
-                alert(err.message);
-                this.setState({isLoading:false})
-            })
-        }
-    };
+    createConfirmAlert() {
+        Alert.alert(
+            'Klik op verwijderen om te bevestigen.',
+            '',
+            [
+                {
+                    text: 'Annuleren',
+                    style: "cancel"
+                },
+                {
+                    text: 'Verwijderen',
+                    onPress: () => this.deletePost(),
+                    style: "destructive"
+                }
+            ],
+            { cancelable: true }
+        );
+    }
+    
 
     styles = StyleSheet.create ({
         body: {
@@ -119,6 +155,7 @@ export class EventBody extends React.Component<Props> {
         title: {
             marginHorizontal: 15,
             marginVertical: 10,
+            flex: 16,
             fontSize: 20,
             fontWeight: 'bold',
             color: colors.textPostTitle
@@ -177,6 +214,11 @@ export class EventBody extends React.Component<Props> {
             marginTop: 2,
             fontSize: 15,
             color: colors.textPostContent
+        },
+        icon: {
+            flex: 1,
+            marginVertical: 8,
+            marginHorizontal: 15
         }
     });
 }

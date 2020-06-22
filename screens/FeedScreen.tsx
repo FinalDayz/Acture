@@ -42,16 +42,20 @@ export default class FeedScreen extends React.Component<Props, State> {
 
     getFeed() {
         if(!this.state.isLoading) {
+
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
-                .then(
-                    (result) => {
+                .then((result) => {
+                    if(result.success === 1) {
                         this.setState({
                             isLoading: false,
                             data: result.data
                         })
+                    } else {
+                        this.setState({isLoading:false})
+                    }
                     })
                 .catch ((error) => {
                     console.log(error);
@@ -59,6 +63,10 @@ export default class FeedScreen extends React.Component<Props, State> {
                 })
             })
         }
+    }
+    
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
     handleDelete(postId: string) {
@@ -79,7 +87,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false}) } />
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
@@ -90,6 +98,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
                         }
