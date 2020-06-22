@@ -132,7 +132,7 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile');
+                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
                     }}/>
                 </HeaderButtons>
             ),
