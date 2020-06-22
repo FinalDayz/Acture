@@ -10,6 +10,9 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { User } from '../models/User';
+
 
 export interface Props {
     navigation: any
@@ -42,17 +45,21 @@ export default class FeedScreen extends React.Component<Props, State> {
     getFeed() {
         console.log("ik voer de feed uit.")
         if(!this.state.isLoading) {
+
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: offSet //offset for loading more posts
                 })
-                .then(
-                    (result) => {
+                .then((result) => {
+                    if(result.success === 1) {
                         var addedData = this.state.data.concat(result.data);
                         this.setState({
                             isLoading: false,
                             data: addedData
                         })
+                    } else {
+                        this.setState({isLoading:false})
+                    }
                     })
                 .catch ((error) => {
                     console.log(error);
@@ -60,6 +67,10 @@ export default class FeedScreen extends React.Component<Props, State> {
                 })
             })
         }
+    }
+    
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
     handleDelete(postId: string) {
@@ -91,7 +102,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false}) } />
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
@@ -102,6 +113,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
                         }
@@ -134,8 +146,9 @@ export default class FeedScreen extends React.Component<Props, State> {
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile');
-                    }}/>
+                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
+                        }}
+                    />
                 </HeaderButtons>
             ),
             headerLeft: () => (

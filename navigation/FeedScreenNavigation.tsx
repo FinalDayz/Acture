@@ -6,7 +6,6 @@ import FeedScreenTabs from './FeedScreenTabs'
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 import PostAddScreen from "../screens/PostAddScreen";
-import BlogAddScreen from "../screens/BlogAddScreen";
 
 
 
@@ -21,9 +20,6 @@ const FeedScreenNavigation = createStackNavigator(
         PostAddScreen:{
             screen: PostAddScreen
         },
-        BlogAddScreen:{
-            screen: BlogAddScreen
-        }
 
     },
     {
