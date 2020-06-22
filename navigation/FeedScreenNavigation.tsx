@@ -24,7 +24,7 @@ const FeedScreenNavigation = createStackNavigator(
         },
         userPrivacyScreen: {
             screen: userPrivacyScreen
-        }
+        },
         Attendance: {
             screen: AttendanceScreen
         }
