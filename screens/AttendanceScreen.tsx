@@ -1,17 +1,17 @@
 import React from "react";
-import {View, Text, StyleSheet, FlatList} from "react-native";
-import colors from "../../constants/colors";
-import {IconInput} from "../../components/IconInput";
-import bodyless from "../../components/HttpClient";
-import {HttpHelper} from "../../components/HttpHelper";
-import ApiDictionary from "../../constants/ApiDictionary";
-import {AccountRow} from "../../components/account/AccountRow";
-import {Hr} from "../../components/Hr";
+import {View, Text, StyleSheet, FlatList, Button} from "react-native";
+import colors from "../constants/colors";
+import {IconInput} from "../components/IconInput";
+import bodyless from "../components/HttpClient";
+import {HttpHelper} from "../components/HttpHelper";
+import ApiDictionary from "../constants/ApiDictionary";
+import {AccountRow} from "../components/account/AccountRow";
+import {Hr} from "../components/Hr";
 import {Ionicons} from "@expo/vector-icons";
-import {UserWithFollow} from "../../models/UserWithFollow";
+import {UserWithFollow} from "../models/UserWithFollow";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
-import HeaderButton from "../../components/HeaderButton";
-import { User } from "../../models/User";
+import HeaderButton from "../components/HeaderButton";
+
 
 export interface Props {
 
@@ -24,33 +24,42 @@ interface State {
     searchQuery: string,
 }
 
-export class ExploreUsersScreen extends React.Component<Props, State> {
+export default class AttendanceScreen extends React.Component<any, State> {
 
-    constructor(props: Props, state: State) {
+    constructor(props: any, state: State) {
         super(props, state);
         this.state = {
             ...state,
             accounts: [],
-            isLoading: true,
+            isLoading: false,
             searchQuery: '',
         };
     }
+
     componentDidMount() {
-        this.fetchUsers();
+        this.fetchAttendance();
     }
 
-    fetchUsers() {
-        this.setState({
-            isLoading: true
-        });
-        bodyless(HttpHelper.addUrlParameter(
-            ApiDictionary.followUsers, ['all'])
-        ).then(result => {
-            this.setState({
-                isLoading: false,
-                accounts: result.data
-            });
-        });
+    componentWillUnmount() {
+        this.setState({accounts: []})
+    }
+
+    fetchAttendance() {
+        const eventId = this.props.navigation.state.params.eventId;
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true})
+                bodyless(HttpHelper.addUrlParameter(ApiDictionary.getAttendance, [eventId])
+                ).then(result => {
+                    this.setState({
+                        isLoading: false,
+                        accounts: result.data
+                    });
+                })
+        }
+    }
+
+    navigationOptions() {
+
     }
 
     private searchFilter(account: UserWithFollow) {
@@ -69,7 +78,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.wrapper}>
-                <View style={styles.searchBar}>
+                <View style={{paddingHorizontal: '7%'}}>
                     <IconInput
                         onChangeText={text => {
                             this.setState({searchQuery: text})
@@ -80,7 +89,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                 </View>
                 <FlatList
                     refreshing={this.state.isLoading}
-                    onRefresh={() => this.fetchUsers()}
+                    onRefresh={() => this.fetchAttendance()}
                     contentContainerStyle={styles.flatList}
                     data={this.state.accounts.filter((user) => {
                         return this.searchFilter(user)
@@ -91,8 +100,8 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                             isExpandable={false}
                             account={item}>
                             <Ionicons onPress={() => this.clickedFollowStar(item)}
-                                name={'md-star'} size={35}
-                                      style={ item.isFollowingThem ?
+                                      name={'md-star'} size={35}
+                                      style={item.isFollowingThem ?
                                           styles.followStar : styles.notFollowStar
                                       }/>
                         </AccountRow>
@@ -101,16 +110,16 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
         );
     }
 
-    static navigationOptions = (navData:any) => {
+    static navigationOptions = (navData: any) => {
         return {
-            headerTitle: 'Ontdekken',
+            headerTitle: 'Attendance',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
+                            navData.navigation.navigate('Profile');
                         }}/>
                 </HeaderButtons>
             ),
@@ -118,9 +127,9 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
                         title='menu'
-                        iconName='md-menu'
+                        iconName='md-arrow-round-back'
                         onPress={() => {
-                            navData.navigation.toggleDrawer();
+                            navData.navigation.goBack();
                         }}
                     />
                 </HeaderButtons>
@@ -130,7 +139,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
 
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
     notFollowStar: {
         color: colors.favoriteStarInactive
     },
@@ -146,11 +155,6 @@ const styles = StyleSheet.create ({
         paddingTop: 20,
         flex: 1,
         width: '100%',
-        backgroundColor: colors.backgroundPrimary
-    },
-    searchBar: {
-        paddingHorizontal: '7%',
-        marginBottom: 8
     }
 });
 

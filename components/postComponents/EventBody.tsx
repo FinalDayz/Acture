@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
+
 import {bodyfull} from '../../components/HttpClient';
 import ApiDictionary from '../../constants/ApiDictionary';
 
@@ -20,7 +21,7 @@ export interface Props {
     adress: string
     city: string
     price: string
-    attendance: string
+    attendance: number
     evenementId: number
     doesAttend: number
     postId: string
@@ -30,13 +31,10 @@ export interface Props {
 
 export class EventBody extends React.Component<Props> {
 
-    constructor(props: Props) {
-        super(props);
-    }
-    
     state = {
         isLoading: false,
-        attendButtonPressed: false
+        attendButtonPressed: false,
+        attendance: 0
     };
 
     editPost() {
@@ -53,6 +51,8 @@ export class EventBody extends React.Component<Props> {
             this.state.isLoading = true;
             bodyfull(ApiDictionary.insertAttendant, {
                 eventId: this.props.evenementId
+            }).then(response => {
+                this.setState({attendance: this.state.attendance + 1})
             })
             .catch ((error) => {
                     console.log("Dit is de error joehoeeee: " + error);

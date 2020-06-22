@@ -14,6 +14,7 @@ import { AccountRow } from '../components/startup/AccountRow';
 import { StartupWithFollow } from '../models/StartupWithFollow';
 import { ContactInfo } from '../models/ContactInfo';
 import { ActivityIndicator } from 'react-native-paper';
+import {ListItem} from "react-native-elements";
 
 export interface Props {
     navigation: any
@@ -96,6 +97,13 @@ export default class ProfileScreen extends React.Component<Props, State> {
             return(
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>
+                        <ListItem
+                            style={this.styles.privacyButton}
+                            title={'Privacy instellingen'}
+                            leftIcon={{ name: 'lock' }}
+                            chevron
+                            onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}
+                        />
                         <FlatList
                             ListHeaderComponent={(
                                 this.headerBinder()
@@ -326,6 +334,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
     };
 
     styles = StyleSheet.create ({
+        privacyButton: {
+            marginHorizontal: 15
+        },
         notFollowStar: {
             color: colors.favoriteStarInactive
         },

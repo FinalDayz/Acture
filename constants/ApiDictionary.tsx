@@ -13,10 +13,13 @@ export default {
     deleteUser: {destination: '/api/users/', type: 'DELETE'},
     resetPassword: {destination: '/api/users/resetPassword', type: 'PATCH'},
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
+    
 
     addPost: {destination: '/api/feed/addPost/', type: 'POST'},
     editPost: {destination: '/api/feed/editPost', type: 'PATCH'},
     getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
+    getPostToEdit:{destination: '/api/feed/getPostToEdit' , type: 'GET'},
+    getAttendance: {destination: '/api/attendance/getAttendance/', type: 'GET'},
 
     //vergeet niet id in de header te pompen
     getUserById: {destination: '/api/users/byid/', type: 'GET'},
@@ -37,7 +40,10 @@ export default {
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
     getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
 
-    //dit is de defaults van de api server (verander dit naar je home pc)
+    getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
+    changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},
+
+
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 20000, //in miliseconds
 };
