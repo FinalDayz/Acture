@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     View,
     Text,
+    Dimensions,
     Platform,
     TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Button
 } from "react-native";
@@ -20,6 +21,7 @@ import ApiDictionary from "../constants/ApiDictionary";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
+// import {error} from "util";
 import {Input} from "../components/input/standardInput";
 import { Container } from "native-base";
 import { HttpHelper } from "../components/HttpHelper";
@@ -43,6 +45,7 @@ interface State {
     categories: Array<Category>
     startups: Array<any>
     image: string
+   
     imageName: string
     eventName: string
     eventCity: string
@@ -59,6 +62,7 @@ interface State {
     editMode: boolean
 
 }
+const user = User.getLoggedInUser();
 
 export default class PostAddScreen extends React.Component<Props, State> {
     state: State;
