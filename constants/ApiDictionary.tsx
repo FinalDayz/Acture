@@ -41,7 +41,9 @@ export default {
     getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
 
     getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
+    getUserDetails: {destination: '/api/users/getUserInfo', type: 'GET'},
     changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},
+    updateUserDetails: {destination: '/api/users/updateUserInfo', type: 'POST'},
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,

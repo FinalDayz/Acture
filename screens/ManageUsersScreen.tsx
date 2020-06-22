@@ -118,9 +118,10 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             if(data.success) {
                 Alert.alert(
                     "Wachtwoord gereset",
-                    'Het wachtwoord is veranderd naar: ' + newPassword + ", ook is het gekopieerd naar je klembord.",
+                    'Het wachtwoord is veranderd naar: ' + newPassword,
                     [
-                        {text: 'OK', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
+                        {text: 'Kopieer wachtwoord', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
+                        {text: 'Ik onthoud het wachtwoord', style: 'cancel'}
                     ],
                     { cancelable: false })
             }
