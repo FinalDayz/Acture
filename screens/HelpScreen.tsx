@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import {bodyfull} from '../components/HttpClient';
@@ -16,9 +16,10 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    data: PostModel[],
-    offset: number
+    data: PostModel[]
 }
+
+let offSet = 0;
 
 export default class HelpScreen extends React.Component<Props, State> {
 
@@ -28,8 +29,7 @@ export default class HelpScreen extends React.Component<Props, State> {
         super(props, state);
         this.state = {
             data: [],
-            isLoading: false,
-            offset: 0
+            isLoading: false
         }
     }
 
@@ -39,20 +39,24 @@ export default class HelpScreen extends React.Component<Props, State> {
 
     getGuides() {
         if(!this.state.isLoading) {
-            
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getGuides, {
-                    offs: this.state.offset //offset for loading more posts
+                    offs: offSet //offset for loading more posts
                 })
-                .then(
-                    (result: {data:Array<PostModel>}) => {
+                .then((result) => {
+                    if(result.success === 1) {
+                        var addedData = this.state.data.concat(result.data);
                         this.setState({
                             isLoading: false,
-                            data: result.data
+                            data: addedData
                         })
+                    } else {
+                        this.setState({isLoading:false})
+                        }
                     })
                 .catch ((error) => {
                     console.log(error);
+                    this.setState({isLoading : false});
                 })
             })
         }
@@ -72,6 +76,15 @@ export default class HelpScreen extends React.Component<Props, State> {
         })
     };
 
+    increaseOffset() {
+        offSet = offSet + 10;
+    }
+
+    resetOffset() {
+        this.setState({data: []})
+        offSet = 0;
+    }
+
     render() {
         return(
             <View style={this.styles.screen}>
@@ -80,7 +93,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getGuides()}
+                        onRefresh={() => {this.resetOffset(); this.getGuides()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -90,6 +103,17 @@ export default class HelpScreen extends React.Component<Props, State> {
                                 onDelete={this.handleDelete.bind(this)}
                                 onEdit={this.handleEdit}
                             />
+                        }
+                        ListFooterComponent={
+                            <View>
+                                {!this.state.isLoading ? (
+                                    <View style={this.styles.postloader}>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getGuides() }}>
+                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : null }
+                            </View>
                         }
                     />
                 </View>
@@ -138,6 +162,15 @@ export default class HelpScreen extends React.Component<Props, State> {
             flex: 1,
             width: '100%',
             height: '100%'
+        },
+        postloader: {
+            width: '100%',
+            marginVertical: 10,
+            alignItems: 'center'
+        },
+        postloaderText: {
+            color: colors.textDark,
+            textDecorationLine: 'underline'
         },
         list: {
             width: '100%',

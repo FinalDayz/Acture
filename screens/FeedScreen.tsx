@@ -10,7 +10,6 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { User } from '../models/User';
 
 
@@ -20,8 +19,7 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    data: PostModel[],
-    offset: number
+    data: PostModel[]
 }
 
 let offSet = 0;
@@ -33,8 +31,7 @@ export default class FeedScreen extends React.Component<Props, State> {
         super(props, state);
         this.state = {
             data: [],
-            isLoading: false,
-            offset: 0
+            isLoading: false
         }
     }
 
@@ -43,9 +40,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     getFeed() {
-        console.log("ik voer de feed uit.")
         if(!this.state.isLoading) {
-
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: offSet //offset for loading more posts
@@ -59,7 +54,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         })
                     } else {
                         this.setState({isLoading:false})
-                    }
+                        }
                     })
                 .catch ((error) => {
                     console.log(error);
@@ -88,15 +83,8 @@ export default class FeedScreen extends React.Component<Props, State> {
     }
 
     resetOffset() {
+        this.setState({data: []})
         offSet = 0;
-    }
-
-    getMorePosts() {
-        //let tempOffset = 15;
-        //this.setState({offset:tempOffset});
-        offSet = offSet + 10;
-        console.log(offSet)
-        //this.getFeed.bind(this)
     }
 
     render() {
@@ -132,8 +120,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                 </View>
             </Container>
         );
-    }
-                   
+    }            
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
