@@ -57,9 +57,8 @@ export async function bodyfull(details: { destination: string; type: string; }, 
     });
         const resData = await response;
 
-        console.log("bodyfull is aangeroepen")
         if(state.getjwt && resData.token) {
-            console.log("hello " + resData.token)
+            // console.log(resData.token)
             state.jwt = resData.token;
         }
 

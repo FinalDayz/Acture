@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -9,17 +9,29 @@ import { Post } from "../components/Post";
 import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import { PostModel } from '../models/PostModel';
+import { User } from '../models/User';
 
-export default class AllEventsScreen extends React.Component<any, any> {
+export interface Props {
+    navigation: any
+}
 
-    state = {
-        isLoading: false,
-        data: [],
-        offset: 0
-    };
+interface State {
+    isLoading: boolean,
+    data: PostModel[]
+}
 
-    constructor(props: any) {
-        super(props);
+let offSet = 0;
+
+export default class AllEventsScreen extends React.Component<Props, State> {
+
+    state: State;
+
+    constructor(props: Props, state: State) {
+        super(props, state);
+        this.state = {
+            data: [],
+            isLoading: false
+        }
     }
 
     componentDidMount() {
@@ -28,17 +40,20 @@ export default class AllEventsScreen extends React.Component<any, any> {
     
     getEvents() {
         if(!this.state.isLoading) {
-            
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getEvents, {
-                    offs: this.state.offset //offset for loading more posts
+                    offs: offSet //offset for loading more posts
                 })
-                .then(
-                    (result: {data:Array<PostModel>}) => {
+                .then((result) => {
+                    if(result.success === 1) {
+                        var addedData = this.state.data.concat(result.data);
                         this.setState({
                             isLoading: false,
                             data: result.data
                         })
+                    } else {
+                        this.setState({isLoading:false})
+                        }
                     })
                 .catch ((error) => {
                     console.log(error);
@@ -47,8 +62,11 @@ export default class AllEventsScreen extends React.Component<any, any> {
         }
     }
 
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
+    }
+
     handleDelete(postId: string) {
-        console.log("helemaal hier: ");
         const newData = this.state.data.filter(
             (post) => post.postId.toString() !== postId
         );
@@ -58,21 +76,42 @@ export default class AllEventsScreen extends React.Component<any, any> {
         })
     };
 
+    increaseOffset() {
+        offSet = offSet + 10;
+    }
+
+    resetOffset() {
+        this.setState({data: []})
+        offSet = 0;
+    }
+
     render() {
         return(
             <Container style={this.styles.screen}>
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getEvents()}
+                        onRefresh={() => {this.resetOffset(); this.getEvents()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete}
                             />
+                        }
+                        ListFooterComponent={
+                            <View>
+                                {!this.state.isLoading ? (
+                                    <View style={this.styles.postloader}>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getEvents() }}>
+                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : null }
+                            </View>
                         }
                     />
                 </View>     
@@ -90,7 +129,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
                         title='profile'
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
-                            navData.navigation.navigate('Profile');
+                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
                     }}/>
                 </HeaderButtons>
             ),
@@ -124,6 +163,15 @@ export default class AllEventsScreen extends React.Component<any, any> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        postloader: {
+            width: '100%',
+            marginVertical: 10,
+            alignItems: 'center'
+        },
+        postloaderText: {
+            color: colors.textDark,
+            textDecorationLine: 'underline'
         },
         list: {
             width: '100%',

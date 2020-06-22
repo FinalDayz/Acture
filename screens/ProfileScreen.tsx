@@ -1,16 +1,19 @@
-import React from 'react';
-import {View, StyleSheet, Text, Button, Image, Dimensions} from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet, Text, Image, Dimensions, FlatList, Linking, Alert, Button } from 'react-native';
 import colors from '../constants/colors';
 import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import {PostModel} from "../models/PostModel";
-import {List} from "native-base";
+import { Container} from "native-base";
 import {Post} from "../components/Post";
-import { ScrollView } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import  { HttpHelper } from '../components/HttpHelper';
 import { User } from '../models/User';
-import { UserRole } from '../models/UserRole';
-import {ListItem} from "react-native-elements";
+import { Ionicons } from '@expo/vector-icons';
+import { AccountRow } from '../components/startup/AccountRow';
+import { StartupWithFollow } from '../models/StartupWithFollow';
+import { ContactInfo } from '../models/ContactInfo';
+import { ActivityIndicator } from 'react-native-paper';
 
 export interface Props {
     navigation: any
@@ -18,9 +21,25 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    blogs: [],
-    currentUser: User
+    blogs: PostModel[],
+    currentUser: User,
+    selectedTab: string,
+    startups: StartupWithFollow[],
+    contactItems: ContactInfo[]
 };
+
+const OpenURLButton = ( url: string, children: string ) => {
+    const handlePress = useCallback(async () => {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+      }
+    }, [url]);
+  
+    return <Button title={children} onPress={handlePress} />;
+  };
 
 export default class ProfileScreen extends React.Component<Props, State> {
 
@@ -34,7 +53,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
             ...props,
             ...state,
             currentUser: new User(undefined),
-            isLoading: false
+            isLoading: false,
+            selectedTab: 'Over',
+            startups: [],
         }
 
         this._isMounted = false;
@@ -44,110 +65,19 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        console.log("user id within object: " + this.state.currentUser.userId)
         this.getCurrentUser()
+        this.fetchUserLinkedStartups()
+        this.getBlogs()
+
         this._isMounted = true;
+    }
+
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-    }
-
-    getCurrentUser() {
-        console.log("sup1")
-        if(this.state.isLoading == false) {
-            this.setState({isLoading:true})
-            console.log("sup2")
-            bodyless(HttpHelper.addUrlParameter(ApiDictionary.getUserById, [this.state.currentUser.userId])).then((data) => {
-                console.log("sup3")
-                if(data.success === 1) {
-                    console.log("sup4")
-                    this.state.currentUser.setUser(data.data)
-                    this.setState({isLoading: false})
-                    this.getBlogs()
-                } else {
-                    console.log("bigoof", data)
-                    this.setState({isLoading: false})
-                }
-            })
-        }
-    }
-
-    // getStartupData() {
-    //     bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupById, [this.state.id]))
-    // }
-
-    render() {
-
-        return(
-            <View>
-                {/* <View style={{flex: 1, flexDirection: 'row', alignContent: 'stretch', alignItems: 'stretch'}}>
-                    <Image
-                    style={{
-                    height: 150,
-                    width: 150,
-                    borderWidth: 1,
-                    borderRadius: 75}}
-                    source={{uri: 'https://i.imgur.com/Ngq9RoP.jpg'}}
-                    resizeMode="cover"
-                    />
-                    <View style={{width: 50, height: 50, backgroundColor: 'powderblue'}} />
-                    <View style={{width: 50, height: 50, backgroundColor: 'skyblue'}} />
-                    <View style={{width: 50, height: 50, backgroundColor: 'steelblue'}} />
-                </View> */}
-                {/* <View>
-                    <View style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'stretch',
-                    }}>
-                        <View style={{marginLeft: 10, marginTop: 30}}><Image
-                        style={{
-                        height: this.windowWidth/2.5,
-                        width: this.windowWidth/2.5,
-                        borderWidth: 1,
-                        borderRadius: this.windowWidth/5}}
-                        source={{uri: 'https://i.imgur.com/Ngq9RoP.jpg'}}
-                        resizeMode="cover"
-                        /></View>
-                        <View>
-                        <Text>{this.state.isLoading}</Text>
-                        </View>
-                        <View style={{height: this.windowWidth/2, width: this.windowWidth/2, backgroundColor: 'skyblue', margin: 10}}>
-                        </View>
-                    </View>
-                </View> */}
-                <View style={this.styles.separator} />
-
-
-                 {/* TODO: Tab-specific content on top*/}
-
-                    {/*separator:*/}
-                <Text>{this.state.currentUser.firstname}</Text>
-                <View style={this.styles.separator} />
-                <Text>{"id: " + this.state.currentUser.userId}</Text>
-                <View style={this.styles.separator} />
-                <Text>{ JSON.stringify(HttpHelper.addUrlParameter(ApiDictionary.getUserById, [this.state.currentUser.userId])) }</Text>
-                <View style={this.styles.separator} />
-
-                <View>
-                    <ListItem
-                        style={this.styles.privacyButton}
-                        title={'Privacy instellingen'}
-                        leftIcon={{ name: 'lock' }}
-                        chevron
-                        onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}
-                    />
-                    <List
-                        dataArray={this.state.blogs}
-                        renderRow={(item) => {
-                            return <Post data={item}/>
-                        }}
-                    />
-                </View>
-            </View>
-        );
     }
 
     //options for header bar. Default options are in the navigator.
@@ -155,23 +85,233 @@ export default class ProfileScreen extends React.Component<Props, State> {
         headerTitle: 'Profiel'
     };
 
+    render() {
+        if(this.state.isLoading) {
+            return (
+                <View style={this.styles.screen}>
+                    <ActivityIndicator size="large" color={colors.textLight}/>
+                </View>
+            )
+        } else {
+            return(
+                <View style={this.styles.screen}>
+                    <View style={this.styles.lowerScrollable}>
+                        <FlatList
+                            ListHeaderComponent={(
+                                this.headerBinder()
+                            )}
+                            refreshing={this.state.isLoading}
+                            contentContainerStyle={this.styles.list}
+                            data={this.state.blogs}
+                            keyExtractor={(item, index) => item.postId.toString()}
+                            renderItem={itemData =>
+                                <Post
+                                    data={itemData.item}
+                                    onEdit={this.handleEdit.bind(this)}
+                                    onDelete={this.handleDelete.bind(this)}
+                                />
+                            }
+                        />
+                    </View>
+                </View>
+            );
+        } 
+    }
+
+    headerBinder() {
+        return(
+            <View>
+            <Container style={this.styles.topScrollable}>                
+                    <View style={this.styles.imagestyling}>
+                        <View>
+                            <Image
+                            style={this.styles.image}
+                            source={{uri: 'https://frc.research.vub.be/sites/default/files/styles/large/public/thumbnails/image/basic-profile-picture_5.jpg'}}
+                            resizeMode="cover"
+                            />
+                        </View>
+                        <Container style={this.styles.nameBox}>
+                            <Text style={[this.styles.text, {textAlign: "center"}]} adjustsFontSizeToFit numberOfLines={2}>{this.state.currentUser.getFullName()}</Text>
+                        </Container>
+                    </View>
+            </Container>
+            {this.tabGenerator(['Over', 'Startups', 'Contact'])}
+            {this.tabRouter()}
+            </View>
+        )
+    }
+
+    tabRouter() {
+        switch(this.state.selectedTab) {
+
+            case 'Over':
+                return (
+                    <View style={{marginHorizontal: "7%"}}>
+                        <Text style={this.styles.descriptionText}>{this.state.currentUser.description}</Text>
+                        <View style={this.styles.separator} />
+                    </View>
+                );
+                
+            case 'Startups':
+                return (
+                    <View style={{marginHorizontal: "7%"}}>
+                        <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>{this.state.currentUser.firstname + " is aangesloten bij deze startups:"}</Text>
+                        <FlatList
+                            refreshing={this.state.isLoading}
+                            onRefresh={() => this.fetchUserLinkedStartups()}
+                            contentContainerStyle={this.styles.flatList}
+                            data={this.state.startups}
+                            keyExtractor={(item, index) => item.startupId.toString()}
+                            renderItem={({item}) =>
+                                <AccountRow
+                                    isExpandable={false}
+                                    account={item}>
+                                    <Ionicons onPress={() => this.clickedFollowStar(item)}
+                                        name={'md-star'} size={35}
+                                            style={this.isFollowing(item)}/>
+                                </AccountRow>
+                        }/>
+                        <View style={this.styles.separator} />
+                    </View>
+                );
+
+            case 'Contact':
+                return (
+                    <View style={{marginHorizontal: "7%"}}>   
+                        <View style={this.styles.separator} />
+                    </View>
+                );
+        }
+    }
+
+    contentAction(action: string, user: User) {
+        switch(action) {
+            case 'email':
+                break;
+            case 'whatsapp':
+                break;
+        }
+    }
+
+    isFollowing(item: StartupWithFollow) {
+        if(item.isFollowingThem.toString() === 'true') {
+            return this.styles.followStar
+        } else {
+            return this.styles.notFollowStar
+        }
+    }
+
+    fetchUserLinkedStartups() {
+        if(this.state.isLoading == false) {
+            this.setState({isLoading:true}, () => {
+                bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])).then(result => {
+                    if(result.success === 1) {
+                        this.setState({
+                            isLoading: false,
+                            startups: result.data
+                            });
+                    } else {
+                        console.log("bigoof", result)
+                        this.setState({isLoading: false})
+                    }
+                })
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })  
+            })
+            
+        }
+    }
+
+    private clickedFollowStar(account: StartupWithFollow) {
+        if(account.isFollowingThem.toString() === 'true') {
+            account.isFollowingThem = false
+        } else {
+            account.isFollowingThem = true
+        }
+        this.forceUpdate();
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.changeStartupFollow,
+            [account.startupId, account.isFollowingThem ? 1 : 0])
+        );
+    }
+
+    getCurrentUser() {
+        if(this.state.isLoading == false) {
+            this.setState({isLoading:true}, () => {
+                bodyless(HttpHelper.addUrlParameter(ApiDictionary.getUserById, [this.state.currentUser.userId])).then((data) => {
+                    if(data.success === 1) {
+                        this.state.currentUser.setUser(data.data)
+                        this.setState({isLoading: false})
+                    } else {
+                        console.log("bigoof", data)
+                        this.setState({isLoading: false})
+                    }
+                })
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })
+            })
+        }   
+    }
+
+    telephoneComposer() {
+      if(this.state.currentUser.telephone.toString()[0] === '0') {
+          return this.state.currentUser.telephone
+      }  
+      return "0" + this.state.currentUser.telephone
+    }
+
+    tabGenerator(category: string[]) {
+        let categoryWidth = ((1/category.length) * 100).toString() + '%'
+        let categoryList = category.map((name) => {
+                return(
+                    <View style={[this.styles.category, {width: categoryWidth, backgroundColor: this.IstabSelected(name)}]} 
+                    key={name}>
+                        <TouchableWithoutFeedback onPress={() => {this.setState({selectedTab:name})}}>
+                        <Text style={this.styles.tabText} adjustsFontSizeToFit>{name}</Text>
+                        </TouchableWithoutFeedback>
+                    </View>
+                )
+            }
+        )
+
+        return (
+            <View style={{width: '100%', height: 50, flexDirection: 'row', backgroundColor: '#e3e8eb'}}>
+                    {categoryList}
+            </View>
+        )
+    }
+ 
+    IstabSelected(name: string) {
+        const selected = 'white'
+        const notSelected = '#e3e8eb'
+
+        if(name === this.state.selectedTab) {
+            return selected
+        } else 
+        return notSelected
+    }
 
     getBlogs() {
         if(!this.state.isLoading) {
-            this.setState({isLoading:true})
-            bodyfull(ApiDictionary.getUserBlogs, {
-                userId: this.state.currentUser.userId
-            })
-               .then((result) => {
-                if(result.success === 1) {
-                    this.setState({blogs: result.data, isLoading: false})
-                } else {
-                    this.setState({isLoading: false})
-                }})
-            .catch ((error) => {
-                console.log(error);
-            })
-            this.setState({isLoading : false});
+            this.setState({isLoading:true}, () => {
+                bodyfull(ApiDictionary.getUserBlogs, {
+                    userId: this.state.currentUser.userId
+                })
+                   .then((result) => {
+                    if(result.success === 1) {
+                        this.setState({blogs: result.data, isLoading: false})
+                    } else {
+                        this.setState({isLoading: false})
+                    }})
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })
+            })  
         }
     }
 
@@ -186,21 +326,110 @@ export default class ProfileScreen extends React.Component<Props, State> {
     };
 
     styles = StyleSheet.create ({
-        privacyButton: {
-            marginHorizontal: 15,
+        notFollowStar: {
+            color: colors.favoriteStarInactive
+        },
+        followStar: {
+            color: colors.favoriteStarActive
+        },
+        flatList: {
+            width: '100%',
+            marginTop: 10,
+            paddingHorizontal: '7%',
+        },
+        contactLeftTable: {
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center",
+            textAlign: "left", 
+            fontWeight: 'bold', 
+            marginTop: 5
+        },
+        contactRightTable: {
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center",
+            textAlign: "left",
+            marginTop: 5
+        },
+        descriptionText: {
+            fontStyle: 'italic',
+            fontSize: 15,
+            margin: 10,
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center",
+            textAlign: "center",
+        },
+        category: {
+            height: 50,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10
+        },
+        nameBox: {
+            height: this.windowWidth/2.5, 
+            width: this.windowWidth/2, 
+            margin: 5, 
+            alignContent: "center",
+            backgroundColor: "#e3e8eb",
+            marginTop: 50,
+        },
+        image: {
+            height: this.windowWidth/2.5,
+            width: this.windowWidth/2.5,
+            borderWidth: 5,
+            borderRadius: this.windowWidth/5,
+            marginLeft: 10, marginTop: 30,
+            backgroundColor: "white",
+            borderColor: 'white',
+        },
+        imagestyling: {
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'stretch',
         },
         screen: {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 30,
-            backgroundColor: colors.backgroundPrimary
+            backgroundColor: colors.backgroundSecondary
         },
         separator: {
             borderBottomColor: '#747474',
             borderBottomWidth: 1,
             marginHorizontal: 15,
-            marginVertical: 15
+            marginTop: 15
+        },
+        topScrollable: {
+            flexDirection: 'row',
+            flex: 1,
+            width: '100%',
+            height: '100%',
+            backgroundColor: "#e3e8eb"
+        },
+        lowerScrollable: {
+            flex: 1,
+            width: '100%',
+            height: '100%',
+            backgroundColor: colors.backgroundPrimary
+        },
+        list: {
+            width: '100%',
+        },
+        text: {
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center"
+        },
+        tabText: {
+            fontSize: 17,
+            margin: 10,
+            color: colors.textPostContent,
+            alignSelf: "auto", 
+            textAlignVertical: "center",
+            textAlign: "center",
         }
     });
 }
