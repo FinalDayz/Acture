@@ -17,7 +17,6 @@ export interface Props {
     onDelete(postId: string): void
     onEdit(postId: string): void
     handlePress: () => void
-    // refreshEvents: () => void
     
 }
 
@@ -60,7 +59,7 @@ export class Post extends React.Component<Props> {
     render() {
         if (this.props.data.categoryId === 4) {
             return (
-                <ListItem style={this.styles.listContainer} onPress={this.props.handlePress}>
+                <ListItem  key={this.props.data.postId} style={this.styles.listContainer} onPress={this.props.handlePress}>
                     <View style={this.styles.postContainer} >
                         <PostHeader
                             profileImage={this.props.data.profileImage}
@@ -92,7 +91,7 @@ export class Post extends React.Component<Props> {
         }
         else {
             return (
-                <ListItem style={this.styles.listContainer}>
+                <ListItem key={this.props.data.postId} style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
                         <PostHeader
                             profileImage={this.props.data.profileImage}
