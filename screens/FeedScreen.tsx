@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
 
@@ -19,11 +19,11 @@ export interface Props {
 }
 
 interface State {
-  
     isLoading: boolean,
-    data: any; // PostModel[],
-    offset: number
+    data: PostModel[]
 }
+
+let offSet = 0;
 
 export default class FeedScreen extends React.Component<Props, State> {
     state: State;
@@ -33,8 +33,7 @@ export default class FeedScreen extends React.Component<Props, State> {
         super(props, state);
         this.state = {
             data: [],
-            isLoading: false,
-            offset: 0
+            isLoading: false
         }
         this._isMounted = false;
     }
@@ -50,21 +49,21 @@ export default class FeedScreen extends React.Component<Props, State> {
 
     getFeed() {
         if(!this.state.isLoading) {
-
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
-                    offs: this.state.offset //offset for loading more posts
+                    offs: offSet //offset for loading more posts
                 })
                 .then((result) => {
                     if(result.success === 1) {
+                        var addedData = this.state.data.concat(result.data);
                         this.setState({
                             isLoading: false,
-                            data: result.data
+                            data: addedData
                         })
                     } else {
-                        console.log("bigoof", result)
-                        this.setState({isLoading: false})
-                    }})
+                        this.setState({isLoading:false})
+                        }
+                    })
                 .catch ((error) => {
                     console.log(" gaat nu feed ophalen3")
                     console.log(error);
@@ -94,11 +93,14 @@ export default class FeedScreen extends React.Component<Props, State> {
         })
     };
 
-    getMorePosts() {
-        let tempOffset = 15;
-        this.setState({offset:tempOffset}, () => {this.getFeed()});
+    increaseOffset() {
+        offSet = offSet + 10;
     }
 
+    resetOffset() {
+        this.setState({data: []})
+        offSet = 0;
+    }
 
     render() {
         return (
@@ -107,7 +109,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getFeed()}
+                        onRefresh={() => {this.resetOffset(); this.getFeed()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -121,21 +123,25 @@ export default class FeedScreen extends React.Component<Props, State> {
                                 onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
-
-                        }}
+                            
                         
+                        }
+                        ListFooterComponent={
+                            <View>
+                                {!this.state.isLoading ? (
+                                    <View style={this.styles.postloader}>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}>
+                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : null }
+                            </View>
+                        }
                     />
                 </View>
             </Container>
         );
-    }
- 
-    // <View>
-    //     <TouchableOpacity onPress={this.getMorePosts}>
-    //         <Text style={this.styles.postloader}>Meer posts laden</Text>
-    //     </TouchableOpacity>
-    // </View>
-                    
+    }            
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {

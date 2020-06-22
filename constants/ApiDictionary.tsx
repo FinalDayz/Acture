@@ -41,5 +41,5 @@ export default {
 
     //dit is de defaults van de api server (verander dit naar je home pc)
     apiIp: environmentVars.address + ":" + environmentVars.port,
-    timeoutTimings: 120000, //in miliseconds
+    timeoutTimings: 20000, //in miliseconds
 };

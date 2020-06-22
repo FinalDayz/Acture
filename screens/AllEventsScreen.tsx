@@ -11,6 +11,27 @@ import ApiDictionary from '../constants/ApiDictionary';
 import { PostModel } from '../models/PostModel';
 import { User } from '../models/User';
 
+export interface Props {
+    navigation: any
+}
+
+interface State {
+    isLoading: boolean,
+    data: PostModel[]
+}
+
+let offSet = 0;
+
+export default class AllEventsScreen extends React.Component<Props, State> {
+
+    state: State;
+
+    constructor(props: Props, state: State) {
+        super(props, state);
+        this.state = {
+            data: [],
+            isLoading: false
+        }
 interface State {
 
     isLoading: boolean,
@@ -36,16 +57,21 @@ export default class AllEventsScreen extends React.Component<any, any> {
     
     getEvents() {
         if(!this.state.isLoading) {
+            
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getEvents, {
-                    offs: this.state.offset //offset for loading more posts
+                    offs: offSet //offset for loading more posts
                 })
-                .then(
-                    (result: {data:Array<PostModel>}) => {
+                .then((result) => {
+                    if(result.success === 1) {
+                        var addedData = this.state.data.concat(result.data);
                         this.setState({
                             isLoading: false,
                             data: result.data
                         })
+                    } else {
+                        this.setState({isLoading:false})
+                        }
                     })
                 .catch ((error) => {
                     console.log(error);
@@ -54,8 +80,11 @@ export default class AllEventsScreen extends React.Component<any, any> {
         }
     }
 
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
+    }
+
     handleDelete(postId: string) {
-        console.log("helemaal hier: ");
         const newData = this.state.data.filter(
             (post) => post.postId.toString() !== postId
         );
@@ -64,6 +93,15 @@ export default class AllEventsScreen extends React.Component<any, any> {
             data: newData
         })
     };
+
+    increaseOffset() {
+        offSet = offSet + 10;
+    }
+
+    resetOffset() {
+        this.setState({data: []})
+        offSet = 0;
+    }
 
     showAttendance= (eventId: any) => {
         console.log('printing eventId: ')
@@ -78,7 +116,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getEvents()}
+                        onRefresh={() => {this.resetOffset(); this.getEvents()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -87,8 +125,20 @@ export default class AllEventsScreen extends React.Component<any, any> {
                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                 navigation={this.props.navigation}
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete}
                             />
+                        }
+                        ListFooterComponent={
+                            <View>
+                                {!this.state.isLoading ? (
+                                    <View style={this.styles.postloader}>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getEvents() }}>
+                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : null }
+                            </View>
                         }
                     />
                 </View>     
@@ -140,6 +190,15 @@ export default class AllEventsScreen extends React.Component<any, any> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        postloader: {
+            width: '100%',
+            marginVertical: 10,
+            alignItems: 'center'
+        },
+        postloaderText: {
+            color: colors.textDark,
+            textDecorationLine: 'underline'
         },
         list: {
             width: '100%',
