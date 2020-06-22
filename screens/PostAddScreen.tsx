@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {
+    Alert,
     Image,
     StyleSheet,
     TextInput,
@@ -8,7 +9,7 @@ import {
     Text,
     Dimensions,
     Platform,
-    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView
+    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Button
 } from "react-native";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
@@ -17,42 +18,51 @@ import RNPickerSelect from 'react-native-picker-select';
 import Constants from 'expo-constants';
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
 // import {error} from "util";
 import {Input} from "../components/input/standardInput";
-import {User} from "../models/User";
+import { Container } from "native-base";
+import { HttpHelper } from "../components/HttpHelper";
+import { User } from "../models/User";
+
 
 export interface Props {
+    navigation:any
 }
 
 interface State {
-    textareaHeight: number,
-    hasError: boolean,
-    categories: Array<Category>,
+    postId: string
     title: string
+    titleValid: boolean
     text: string
+    textValid: boolean
     categoryId: number
+    categoryValid: boolean
+    startupId: number
+    startupValid: boolean
+    categories: Array<Category>
+    startups: Array<any>
     image: string
    
     imageName: string
+    eventName: string
+    eventCity: string
+    eventAddress: string
+    eventDate: Date
+    eventPrice: string
+
     isLoading: boolean
 
-    descriptionIsValid: boolean
-    titleIsValid: boolean
-    // componentContainer: Object
-    // isSmallWindow: boolean
-    // wrongInputs: boolean
+    isValid: boolean,
 
+    datePickerVisibility: boolean
 
-    // x: string
-    // y: string
-    // width: string
-    // height: string
+    editMode: boolean
+
 }
-
 const user = User.getLoggedInUser();
-const isSmallWindow = (Dimensions.get('window').height > 450 && Dimensions.get('window').height < 550)
 
 export default class PostAddScreen extends React.Component<Props, State> {
     state: State;
@@ -62,48 +72,78 @@ export default class PostAddScreen extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            ...state,
             isLoading: false,
-            textareaHeight: 250,
-            // image: "",
-            hasError: false,
-            categories: [],
-
+            isValid: false,
+            postId: '',
             title: '',
+            titleValid: true,
             text: '',
+            textValid: true,
             categoryId: 0,
+            categoryValid: true,
+            startupId: 0,
+            startupValid: true,
             image: '',
             imageName: '',
+            eventName: '',
+            eventCity: '',
+            eventAddress: '',
+            eventDate: new Date(),
+            eventPrice: 'Gratis',
+            
+            categories: [],
+            startups: [],
 
-            // descriptionIsValid: true,
-            // titleIsValid: true
-            // wrongInputs: false
-            // componentContainer: {},
-            // isSmallWindow: Dimensions.get('window').height > 0 &&  Dimensions.get('window').height < 550
+            datePickerVisibility: false,
 
-            // x: '',
-            // y: '',
-            // width: '',
-            // height: '',
-
+            editMode: false
         }
-        // this._getAllCategories();
+
 
     }
 
-
-    // postToAdd = {
-    //    text: this.state.text,
-    //    title: this.state.title,
-    //    image: this.state.image,
-    //    userId: 1,
-    //    categoryId: 1};
-
-
     componentDidMount() {
-        this._getAllCategories();
         this.getPermissionAsync();
-        // this.getStyle();
+        this.getAllCategories();
+        if (this.props.navigation.state.params.edit) {
+            headerMessage = 'Bericht wijzigen';
+            this.fillStateOnEdit(this.props.navigation.state.params.data);
+        }
+    }
+
+    fillStateOnEdit(data: any) {
+        console.log("sfsg");
+        this.setState({
+            postId: data.postId,
+            title: data.title,
+            text: data.text,
+            categoryId: data.categoryId,
+
+            editMode: true
+        }, () => {
+            if (this.state.categoryId === 4) {
+                this.setState({
+                    eventName: data.name,
+                    eventCity: data.city,
+                    eventAddress: data.adress,
+                    eventDate: new Date(data.date),
+                })
+            }
+        });
+    }
+
+    prepareDate(date: Date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0');
+        let year = date.getFullYear();
+        return year + '-' + month + '-' + day;
+    }
+
+    parseDate(date: Date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0');
+        let year = date.getFullYear();
+        return day + '/' + month + '/' + year;
     }
 
     getPermissionAsync = async () => {
@@ -116,7 +156,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     };
 
-    _pickImage = async () => {
+
+    pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -129,9 +170,9 @@ export default class PostAddScreen extends React.Component<Props, State> {
             if (result && !result.cancelled) {
                 console.log(result.uri);
                 const bas64 = result.base64;
-                if (bas64) {
+                if(bas64){
                     this.setState({image: bas64.toString()})
-                    this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/") + 1)})
+                    this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/")+1)})
                 }
 
             }
@@ -141,93 +182,183 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     };
 
-    // CheckTextInput = () => {
-    //     const {title, text} = this.state;
-    //     if(text.trim().length == 0){
-    //         this..setNativeProps({
-    //             borderColor:'red',
-    //             borderWidth:1
-    //         });
-    //         return;
-    //     }
-    //
-    //     if(lastName.trim().length == 0){
-    //         this.lastNameInput.setNativeProps({
-    //             borderColor:'red',
-    //             borderWidth:1
-    //         });
-    //         return;
-    //     }
-    // };
-    // public myFilter = (d: Date): boolean =>
-    // CheckTextInput = (): boolean => {
-    //     // const {title, text} = this.state;
-    //     console.log(this.state.title)
-    //     if (this.state.title.trim().length == 0) {
-    //         this.state.titleIsValid = false
-    //     }
-    //
-    //     if (this.state.text.trim().length == 0) {
-    //         this.state.descriptionIsValid = false
-    //     }
-    //
-    //     if (!this.state.titleIsValid || !this.state.descriptionIsValid) {
-    //         return false;
-    //     } else {
-    //         return true;
-    //     }
-    // }
+    deleteImage() {
+        this.setState({
+            image: '',
+            imageName: ''
+        })
+    }
 
-    _addPost = () => {
-        if (!this.state.isLoading) {
-            this.state.isLoading = true;
-            bodyfull(ApiDictionary.addPost, {
-                'text': this.state.text,
-                'title': this.state.title,
-                'image': this.state.image,
-                'categoryId': this.state.categoryId
-            }).then((data) => {
-                    if (data.success === 1) {
-                        console.log("INSERTED")
-                    }
-                    this.setState({isLoading: false})
-                }
-            ).catch(err => {
-                console.log(err)
-                this.setState({isLoading: false})
-            });
+
+    makeData() {
+        let startupId = null;
+        if (this.state.categoryId === 1) {
+            startupId = this.state.startupId;
         }
+
+        const data = {
+            postId: this.state.postId,
+            title: this.state.title,
+            text: this.state.text,
+            categoryId: this.state.categoryId,
+            image: this.state.image,
+            startupId: startupId,
+            eventName: this.state.eventName,
+            eventCity: this.state.eventCity,
+            eventAddress: this.state.eventAddress,
+            eventDate: this.prepareDate(this.state.eventDate),
+            eventPrice: this.state.eventPrice
+        }
+        return data;
+    }
+
+    checkTitleInput(title: string) {
+        this.setState({
+            titleValid: (title.trim().length > 0),
+            title: title
+        });
     }
     
+    checkTextInput(text: string) {
+        this.setState({
+            textValid: (text.trim().length > 0),
+            text: text
+        });
+    }
+
+    checkCategoryInput(id: number) {
+        this.setState({
+            categoryValid: (id != 0),
+            categoryId: id
+        });
+    }
+
+    checkStartupInput(id: number) {
+        this.setState({
+            startupValid: (id != 0),
+            startupId: id
+        })
+    }
+
+    updateValid() {
+        // Controleer alle velden
+        this.checkTitleInput(this.state.title);
+        this.checkTextInput(this.state.text);
+        this.checkCategoryInput(this.state.categoryId)
+        this.checkStartupInput(this.state.startupId)
 
 
-    _getAllCategories = () => {
-        let noNews: Category[] = new Array<Category>()
+
+        let validity = (
+            this.state.titleValid
+            && this.state.textValid
+            && this.state.categoryValid
+        )
+
+        // Alleen als categorie startup is, wordt startupId gevalideerd
+        if (this.state.categoryId === 1 && !this.state.startupValid) {
+            validity = false
+        }
+
+        this.setState({isValid: validity}, () => {
+            if (
+                !this.state.isValid
+            ) {
+                Alert.alert(
+                    'Invoer onjuist',
+                    'Controleer of alle velden correct zijn ingevuld.',
+                    [{text: 'OK'}])
+                return;
+            }
+            else {
+                if (this.state.editMode) {
+                    this.editPost(this.makeData());
+                } else {
+                    this.addPost(this.makeData());
+                }
+            }
+        });
+    }
+
+    submitHandler() {
+        this.updateValid() 
+
+    }
+
+
+    addPost(data: any) {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, () => {
+                bodyfull(ApiDictionary.addPost, {data}
+                ).then((result) => {
+                        if (result.success === 1) {
+                            this.successMessage();
+                        }
+                        else {
+                            this.failMessage()
+                        }
+                    }
+                ).catch(err => {
+                    console.log(err)
+                    this.setState({isLoading:false}, () => {
+                        this.failMessage()
+                    })
+                });
+            })
+        }
+    }
+
+    editPost(data: any) {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, () => {
+                bodyfull(ApiDictionary.editPost, {data}
+                ).then((result) => {
+                        if (result.success === 1) {
+                            this.setState({isLoading : false}, () => {
+                                this.successMessage()
+                            })
+                        }
+                        else {
+                            this.failMessage()
+                        }
+                    }
+                ).catch(err => {
+                    console.log(err)
+                    this.setState({isLoading:false}, () => {
+                        this.failMessage()
+                    })
+                });
+            })
+        }
+    }
+
+    failMessage() {
+        Alert.alert(
+            'Er is een fout opgetreden',
+            'Probeer het later opnieuw...',
+            [{text: 'OK'}])
+    }
+
+    successMessage() {
+        Alert.alert(
+            'Succes!',
+            'Uw post is succesvol opgeslagen.',
+            [{text: 'OK', onPress: () => this.props.navigation.pop()}],)
+    }
+
+    getAllCategories () {
         if (!this.state.isLoading) {
             this.state.isLoading = true;
             bodyless(ApiDictionary.getAllCategories)
                 .then(
                     (result) => {
-                        if (User.getRole() == 'member') {
-                            for (var i = 0; i < result.data.length; i++) {
-                                if (result.data[i].name === "Nieuws") {
-                                    continue;
-                                }
-                                noNews.push(result.data[i]);
+                        this.setState({
+                            isLoading: false,
+                            categories: result.data
+                        }, () => {
+                            this.getAllStartups();
+                        });
 
-                            }
-                            this.setState({
-                                categories: noNews
-                            });
-                        } else {
-                            this.setState({
-                                categories: result.data
-                            });
-                            this.setState({
-                                isLoading: false
-                            });
-                        }
-                        console.log(noNews)
                     },
                 ).catch(err => {
                 console.log(err);
@@ -238,131 +369,254 @@ export default class PostAddScreen extends React.Component<Props, State> {
         }
     }
 
-    // measureView(event: any) {
-    //     console.log('event peroperties: ', event);
-    //     this.setState({
-    //         x: event.nativeEvent.layout.x,
-    //         y: event.nativeEvent.layout.y,
-    //         width: event.nativeEvent.layout.width,
-    //         height: event.nativeEvent.layout.height
-    //     })
-    // }
+    getAllStartups() {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, ()=> {
+                bodyless(HttpHelper.addUrlParameter(
+                    ApiDictionary.getStartupByUserId, [User.getUserId()]))
+                    .then((result) => {
+                        this.setState({
+                            isLoading: false,
+                            startups: result.data
+                        });
+                    }).catch(err => {
+                    console.log(err);
+                    this.setState({isLoading: false})
+                })
 
-    // onLayout={(event) => this.measureView(event)}
-
-    // getStyle(){
-    //     let componentContainerStyle = styles.componentContainerBig;
-    //
-    //     if(Dimensions.get('window').height > 450 &&  Dimensions.get('window').height < 550){
-    //         componentContainerStyle = styles.componentContainerSmall;
-    // }
-    //  return componentContainerStyle;
-
-
-    // setStyleContainer(){
-    //     if( this.state.isSmallWindow){
-    //         this.state.componentContainer = styles.componentContainerSmall;
-    //     }else {
-    //         this.state.componentContainer = styles.componentContainerBig
-    //     }
-    // }
+            })
+        } else {
+            return null
+        }
+    }
 
 
     render() {
-        // this.setStyleContainer()
         return (
+            <ScrollView>
+                <View style={styles.componentContainerBig} >
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Titel</Text>
+                        <TextInput
+                            style={ styles.input }
+                            placeholder="Titel..."
+                            value={this.state.title}
+                            onChangeText={title => this.checkTitleInput(title)}
+                            returnKeyType='next'
+                            maxLength={45}
+                        />
+                        {!this.state.titleValid &&
+                            <Text style={styles.error}>Veld mag niet leeg zijn</Text>
+                        }
+                    </View>
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Beschrijving</Text>
+                        <TextInput
+                            style={ styles.input }
+                            placeholder="Beschrijving..."
+                            value={this.state.text}
+                            onChangeText={text => this.checkTextInput(text)}
+                            returnKeyType='next'
+                            multiline={true}
+                            numberOfLines={5}
+                        />
+                        {!this.state.textValid &&
+                        <Text style={styles.error}>Veld mag niet leeg zijn</Text>
+                        }
+                    </View>
 
-            <View style={styles.screen}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    {/*<View style = {this.state.componentContainer}>*/}
-                    <ScrollView style={styles.componentContainerBig}>
-                        <View style={styles.titleBox}>
-                            {/*style={this.state.titleIsValid ? styles.titleBox : styles.wrongTitleBox}*/}
-                            <Text style={{
-                                fontStyle: 'italic',
-                                fontWeight: "bold",
-                                width: "13%",
-                                marginRight: 1
-                            }}>Titel: </Text>
-                            <TextInput
-                                style={{
-                                    width: "95%"
-                                }}
-                                value={this.state.title}
-                                onChangeText={(title) => this.setState({title: title})}/>
-                            <TextInput/>
-                            {/*{!this.state.titleIsValid &&*/}
-                            {/*<Text style={{  marginBottom: 6,*/}
+                    {!this.state.editMode &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Categorie</Text>
+                        <RNPickerSelect
+                            style={{
+                                placeholder: {
+                                    color: 'black',
+                                    fontSize: 12,
+                                },
+                            }}
+                            placeholder={{
+                                label: 'Categorie selecteren',
+                                value: 0,
+                                color: '#D3D3D3'
+                            }}
+                            onValueChange={id => this.checkCategoryInput(id)}
+                            items={this.state.categories.map(obj => ({
+                                label: obj.name, value: obj.categoryId
+                            }))}
+                        />
+                        <View style={styles.separator}></View>
+                        {!this.state.categoryValid &&
+                        <Text style={styles.error}>Kies een categorie</Text>
+                        }
+                    </View>
+                    }
 
-                            {/*    fontSize: 12,color: "red" }}>Vul een titel in</Text>}       */}
-                        </View>
-                        <View
-                            // style={this.state.descriptionIsValid ? styles.beschrijvingBox : styles.wrongBeschrijvingBox}
-                            style={styles.beschrijvingBox}
-                        >
-                            {/*<Input*/}
-                            {/*errorText = 'veld mag niet leeg zijn'*/}
-                            {/*type = 'default'*/}
-                            {/*// ref={r=>this.beschrijvingBox=r}*/}
-                            {/*placeholder="Beschrijving..."*/}
-                            {/*value={this.state.text}*/}
-                            {/*changed = {(text,isValid) => this.setState({text: text})}*/}
-                            {/*multiline/>*/}
-                            <TextInput
-                                placeholder="Beschrijving..."
-                                value={this.state.text}
-                                onChangeText={text => this.setState({text: text})}
-                                multiline/>
-                            {/*{!this.state.descriptionIsValid &&*/}
-                            {/*    <Text style={{ color: "red" }}>Vul een beschrijving in</Text>}*/}
-                        </View>
+                    {!this.state.editMode && this.state.categoryId === 1 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Startup</Text>
+                        <RNPickerSelect
+                            style={{
+                                placeholder: {
+                                    color: 'black',
+                                    fontSize: 12,
+                                },
+                            }}
+                            placeholder={{
+                                label: 'Startup selecteren',
+                                value: 0,
+                                color: '#D3D3D3'
+                            }}
+                            onValueChange={id => this.checkStartupInput(id)}
+                            items={this.state.startups.map(obj => ({
+                                label: obj.name, value: obj.startupId
+                            }))}
+                        />
+                        <View style={styles.separator}></View>
+                        {!this.state.startupValid &&
+                        <Text style={styles.error }>Kies een startup</Text>
+                        }
+                    </View>
+                    }
 
-                        <View style={styles.categoryBox}>
-                            <RNPickerSelect
-                                style={styles.pickerSelect}
-                                placeholder={{
-                                    label: 'Categorie selecteren'
-                                }}
-                                onValueChange={id => this.setState({categoryId: id})}
-                                items={this.state.categories.map(obj =>
-                                    ({label: obj.name, value: obj.categoryId})
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Afbeelding</Text>
+                        <View style={{padding: 10, borderBottomColor: '#D3D3D3', borderBottomWidth: 1}}>
+                            <View style={{flexDirection: 'row'}}>
+                                {this.state.imageName === '' ? (
+                                    <Ionicons
+                                        style={{width: "35%", paddingTop: 5, flex: 1}}
+                                        onPress={this.pickImage}
+                                        name='md-camera' size={27} color={"grey"}/>
+                                ) : (
+                                    <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
+                                              onPress={this.deleteImage}
+                                              name='md-trash' size={27} color={"grey"}/>
                                 )}
-                            />
+                                <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
+                                      numberOfLines={1}
+                                      ellipsizeMode={'head'}
+                                >
+                                    {this.state.imageName}
+                                </Text>
+                            </View>
                         </View>
+                    </View>
 
-                        <View style={{
-                            marginTop: 50,
-                            marginHorizontal: 10,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                        }}>
-                            <Ionicons style={{width: "35%", paddingTop: 5}} onPress={this._pickImage} name='md-camera'
-                                      size={27} color={"grey"}/>
-                            <Text style={{width: "65%", paddingTop: 12, marginLeft: 13}}>
-                                {this.state.imageName.slice(this.state.imageName.length - 10)}
-                            </Text>
-                        </View>
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Naam evenement</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Naam..."
+                            value={this.state.eventName}
+                            onChangeText={name => this.setState({eventName: name})}
+                            returnKeyType='next'
+                            maxLength={45}
+                        />
+                    </View>
+                    }
 
-                        <View style={styles.line}></View>
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Locatie</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Adres..."
+                            value={this.state.eventAddress}
+                            onChangeText={address => this.setState({eventAddress: address})}
+                            returnKeyType='next'
+                            maxLength={50}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Plaats..."
+                            value={this.state.eventCity}
+                            onChangeText={city => this.setState({eventCity: city})}
+                            returnKeyType='next'
+                            maxLength={30}
+                        />
+                    </View>
+                    }
 
-                        <View style={styles.belowButtons}>
-                            <Ionicons name='md-trash' size={27} color={"grey"}/>
-                            <Ionicons onPress={this._addPost} name='md-send' size={27} color={"grey"}/>
-                        </View>
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Datum evenement</Text>
+                        <TouchableOpacity
+                            style={{padding: 10}}
+                            onPress={() => {this.toggleDatePicker()}}
+                        >
+                            <View style={{flexDirection: 'row'}}>
+                                <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
+                                          name='md-calendar' size={30} color={"grey"}/>
+                                <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
+                                      numberOfLines={1}
+                                      ellipsizeMode={'head'}
+                                >{this.parseDate(this.state.eventDate)}</Text>
+                            </View>
+                            <DateTimePickerModal
+                                isVisible={this.state.datePickerVisibility}
+                                mode="date"
+                                onConfirm={(date) => {this.setState({
+                                    eventDate: date,
+                                    datePickerVisibility: false
+                                })}}
+                                onCancel={() => {
+                                    this.setState({datePickerVisibility: false})
+                                }}/>
+                        </TouchableOpacity>
+                        <View style={styles.separator}></View>
+                    </View>
+                    }
 
-                    </ScrollView>
-                </TouchableWithoutFeedback>
-            </View>
+                    {this.state.categoryId === 4 &&
+                    <View style={styles.inputBox}>
+                        <Text style={styles.headLine}>Kosten toegang</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Bedrag..."
+                            value={this.state.eventPrice}
+                            onChangeText={price => this.setState({eventPrice: price})}
+                            returnKeyType='next'
+                            maxLength={10}
+                        />
+                    </View>
+                    }
+
+                    {this.state.editMode? (
+                        <Button title={'Wijzigen'} onPress={this.submitHandler.bind(this)}/>
+                    ) : (
+                        <Button title={'Opslaan'} onPress={this.submitHandler.bind(this)}/>
+                    ) }
+                </View>
+            </ScrollView>
         );
+    }
+
+    toggleDatePicker() {
+        this.setState({
+            datePickerVisibility: !this.state.datePickerVisibility
+        }, () => {
+            this.forceUpdate()
+        })
     }
 
     //options for header bar
     static navigationOptions = (navData:any) => {
-        return {
-            headerTitle: 'Bericht plaatsen'
-        }
+        return {headerTitle: headerMessage}
     };
 
+}
+let headerMessage = 'Bericht plaatsen'
+
+//options for image picker
+const options = {
+    title: 'Select Avatar',
+    customButtons: [{name: 'fb', title: headerMessage}],
+    storageOptions: {
+        skipBackup: true,
+        path: 'images',
+    }
 }
 
 const styles = StyleSheet.create({
@@ -370,7 +624,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
         padding: 28,
-        //         // paddingTop: 100
     },
     warningTest: {
         marginBottom: 6,
@@ -378,13 +631,9 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     componentContainerBig: {
-        // backgroundColor: "red",
-
-        paddingVertical: 5,
-        width: '100%',
-        // height: 550,
+        margin: 20,
+        paddingVertical: 20,
         backgroundColor: '#F4F4F4',
-        // backgroundColor: 'white',
         borderRadius: 10,
         shadowColor: "#000",
         shadowOffset: {
@@ -416,62 +665,57 @@ const styles = StyleSheet.create({
     line: {
         borderBottomWidth: 1,
         borderBottomColor: '#D3D3D3',
-        marginHorizontal: 10,
+        marginHorizontal: 10
     },
-    titleBox: {
-        // backgroundColor: 'red',
-        flexDirection: 'row',
+    inputBox: {
+        width: '100%',
+        // backgroundColor: 'blue',
         paddingVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: '#D3D3D3',
-        justifyContent: 'space-between',
-        marginHorizontal: 10
+        paddingHorizontal: 10,
+    },
+    headLine: {
+        fontStyle: 'italic',
+        fontWeight: "bold",
+        flex: 10,
+        marginRight: 1
     },
 
-    wrongTitleBox: {
-        // backgroundColor: 'red',
-        flexDirection: 'row',
+    input: {
+        textAlignVertical: 'top',
+        paddingHorizontal: 2,
         paddingVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: 'red',
-        justifyContent: 'space-between',
-        marginHorizontal: 10
-    },
-
-
-    beschrijvingBox: {
-        // backgroundColor: 'red',
-        height: 250,
-        // height: "65%",
-        marginVertical: 5,
-        borderBottomWidth: 1,
         borderBottomColor: '#D3D3D3',
-
-        marginHorizontal: 10
+        borderBottomWidth: 1
     },
-    wrongBeschrijvingBox: {
-        // backgroundColor: 'red',
-        height: "65%",
-        marginVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: 'red',
 
-        marginHorizontal: 10
+    error: {
+        color: '#AA0000',
+        fontSize: 12
     },
-    pickerSelect: {
-        // placeholderTextColor: "black"
+
+    separator: {
+        borderTopColor: '#D3D3D3',
+        borderTopWidth: 1
     },
 
     categoryBox: {
         backgroundColor: colors.textLight,
-        // height: 50,
+        height: 30,
         borderRadius: 3,
         padding: 5,
-        marginHorizontal: 10,
-        marginTop: 25
+        marginHorizontal: 10
 
     },
-
+    addPhotoButtonContainer: {
+        width: 50,
+        height: 45,
+        color: "white",
+        backgroundColor: colors.primaryLight,
+        borderRadius: 10,
+        flexDirection: 'row',
+        justifyContent: "center",
+        alignItems: "center",
+    },
     photoText: {
         color: "white",
         paddingTop: 10,
@@ -480,13 +724,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     submitButton: {
+
         width: 150,
         height: 39,
         color: "white",
         backgroundColor: colors.primaryLight,
         borderRadius: 10,
-        marginTop: Dimensions.get('window').height > 600 ? 50 : 35,
-        marginLeft: Dimensions.get('window').width > 50 ? 185 : 150,
         flexDirection: "row",
         justifyContent: "space-between"
     },
@@ -527,14 +770,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 60,
+        // marginTop: 30,
     }
-    // descriptionBox:{
-    //     backgroundColor:colors.inputfieldLight
-    //     width:'100%',
-    //     borderRadius:3,
-    //     padding: 10,
-    //
-    // }
-
 });

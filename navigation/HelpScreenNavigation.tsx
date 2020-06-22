@@ -6,7 +6,6 @@ import colors from '../constants/colors';
 import ProfileScreen from '../screens/ProfileScreen';
 
 import PostAddScreen from "../screens/PostAddScreen";
-import BlogAddScreen from "../screens/BlogAddScreen";
 
 const HelpScreenNavigation = createStackNavigator(
     {
@@ -19,9 +18,6 @@ const HelpScreenNavigation = createStackNavigator(
         PostAddScreen:{
             screen: PostAddScreen
         },
-        BlogAddScreen:{
-            screen: BlogAddScreen
-        }
     },
     {
         defaultNavigationOptions: {

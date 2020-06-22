@@ -27,6 +27,7 @@ interface State {
 
 export default class FeedScreen extends React.Component<Props, State> {
     state: State;
+    _isMounted: boolean;
 
     constructor(props: Props, state: State) {
         super(props, state);
@@ -35,31 +36,46 @@ export default class FeedScreen extends React.Component<Props, State> {
             isLoading: false,
             offset: 0
         }
+        this._isMounted = false;
     }
 
     componentDidMount() {
         this.getFeed()
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     getFeed() {
         if(!this.state.isLoading) {
+
             this.setState({isLoading:true}, () => {
                 bodyfull(ApiDictionary.getFeed, {
                     offs: this.state.offset //offset for loading more posts
                 })
-                .then(
-                    (result) => {
+                .then((result) => {
+                    if(result.success === 1) {
                         this.setState({
                             isLoading: false,
                             data: result.data
                         })
-                    })
+                    } else {
+                        console.log("bigoof", result)
+                        this.setState({isLoading: false})
+                    }})
                 .catch ((error) => {
+                    console.log(" gaat nu feed ophalen3")
                     console.log(error);
                     this.setState({isLoading : false});
                 })
             })
         }
+    }
+    
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
 
@@ -87,7 +103,7 @@ export default class FeedScreen extends React.Component<Props, State> {
     render() {
         return (
             <Container style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false}) } />
                 <View style={this.styles.scrollable}>
                     <FlatList
                         refreshing={this.state.isLoading}
@@ -102,6 +118,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                                  handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                  navigation={this.props.navigation}
                                 data={itemData.item}
+                                onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
 

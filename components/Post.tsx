@@ -8,7 +8,6 @@ import {EventBody} from './postComponents/EventBody';
 
 import ApiDictionary from '../constants/ApiDictionary';
 import { bodyfull } from './HttpClient';
-// import PostModel from '.'
 
 
 export interface Props {
@@ -16,6 +15,7 @@ export interface Props {
     navigation: any
     data: any
     onDelete(postId: string): void
+    onEdit(postId: string): void
     handlePress: () => void
     // refreshEvents: () => void
     
@@ -27,34 +27,17 @@ export class Post extends React.Component<Props> {
         super(props);
     }
 
-    editPost(){
-        // console.log(this.props.data.text)
-        // console.log("this is editPost props " + this.props.data.text + "ok")
-        this.props.navigation.navigate('BlogAddScreen', {data: this.props.data})
-    }
-
     state = {
         isLoading: false
     };
 
+    handleEdit() {
+        this.props.onEdit(this.props.data)
+    }
+
     handleDelete() {
         this.deletePost() 
     }
-    
-    componentDidMount(){
-        // this.props.handlePress();
-        // console.log("AHH " + this.props.handlePress())
-    }
-    
-    // handlePress = () => {
-    //     // console.log(id);
-    //     console.log("THIS IS " + this.props.eventId)
-    //     console.log(this.props.navigation.navigate('Attendance', {eventId: this.props.eventId}))
-    // }
-
-    // showAttendance = (item: any) => {
-    //
-    // }
 
     private deletePost() {
         if(!this.state.isLoading) {
@@ -75,7 +58,6 @@ export class Post extends React.Component<Props> {
     };
 
     render() {
-        // console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
                 <ListItem style={this.styles.listContainer} onPress={this.props.handlePress}>
@@ -88,9 +70,8 @@ export class Post extends React.Component<Props> {
                             postDate={new Date(this.props.data.postDate)}
                             firstName={this.props.data.firstname}
                             LastName={this.props.data.lastname}
-                            insertion={this.props.data.tussenvoegsel} />
+                            insertion={this.props.data.tussenvoegsel}/>
                         <EventBody
-                            // refreshEvents = {()=>this.props.refreshEvents}
                             text={this.props.data.text}
                             title={this.props.data.title}
                             eventDate={new Date(this.props.data.date)}
@@ -100,13 +81,15 @@ export class Post extends React.Component<Props> {
                             attendance={this.props.data.total_people}
                             evenementId={this.props.data.evenementId}
                             doesAttend={this.props.data.doesAttend}
-                            postId={this.props.data.postId} />
+                            postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
+                            onDelete={this.deletePost.bind(this)}
+                        />
                     </View>
                 </ListItem>
             );
         }
         else {
-            // console.log(this.props.data.title)
             return (
                 <ListItem style={this.styles.listContainer}>
                     <View style={this.styles.postContainer}>
@@ -120,11 +103,11 @@ export class Post extends React.Component<Props> {
                             LastName={this.props.data.lastname}
                             insertion={this.props.data.tussenvoegsel}/>
                         <PostBody
-                            onClickEdit = {this.editPost.bind(this)}
                             text={this.props.data.text}
                             title={this.props.data.title}
                             userId={this.props.data.userId}
                             postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
                             onDelete={this.handleDelete.bind(this)}
                         />
                     </View>

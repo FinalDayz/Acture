@@ -8,5 +8,6 @@ export class PostModel {
     userId: number = 0;
     postDate: string = '';
     categoryId: number = 0;
+    startupId: number = 0;
     title: string = '';
 }
