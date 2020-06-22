@@ -88,6 +88,32 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             });
     }
 
+    private confirmPasswordReset(account: User){
+        const fullName = account.firstname +
+            (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
+            + " " + account.lastname;
+        Alert.alert(
+            'Wachtwoord resetten',
+            'Weet u zeker dat u het het wachtwoord van ' + fullName + " wilt resetten?",
+            [
+                {
+                    text: 'Resetten',
+                    onPress: () => this.resetPassword(account),
+                    style: 'destructive'
+                },
+                {
+                    text: 'Annuleren',
+                    style: 'cancel'
+                },
+            ],
+            {cancelable: false}
+        );
+    }
+
+    private resetPassword(account:User){
+        console.log("Password has been reset")
+    }
+
     private changeRole(account: User, newRole: UserRole) {
         bodyless(HttpHelper.addUrlParameter(
             ApiDictionary.changeUserRole, [account.userId, newRole])
@@ -158,6 +184,17 @@ export class ManageUsersScreen extends React.Component<Props, State> {
                                         title={'Verwijder'}
                                         color={'red'}
                                         onPress={() => this.askDeleteUser(item)}
+                                    />
+                                </View>
+                            </View>
+                            <View style={[styles.flexRow, styles.controlElement]}>
+                                <Text style={{flex: 2, fontSize: 18}}>Reset wachtwoord</Text>
+                                <View style={{flex: 1}}>
+
+                                    <Button
+                                        title={'Reset'}
+                                        color={'red'}
+                                        onPress={() => this.confirmPasswordReset(item)}
                                     />
                                 </View>
                             </View>
