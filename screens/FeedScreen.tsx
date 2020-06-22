@@ -10,7 +10,6 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { User } from '../models/User';
 
 
@@ -113,18 +112,14 @@ export default class FeedScreen extends React.Component<Props, State> {
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={(itemData) => {
-                            console.log(itemData.item.evenementId)
-                             // @ts-ignore
-                            return <Post
-                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
-                                 navigation={this.props.navigation}
+                        renderItem={itemData =>
+                            <Post
+                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                navigation={this.props.navigation}
                                 data={itemData.item}
                                 onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
-                            
-                        
                         }
                         ListFooterComponent={
                             <View>
@@ -141,7 +136,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                 </View>
             </Container>
         );
-    }            
+    }
 
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
@@ -186,8 +181,13 @@ export default class FeedScreen extends React.Component<Props, State> {
             height: '100%'
         },
         postloader: {
+            width: '100%',
+            marginVertical: 10,
+            alignItems: 'center'
+        },
+        postloaderText: {
             color: colors.textDark,
-            marginBottom: 50
+            textDecorationLine: 'underline'
         },
         list: {
             width: '100%',

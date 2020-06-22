@@ -74,6 +74,7 @@ export class Post extends React.Component<Props> {
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
+                            userId={this.props.data.userId}
                             eventDate={new Date(this.props.data.date)}
                             adress={this.props.data.adress}
                             city={this.props.data.city}

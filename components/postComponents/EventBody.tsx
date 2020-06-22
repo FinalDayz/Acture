@@ -33,7 +33,8 @@ export class EventBody extends React.Component<Props> {
 
     state = {
         isLoading: false,
-        attendButtonPressed: false
+        attendButtonPressed: false,
+        attendance: 0
     };
 
     editPost() {
@@ -51,7 +52,6 @@ export class EventBody extends React.Component<Props> {
             bodyfull(ApiDictionary.insertAttendant, {
                 eventId: this.props.evenementId
             }).then(response => {
-                this.state.attendance+1
                 this.setState({attendance: this.state.attendance + 1})
             })
             .catch ((error) => {
