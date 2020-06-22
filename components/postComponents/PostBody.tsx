@@ -8,15 +8,19 @@ import {UserRole} from "../../models/UserRole";
 import ApiDictionary from '../../constants/ApiDictionary';
 import { bodyfull } from '../HttpClient';
 
+// @ts-ignore
+import OptionsMenu from 'react-native-options-menu';
 import {Ionicons} from '@expo/vector-icons';
 import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorState";
 
 
 export interface Props {
-    title: String
-    text: String
-    userId: String
-    postId: String
+    title: string
+    text: string
+    userId: string
+    postId: string
+    onDelete(): void
+    onEdit(): void
 }
 
 export class PostBody extends React.Component<Props> {
@@ -28,6 +32,14 @@ export class PostBody extends React.Component<Props> {
     state = {
         isLoading: false
     };
+    
+    editPost() {
+        this.props.onEdit();
+    }
+
+    deletePost() {
+        this.props.onDelete();
+    }
 
     render() {
         return(
@@ -35,12 +47,18 @@ export class PostBody extends React.Component<Props> {
                 <View style={{flexDirection: 'row'}}>
                     <Text style={this.styles.title} >{this.props.title}</Text>
                     { (User.getRole() === UserRole.admin || User.getUserId().toString() == this.props.userId) &&
-                        <Ionicons
-                            name='md-more'
-                            size={27}
-                            color="black"
-                            style={this.styles.icon}
-                            onPress={() => {this.createConfirmAlert()}}/>
+                    <OptionsMenu
+                        customButton={(
+                            <Ionicons
+                                name='md-more'
+                                size={27}
+                                color="black"
+                                style={this.styles.icon}
+                            />
+                        )}
+                        destructiveIndex={1}
+                        options={["Bewerken", "Verwijderen", "Cancel"]}
+                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this)]}/>
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
@@ -55,38 +73,17 @@ export class PostBody extends React.Component<Props> {
             [
                 {
                     text: 'Annuleren',
+                    style: "cancel"
                 },
                 {
                     text: 'Verwijderen',
-                    onPress: () => this.deletePost()
+                    onPress: () => this.deletePost(),
+                    style: "destructive"
                 }
             ],
             { cancelable: true }
         );
     }
-
-    deletePost() {
-        if(!this.state.isLoading) {
-            this.setState({isLoading:true});
-            bodyfull(ApiDictionary.deletePost, {
-                postId: this.props.postId
-            }).then((data) => {
-                alert("Verwijderen succesvol");
-                this.render();
-                this.setState({isLoading:false})
-            }).catch(err => {
-                console.log("fetch error" + err.message);
-                alert(err.message);
-                this.setState({isLoading:false})
-            })
-        }
-    };
-
-    alertStyles = StyleSheet.create({
-        cancel: {
-
-        }
-    });
 
     styles = StyleSheet.create ({
         body: {

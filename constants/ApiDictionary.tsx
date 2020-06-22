@@ -14,7 +14,13 @@ export default {
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
 
     addPost: {destination: '/api/feed/addPost/', type: 'POST'},
+    editPost: {destination: '/api/feed/editPost', type: 'PATCH'},
     getAllCategories: {destination: '/api/feed/getAllCategories', type: 'GET'},
+
+    //vergeet niet id in de header te pompen
+    getUserById: {destination: '/api/users/byid/', type: 'GET'},
+    getStartupById: {destination: '/api/startup/byid/', type: 'GET'},
+    getStartupByUserId: {destination: '/api/startup/byuserid/', type: 'GET'},
 
     //dit is de defaults van de api server (verander dit naar je home pc)
     followUsers: {destination: '/api/follow/', type: 'GET'},
@@ -25,9 +31,11 @@ export default {
     insertAttendant: {destination: '/api/attendance/addAttendant/', type: 'POST'},
 
     getFeed: {destination: '/api/feedposts/feed', type: 'POST'},
+    getGlobalFeed: {destination: '/api/feedposts/globalFeed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
+    getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
-    timeoutTimings: 7000, //in miliseconds
+    timeoutTimings: 20000, //in miliseconds
 };

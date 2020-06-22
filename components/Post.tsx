@@ -6,9 +6,14 @@ import {PostHeader} from './postComponents/PostHeader';
 import {PostBody} from './postComponents/PostBody';
 import {EventBody} from './postComponents/EventBody';
 
+import ApiDictionary from '../constants/ApiDictionary';
+import { bodyfull } from './HttpClient';
+
 
 export interface Props {
     data: any
+    onDelete(postId: string): void
+    onEdit(postId: string): void
 }
 
 export class Post extends React.Component<Props> {
@@ -17,8 +22,37 @@ export class Post extends React.Component<Props> {
         super(props);
     }
 
+    state = {
+        isLoading: false
+    };
+
+    handleEdit() {
+        this.props.onEdit(this.props.data)
+    }
+
+    handleDelete() {
+        this.deletePost() 
+    }
+
+    private deletePost() {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true});
+            bodyfull(ApiDictionary.deletePost, {
+                postId: this.props.data.postId
+            }).then((data) => {
+                alert("Verwijderen succesvol");
+                this.setState({isLoading:false});
+                this.props.onDelete(this.props.data.postId);
+            }).catch(err => {
+                console.log("fetch error" + err.message);
+                alert(err.message);
+                console.log("hierooo");
+                this.setState({isLoading:false})
+            })
+        }
+    };
+
     render() {
-        console.log(this.props.data.postId);
         if (this.props.data.categoryId === 4) {
             return (
                 <ListItem key={this.props.data.postId} style={this.styles.listContainer}>
@@ -35,6 +69,7 @@ export class Post extends React.Component<Props> {
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
+                            userId={this.props.data.userId}
                             eventDate={new Date(this.props.data.date)}
                             adress={this.props.data.adress}
                             city={this.props.data.city}
@@ -42,7 +77,10 @@ export class Post extends React.Component<Props> {
                             attendance={this.props.data.total_people}
                             evenementId={this.props.data.evenementId}
                             doesAttend={this.props.data.doesAttend}
-                            postId={this.props.data.postId}/>
+                            postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
+                            onDelete={this.deletePost.bind(this)}
+                        />
                     </View>
                 </ListItem>
             );
@@ -64,7 +102,10 @@ export class Post extends React.Component<Props> {
                             text={this.props.data.text}
                             title={this.props.data.title}
                             userId={this.props.data.userId}
-                            postId={this.props.data.postId}/>
+                            postId={this.props.data.postId}
+                            onEdit={this.handleEdit.bind(this)}
+                            onDelete={this.handleDelete.bind(this)}
+                        />
                     </View>
                 </ListItem>
             );
