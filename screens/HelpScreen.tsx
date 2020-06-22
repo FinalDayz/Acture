@@ -59,8 +59,11 @@ export default class HelpScreen extends React.Component<Props, State> {
         }
     }
 
+    handleEdit(data: any) {
+        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
+    }
+
     handleDelete(postId: string) {
-        console.log("helemaal hier: ");
         const newData = this.state.data.filter(
             (post) => post.postId.toString() !== postId
         );
@@ -73,7 +76,7 @@ export default class HelpScreen extends React.Component<Props, State> {
     render() {
         return(
             <View style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen')} />
+                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
                 
                 <View style={this.styles.scrollable}>
                 <FlatList
@@ -85,7 +88,8 @@ export default class HelpScreen extends React.Component<Props, State> {
                         renderItem={itemData =>
                             <Post
                                 data={itemData.item}
-                                onDelete={this.handleDelete}
+                                onDelete={this.handleDelete.bind(this)}
+                                onEdit={this.handleEdit}
                             />
                         }
                     />

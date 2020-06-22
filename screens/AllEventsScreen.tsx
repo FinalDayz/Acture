@@ -65,7 +65,7 @@ export default class AllEventsScreen extends React.Component<any, any> {
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => this.getFeed()}
+                        onRefresh={() => this.getEvents()}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -125,6 +125,9 @@ export default class AllEventsScreen extends React.Component<any, any> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
+        },
+        list: {
+            width: '100%',
         }
     });
 }

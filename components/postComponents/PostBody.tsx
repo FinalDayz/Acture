@@ -8,6 +8,8 @@ import {UserRole} from "../../models/UserRole";
 import ApiDictionary from '../../constants/ApiDictionary';
 import { bodyfull } from '../HttpClient';
 
+// @ts-ignore
+import OptionsMenu from 'react-native-options-menu';
 import {Ionicons} from '@expo/vector-icons';
 import {shouldThrowAnErrorOutsideOfExpo} from "expo/build/environment/validatorState";
 
@@ -18,6 +20,7 @@ export interface Props {
     userId: string
     postId: string
     onDelete(): void
+    onEdit(): void
 }
 
 export class PostBody extends React.Component<Props> {
@@ -29,9 +32,12 @@ export class PostBody extends React.Component<Props> {
     state = {
         isLoading: false
     };
+    
+    editPost() {
+        this.props.onEdit();
+    }
 
     deletePost() {
-        console.log("id here 1: " + this.props.postId);
         this.props.onDelete();
     }
 
@@ -41,12 +47,18 @@ export class PostBody extends React.Component<Props> {
                 <View style={{flexDirection: 'row'}}>
                     <Text style={this.styles.title} >{this.props.title}</Text>
                     { (User.getRole() === UserRole.admin || User.getUserId().toString() == this.props.userId) &&
-                        <Ionicons
-                            name='md-more'
-                            size={27}
-                            color="black"
-                            style={this.styles.icon}
-                            onPress={() => {this.createConfirmAlert()}}/>
+                    <OptionsMenu
+                        customButton={(
+                            <Ionicons
+                                name='md-more'
+                                size={27}
+                                color="black"
+                                style={this.styles.icon}
+                            />
+                        )}
+                        destructiveIndex={1}
+                        options={["Bewerken", "Verwijderen", "Cancel"]}
+                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this)]}/>
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
