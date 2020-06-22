@@ -65,8 +65,6 @@ export default class FeedScreen extends React.Component<Props, State> {
 
     showAttendance= (eventId: any) => {
         console.log('printing eventId: ')
-        // console.log(eventId)
-        // console.log("THIS IS " + eventId)
         this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
 

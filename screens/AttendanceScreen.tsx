@@ -1,17 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import {View, Text, StyleSheet, FlatList, Button} from "react-native";
 import colors from "../constants/colors";
-import { IconInput } from "../components/IconInput";
+import {IconInput} from "../components/IconInput";
 import bodyless from "../components/HttpClient";
-import { HttpHelper } from "../components/HttpHelper";
+import {HttpHelper} from "../components/HttpHelper";
 import ApiDictionary from "../constants/ApiDictionary";
-import { AccountRow } from "../components/account/AccountRow";
-import { Hr } from "../components/Hr";
-import { Ionicons } from "@expo/vector-icons";
-import { UserWithFollow } from "../models/UserWithFollow";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import {AccountRow} from "../components/account/AccountRow";
+import {Hr} from "../components/Hr";
+import {Ionicons} from "@expo/vector-icons";
+import {UserWithFollow} from "../models/UserWithFollow";
+import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import HeaderButton from "../components/HeaderButton";
-
 
 
 export interface Props {
@@ -32,28 +31,31 @@ export default class AttendanceScreen extends React.Component<any, State> {
         this.state = {
             ...state,
             accounts: [],
-            isLoading: true,
+            isLoading: false,
             searchQuery: '',
         };
     }
+
     componentDidMount() {
         this.fetchAttendance();
     }
 
+    componentWillUnmount() {
+        this.setState({accounts: []})
+    }
+
     fetchAttendance() {
         const eventId = this.props.navigation.state.params.eventId;
-
-        this.setState({
-            isLoading: true
-        });
-
-        bodyless(HttpHelper.addUrlParameter(ApiDictionary.getAttendance, [eventId])
-        ).then(result => {
-            this.setState({
-                isLoading: false,
-                accounts: result.data
-            });
-        })
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true})
+                bodyless(HttpHelper.addUrlParameter(ApiDictionary.getAttendance, [eventId])
+                ).then(result => {
+                    this.setState({
+                        isLoading: false,
+                        accounts: result.data
+                    });
+                })
+        }
     }
 
     navigationOptions() {
@@ -76,10 +78,10 @@ export default class AttendanceScreen extends React.Component<any, State> {
     render() {
         return (
             <View style={styles.wrapper}>
-                <View style={{ paddingHorizontal: '7%' }}>
+                <View style={{paddingHorizontal: '7%'}}>
                     <IconInput
                         onChangeText={text => {
-                            this.setState({ searchQuery: text })
+                            this.setState({searchQuery: text})
                         }}
                         iconName={'md-search'}
                         inputPlaceholder={'Zoek gebruiker...'}
@@ -93,7 +95,7 @@ export default class AttendanceScreen extends React.Component<any, State> {
                         return this.searchFilter(user)
                     })}
                     keyExtractor={(item, index) => item.userId.toString()}
-                    renderItem={({ item }) =>
+                    renderItem={({item}) =>
                         <AccountRow
                             isExpandable={false}
                             account={item}>
@@ -101,9 +103,9 @@ export default class AttendanceScreen extends React.Component<any, State> {
                                       name={'md-star'} size={35}
                                       style={item.isFollowingThem ?
                                           styles.followStar : styles.notFollowStar
-                                      } />
+                                      }/>
                         </AccountRow>
-                    } />
+                    }/>
             </View>
         );
     }
@@ -118,7 +120,7 @@ export default class AttendanceScreen extends React.Component<any, State> {
                         iconName='md-person' //TODO: change to profile picture
                         onPress={() => {
                             navData.navigation.navigate('Profile');
-                        }} />
+                        }}/>
                 </HeaderButtons>
             ),
             headerLeft: () => (
