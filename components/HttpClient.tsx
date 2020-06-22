@@ -65,6 +65,11 @@ export async function bodyfull(details: { destination: string; type: string; }, 
         return resData;
   }
 
+export function expireJWT(){
+    state.jwt = "";
+    state.getjwt = false;
+}
+
   function alert(err: string) {
 
     return (
