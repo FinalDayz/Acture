@@ -11,6 +11,7 @@ export default {
     getInOrActiveUsers: {destination: '/api/users/active/', type: 'GET'},
     activateUser: {destination: '/api/users/activateUser/', type: 'PATCH'},
     deleteUser: {destination: '/api/users/', type: 'DELETE'},
+    resetPassword: {destination: '/api/users/resetPassword', type: 'PATCH'},
     changeUserRole: {destination: '/api/users/changeRole/', type: 'POST'},
 
     addPost: {destination: '/api/feed/addPost/', type: 'POST'},

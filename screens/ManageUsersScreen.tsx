@@ -3,7 +3,7 @@ import {Alert, Button, FlatList, StyleSheet, Text, View} from 'react-native';
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
-import bodyless from '../components/HttpClient';
+import bodyless, { bodyfull } from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {HttpHelper} from "../components/HttpHelper";
 import {IconInput} from "../components/IconInput";
@@ -113,13 +113,28 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     private resetPassword(account:User){
         const newPassword= this.makeid(10);
 
-        Alert.alert(
-            "Wachtwoord gereset",
-            'Het wachtwoord is veranderd naar: ' + newPassword,
-            [
-                {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
-            ],
-            { cancelable: false })
+        bodyfull(ApiDictionary.resetPassword, {'email': account.email,'newpassword': newPassword}).then((data) => {
+            if(data.success) {
+                Alert.alert(
+                    "Wachtwoord gereset",
+                    'Het wachtwoord is veranderd naar: ' + newPassword,
+                    [
+                        {text: 'OK', onPress: () => console.log(''), style: 'cancel'},
+                    ],
+                    { cancelable: false })
+            }
+        }).catch(err => {
+            console.log("fetch error" + err.message);
+            Alert.alert(
+                "Wachtwoord niet gereset",
+                'Het wachtwoord is niet veranderd vanwege een fout, probeer het later nog eens',
+                [
+                    {text: 'OK', onPress: () => console.log(''), style: 'cancel'},
+                ],
+                { cancelable: false })
+        })
+
+       
     }
 
     private makeid(length: number) {
