@@ -6,8 +6,8 @@ import {Hr} from "../components/Hr";
 import {List} from "native-base";
 import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
-import { white } from "react-native-paper/lib/typescript/src/styles/colors";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+
 
 export interface Props {
 
@@ -22,13 +22,13 @@ export interface State {
         tussenvoegsel: boolean,
         email: boolean,
         telephone: boolean,
-    }
+    },
     userDetails: {
         firstname: string,
         tussenvoegsel: string,
         lastname: string,
-        telephone: string,
-        description: string
+        telephone: number,
+        description: string,
     }
 }
 
@@ -38,11 +38,13 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
         super(props, state);
         this.state = {
             ...state,
+
         };
     }
 
     componentDidMount() {
         this.fetchSettings();
+        this.fetchDetails();
     }
 
     fetchSettings() {
@@ -70,12 +72,26 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
         this.setState({
             isLoading: true
         });
-        
-
+        bodyless(ApiDictionary.getUserDetails)
+            .then(result => {
+                const data = result.data;
+                // console.log("data:",Object.keys(data));
+                // console.log(Object.keys(data).length > 0);
+                if (Object.keys(data).length > 0) {
+                    this.setState({
+                        isLoading: false,
+                        userDetails: data
+                    });
+                } else {
+                    this.setState({
+                        isLoading: false
+                    });
+                }
+            });
     }
 
     postDetails(){
-
+        console.log(this.state.userDetails);
     }
 
     getDefaultSettings(): {
@@ -157,10 +173,13 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                     <Text>Bewerk hier persoonlijke informatie</Text>
                     <View style={styles.break}/>
                     <Hr/>
+                    
                     <View style={styles.break}/>
+                    {this.state.userDetails !== undefined ? (
                         <View>
                             <View style={styles.inputView} >
                                 <TextInput
+                                    value={this.state.userDetails.firstname}
                                     style={styles.inputText}
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
@@ -172,6 +191,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
+                                    value={this.state.userDetails.tussenvoegsel}
                                     placeholder="Tussenvoegsel.."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({userDetails: {
@@ -181,6 +201,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
+                                    value={this.state.userDetails.lastname}
                                     style={styles.inputText}
                                     placeholder="Achternaam.."
                                     placeholderTextColor="#003f5c"
@@ -191,16 +212,18 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
+                                    value={this.state.userDetails.telephone.toString()}
                                     style={styles.inputText}
                                     placeholder="Telefoonnummer.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={text => this.setState({userDetails: {
-                                        ...this.state.userDetails, telephone: text
-                                    }})}
+                                    // onChangeText={text => this.setState({userDetails: {
+                                    //     ...this.state.userDetails, telephone: text
+                                    // }})}
                                     />
                             </View>
                             <View style={styles.bigInputView} >
                                 <TextInput
+                                    value={this.state.userDetails.description}
                                     style={styles.bigInputText}
                                     multiline
                                     numberOfLines={4}
@@ -212,9 +235,10 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                                     />
                             </View>
                         </View>
+                    ): null }
                         <TouchableOpacity
                                     style={styles.confirmButton}
-                                    onPress={this.postDetails}>
+                                    onPress={this.postDetails.bind(this)}>
                                     <Text style={styles.confirmText}>Update gegevens</Text>
                         </TouchableOpacity>
                 </ScrollView>
@@ -258,7 +282,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius:3,
         height:150,
-        marginBottom:25,
+        marginBottom: 25,
         justifyContent:"center",
         padding: 24
     },

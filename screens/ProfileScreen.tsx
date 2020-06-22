@@ -99,7 +99,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     <View style={this.styles.lowerScrollable}>
                         <ListItem
                             style={this.styles.privacyButton}
-                            title={'Privacy instellingen'}
+                            title={'Instellingen'}
                             leftIcon={{ name: 'lock' }}
                             chevron
                             onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}
