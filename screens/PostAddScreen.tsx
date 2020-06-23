@@ -281,7 +281,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     submitHandler() {
-        this.updateValid() 
+        this.updateValid()
 
     }
 
