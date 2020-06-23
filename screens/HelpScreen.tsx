@@ -90,7 +90,6 @@ export default class HelpScreen extends React.Component<Props, State> {
         return(
             <View style={this.styles.screen}>
                 <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
-                
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}

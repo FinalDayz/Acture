@@ -247,28 +247,7 @@ export class ManageUsersScreen extends React.Component<Props, State> {
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Gebruikers beheren',
-            headerRight: () => (
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
-                    title='profile'
-                    iconName='md-person' //TODO: change to profile picture
-                    onPress={() => {
-                        navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
-                    }}/>
-                </HeaderButtons>
-            ),
-            headerLeft: () => (
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
-                        title='menu'
-                        iconName='md-menu'
-                        onPress={() => {
-                            navData.navigation.toggleDrawer();
-                        }} 
-                    />
-                </HeaderButtons>
-            )
+            headerTitle: 'Gebruikers beheren'
         }
     };
 }

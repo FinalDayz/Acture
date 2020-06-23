@@ -15,13 +15,7 @@ import returnToLoginScreen from './ReturnToLoginScreen';
 const HamburgerNavigation = createDrawerNavigator({
     BottomNav: { screen: BottomNavigation,
         navigationOptions: {
-            title: "Sluiten"
-        }
-    },
-    
-    manageUsers: { screen: ManageUserNavigation,
-        navigationOptions: {
-            title: "Gebruikers beheren"
+            title: "Menu Sluiten"
         }
     },
     logOutUser: { screen: returnToLoginScreen,

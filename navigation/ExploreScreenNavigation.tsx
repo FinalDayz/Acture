@@ -4,13 +4,15 @@ import { createAppContainer } from 'react-navigation';
 import colors from '../constants/colors';
 import ProfileScreen from '../screens/ProfileScreen';
 import ExploreScreenTabs from "./ExploreScreenTabs";
+import ManageUsersTabs from './ManageUsersTabs';
 
 const ExploreScreenNavigation = createStackNavigator(
     {
         Explore: ExploreScreenTabs,
         Profile: {
             screen: ProfileScreen
-        }
+        },
+        ManageUsers: {screen: ManageUsersTabs}
     },
     {
         defaultNavigationOptions: {
