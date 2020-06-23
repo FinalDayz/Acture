@@ -37,7 +37,7 @@ export class ManageUsersButton extends React.Component<Props> {
             width: '100%',
             paddingHorizontal: 20,
             paddingVertical: 5,
-            marginVertical: 1,
+            marginBottom: 5,
             marginHorizontal: 15,
             borderRadius: 5,
             maxWidth: 150,
