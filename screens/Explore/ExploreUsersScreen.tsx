@@ -12,9 +12,11 @@ import {UserWithFollow} from "../../models/UserWithFollow";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import HeaderButton from "../../components/HeaderButton";
 import { User } from "../../models/User";
+import { ManageUsersButton } from "../../components/ManageUsersButton";
+import { UserRole } from "../../models/UserRole";
 
 export interface Props {
-    navigation?: any
+    navigation: any
 }
 
 interface State {
@@ -78,6 +80,10 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                         inputPlaceholder={'Zoek gebruiker...'}
                     />
                 </View>
+                {User.getRole() === UserRole.admin ? (
+                    <ManageUsersButton onPress={() => this.props.navigation.navigate('ManageUsers', {edit: false}) }/>
+                ) : null }
+
                 <FlatList
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.fetchUsers()}
@@ -98,7 +104,11 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                                           styles.followStar : styles.notFollowStar
                                       }/>
                         </AccountRow>
-                    }/>
+                    }
+                    ListFooterComponent={
+                        <View style={styles.footer}></View>
+                    }
+                    />
             </View>
         );
     }
@@ -153,6 +163,10 @@ const styles = StyleSheet.create ({
     searchBar: {
         paddingHorizontal: '7%',
         marginBottom: 8
+    },
+    footer: {
+        minHeight: 40,
+        width: '100%'
     }
 });
 

@@ -17,6 +17,9 @@ const EventsScreenNavigation = createStackNavigator(
         },
         PostAddScreen:{
             screen: PostAddScreen
+        },
+        Attendance: {
+            screen: AttendanceScreen
         }
     },
     {
