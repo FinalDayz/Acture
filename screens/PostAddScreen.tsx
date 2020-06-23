@@ -212,7 +212,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return data;
     }
 
-    checkTitleInput(title: string) {
+     checkTitleInput(title: string) {
         this.setState({
             titleValid: (title.trim().length > 0),
             title: title
