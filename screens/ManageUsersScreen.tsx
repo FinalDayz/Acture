@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Button, FlatList, StyleSheet, Text, View} from 'react-native';
+import {Alert, Clipboard, Button, FlatList, StyleSheet, Text, View} from 'react-native';
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
@@ -120,7 +120,8 @@ export class ManageUsersScreen extends React.Component<Props, State> {
                     "Wachtwoord gereset",
                     'Het wachtwoord is veranderd naar: ' + newPassword,
                     [
-                        {text: 'OK', onPress: () => console.log(''), style: 'cancel'},
+                        {text: 'Kopieer wachtwoord', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
+                        {text: 'Ik onthoud het wachtwoord', style: 'cancel'}
                     ],
                     { cancelable: false })
             }
