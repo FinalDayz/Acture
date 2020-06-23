@@ -94,6 +94,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 </View>
             )
         } else {
+            // @ts-ignore
             return(
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>

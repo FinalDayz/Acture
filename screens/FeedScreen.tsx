@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import {Container, List} from 'native-base';
@@ -11,6 +11,7 @@ import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
 import { User } from '../models/User';
+import Image from 'react-native-scalable-image';
 
 
 export interface Props {
@@ -112,6 +113,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
+                            // <Fragment>{console.log(itemData.item.image)}
                             <Post
                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                 navigation={this.props.navigation}
@@ -119,6 +121,7 @@ export default class FeedScreen extends React.Component<Props, State> {
                                 onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
+                            // </Fragment>
                         }
                         ListFooterComponent={
                             <View>

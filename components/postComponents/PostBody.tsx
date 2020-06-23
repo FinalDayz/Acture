@@ -8,6 +8,8 @@ import {UserRole} from "../../models/UserRole";
 import ApiDictionary from '../../constants/ApiDictionary';
 import { bodyfull } from '../HttpClient';
 
+import Image from 'react-native-scalable-image';
+
 // @ts-ignore
 import OptionsMenu from 'react-native-options-menu';
 import {Ionicons} from '@expo/vector-icons';
@@ -21,17 +23,34 @@ export interface Props {
     postId: string
     onDelete(): void
     onEdit(): void
+    image: any
+
+}
+
+interface State{
+    goodImage: boolean
+    isLoading: boolean
 }
 
 export class PostBody extends React.Component<Props> {
+        state: State;
 
     constructor(props: Props) {
         super(props);
+        this.state={
+            isLoading: false,
+            goodImage: false
+        }
+      this.checkImageState()
     }
 
-    state = {
-        isLoading: false
-    };
+    checkImageState(){
+        if (this.props.image != null && this.props.image!= undefined){
+            this.state.goodImage = true
+        }else{this.state.goodImage = false}
+    }
+
+
     
     editPost() {
         this.props.onEdit();
@@ -62,9 +81,18 @@ export class PostBody extends React.Component<Props> {
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
+                {this.state.goodImage ? (
+                    <Image
+                        source={{uri: "data:image/png;base64," + this.props.image, scale: 1}}/>
+                ) : null }
+               
             </View>
+
+
         );
     }
+
+
 
     createConfirmAlert() {
         Alert.alert(
