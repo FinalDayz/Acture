@@ -43,18 +43,14 @@ export default class AttendanceScreen extends React.Component<any, State> {
     }
 
     componentDidUpdate(prevProps: any){
-        console.log(prevProps.navigation)
         if (prevProps !== undefined) {
-            // console.log(this.props.navigation.isFocused())
             if (prevProps.navigation.state.params.eventId !== this.props.navigation.state.params.eventId) {
                 this.fetchAttendance();
             }
         }
     }
     componentWillUnmount() {
-        // this.setState({accounts: []})
         console.log("WILL UNMOUNT")
-        // this.fetchAttendance()
     }
 
     fetchAttendance() {
