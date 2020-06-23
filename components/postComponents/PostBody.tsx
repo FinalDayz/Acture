@@ -81,10 +81,13 @@ export class PostBody extends React.Component<Props> {
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
-                {this.state.goodImage ? (
-                    <Image
-                        source={{uri: "data:image/png;base64," + this.props.image, scale: 1}}/>
-                ) : null }
+                <View style={ {marginTop: 10}}>
+                    {this.state.goodImage ? (
+                        <Image
+                            source={{uri: "data:image/png;base64," + this.props.image, width: 500,height: 500}}
+                        />
+                    ) : null }
+                </View>
                
             </View>
 
@@ -114,6 +117,10 @@ export class PostBody extends React.Component<Props> {
     }
 
     styles = StyleSheet.create ({
+        // postImage:{
+        //     width: 50,
+        //     height: 50
+        // },
         body: {
             flex: 1,
             backgroundColor: colors.postBody,

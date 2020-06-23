@@ -113,7 +113,6 @@ export default class FeedScreen extends React.Component<Props, State> {
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
-                            // <Fragment>{console.log(itemData.item.image)}
                             <Post
                                 handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
                                 navigation={this.props.navigation}
@@ -121,7 +120,6 @@ export default class FeedScreen extends React.Component<Props, State> {
                                 onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}
                             />
-                            // </Fragment>
                         }
                         ListFooterComponent={
                             <View>
