@@ -81,7 +81,7 @@ export class EventBody extends React.Component<Props> {
                             />
                         )}
                         destructiveIndex={1}
-                        options={["Bewerken", "Verwijderen", "Cancel"]}
+                        options={["Bewerken", "Verwijderen"]}
                         actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this)]}/>
                     }
                 </View>

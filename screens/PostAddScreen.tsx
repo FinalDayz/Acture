@@ -165,16 +165,19 @@ export default class PostAddScreen extends React.Component<Props, State> {
                 base64: true,
                 aspect: [4, 3],
                 quality: 0.01,
-
             });
             if (result && !result.cancelled) {
                 console.log(result.uri);
-                const bas64 = result.base64;
-                if(bas64){
-                    this.setState({image: bas64.toString()})
+                const base64 = result.base64;
+                if(base64 && base64.length <= 20000){
+                    this.setState({image: base64.toString()})
                     this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/")+1)})
                 }
-
+                else {
+                    Alert.alert('Kon afbeelding niet laden',
+                        'Probeer een abfeelding van een kleiner formaat...',
+                        [{text: 'OK'}])
+                }
             }
 
         } catch (E) {
@@ -342,7 +345,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     successMessage() {
         Alert.alert(
             'Succes!',
-            'Uw post is succesvol opgeslagen. Refresh om de wijzigingen te zien.',
+            'Uw post is succesvol opgeslagen. Ververs om de wijzigingen te zien.',
             [{text: 'OK', onPress: () => this.props.navigation.pop()}],)
     }
 
@@ -486,11 +489,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
                                 {this.state.imageName === '' ? (
                                     <Ionicons
                                         style={{width: "35%", paddingTop: 5, flex: 1}}
-                                        onPress={this.pickImage}
+                                        onPress={this.pickImage.bind(this)}
                                         name='md-camera' size={27} color={"grey"}/>
                                 ) : (
                                     <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
-                                              onPress={this.deleteImage}
+                                              onPress={this.deleteImage.bind(this)}
                                               name='md-trash' size={27} color={"grey"}/>
                                 )}
                                 <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
