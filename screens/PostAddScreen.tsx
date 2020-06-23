@@ -1,16 +1,5 @@
-import React, {useState} from "react";
-import {
-    Alert,
-    Image,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
-    Text,
-    Dimensions,
-    Platform,
-    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Button
-} from "react-native";
+import React from "react";
+import {Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -22,10 +11,9 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
 // import {error} from "util";
-import {Input} from "../components/input/standardInput";
-import { Container } from "native-base";
-import { HttpHelper } from "../components/HttpHelper";
-import { User } from "../models/User";
+import {HttpHelper} from "../components/HttpHelper";
+import {User} from "../models/User";
+import {UserRole} from "../models/UserRole";
 
 
 export interface Props {
@@ -355,9 +343,17 @@ export default class PostAddScreen extends React.Component<Props, State> {
             bodyless(ApiDictionary.getAllCategories)
                 .then(
                     (result) => {
+                        let lijst: Category[] = result.data;
+
+
+                        //controleer eerst of de gebruiker wel nieuws mag plaatsen...
+                        if (User.getRole() !== UserRole.admin){
+                            lijst.splice(1, 1)
+                        }
+                        
                         this.setState({
                             isLoading: false,
-                            categories: result.data
+                            categories: lijst
                         }, () => {
                             this.getAllStartups();
                         });
