@@ -10,9 +10,11 @@ import {IconInput} from "../components/IconInput";
 import {AccountRow} from '../components/account/AccountRow';
 import {Hr} from '../components/Hr';
 import {Ionicons} from '@expo/vector-icons';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 export interface Props {
-
+    navigation: any
 }
 
 interface State {
@@ -241,6 +243,34 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             </View>
         );
     }
+    
+    //options for header bar. Default options are in the navigator.
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Gebruikers beheren',
+            headerRight: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item 
+                    title='profile'
+                    iconName='md-person' //TODO: change to profile picture
+                    onPress={() => {
+                        navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
+                    }}/>
+                </HeaderButtons>
+            ),
+            headerLeft: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item 
+                        title='menu'
+                        iconName='md-menu'
+                        onPress={() => {
+                            navData.navigation.toggleDrawer();
+                        }} 
+                    />
+                </HeaderButtons>
+            )
+        }
+    };
 }
 
 const rolePickerStyle = StyleSheet.create({
