@@ -39,9 +39,12 @@ export default {
     getGlobalFeed: {destination: '/api/feedposts/globalFeed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
     getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
+    getBlogs: {destination: '/api/feedposts/blogs', type: 'POST'},
 
     getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
+    getUserDetails: {destination: '/api/users/getUserDetails', type: 'GET'},
     changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},
+    updateUserDetails: {destination: '/api/users/updateUserDetails', type: 'PATCH'},
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,

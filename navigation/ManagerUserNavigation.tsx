@@ -1,13 +1,13 @@
 import {createStackNavigator} from "react-navigation-stack";
 import ProfileScreen from "../screens/ProfileScreen";
 import colors from "../constants/colors";
-import React from "react";
 import ManageUsersTabs from "./ManageUsersTabs";
+import { createAppContainer } from "react-navigation";
 
-export default createStackNavigator(
+const ManageUserNavigation = createStackNavigator(
     {
-        'Gebruikers beheren': {
-            screen: ManageUsersTabs
+        manageUsers: {
+            screen: ManageUsersTabs,
         },
         Profile: {
             screen: ProfileScreen
@@ -22,3 +22,5 @@ export default createStackNavigator(
         }
     }
 );
+
+export default createAppContainer(ManageUserNavigation);
