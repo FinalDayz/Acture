@@ -102,7 +102,11 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                                           styles.followStar : styles.notFollowStar
                                       }/>
                         </AccountRow>
-                    }/>
+                    }
+                    ListFooterComponent={
+                        <View style={styles.footer}></View>
+                    }
+                    />
             </View>
         );
     }
@@ -157,6 +161,10 @@ const styles = StyleSheet.create ({
     searchBar: {
         paddingHorizontal: '7%',
         marginBottom: 8
+    },
+    footer: {
+        minHeight: 40,
+        width: '100%'
     }
 });
 
