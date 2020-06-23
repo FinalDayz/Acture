@@ -14,7 +14,7 @@ import HeaderButton from "../../components/HeaderButton";
 import { User } from "../../models/User";
 
 export interface Props {
-
+    navigation?: any
 }
 
 interface State {
@@ -88,6 +88,8 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
                         <AccountRow
+                            navigation={this.props.navigation}
+                            navigable={true}
                             isExpandable={false}
                             account={item}>
                             <Ionicons onPress={() => this.clickedFollowStar(item)}
