@@ -10,6 +10,7 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {PostModel} from '../models/PostModel';
 import { NewPostButton } from '../components/NewPostButton';
+import { User } from '../models/User';
 
 export interface Props {
     navigation: any
