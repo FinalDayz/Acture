@@ -100,7 +100,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         <ListItem
                             style={this.styles.privacyButton}
                             title={'Instellingen'}
-                            leftIcon={{ name: 'lock' }}
+                            leftIcon={{ name: 'settings'}}
                             chevron
                             onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}
                         />
