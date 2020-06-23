@@ -35,13 +35,13 @@ export default class HelpScreen extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.getGuides()
+        this.getBlogs()
     }
 
-    getGuides() {
+    getBlogs() {
         if(!this.state.isLoading) {
             this.setState({isLoading:true}, () => {
-                bodyfull(ApiDictionary.getGuides, {
+                bodyfull(ApiDictionary.getBlogs, {
                     offs: offSet //offset for loading more posts
                 })
                 .then((result) => {
@@ -94,7 +94,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
-                        onRefresh={() => {this.resetOffset(); this.getGuides()}}
+                        onRefresh={() => {this.resetOffset(); this.getBlogs()}}
                         contentContainerStyle={this.styles.list}
                         data={this.state.data}
                         keyExtractor={(item, index) => item.postId.toString()}
@@ -109,8 +109,8 @@ export default class HelpScreen extends React.Component<Props, State> {
                             <View>
                                 {!this.state.isLoading ? (
                                     <View style={this.styles.postloader}>
-                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getGuides() }}>
-                                            <Text style={this.styles.postloaderText}>Meer guides laden</Text>
+                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getBlogs() }}>
+                                            <Text style={this.styles.postloaderText}>Meer blogs laden</Text>
                                         </TouchableOpacity>
                                     </View>
                                 ) : null }
@@ -126,7 +126,7 @@ export default class HelpScreen extends React.Component<Props, State> {
     //options for header bar. Default options are in the navigator.
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Guides',
+            headerTitle: 'Blogs',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item 

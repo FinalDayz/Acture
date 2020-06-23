@@ -1,18 +1,22 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
-import MessagesPlaceholderScreen from '../screens/MessagesPlaceholderScreen';
+import BlogScreen from '../screens/BlogScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
+import PostAddScreen from '../screens/PostAddScreen';
 
-const MessagesScreenNavigation = createStackNavigator(
+const BlogScreenNavigation = createStackNavigator(
     {
-        Messages: {
-            screen: MessagesPlaceholderScreen
+        Blogs: {
+            screen: BlogScreen
         },
         Profile: {
             screen: ProfileScreen
-        }
+        },
+        PostAddScreen:{
+            screen: PostAddScreen
+        },
     },
     {
         defaultNavigationOptions: {
@@ -23,4 +27,4 @@ const MessagesScreenNavigation = createStackNavigator(
         }
     });
 
-export default createAppContainer(MessagesScreenNavigation);
+export default createAppContainer(BlogScreenNavigation);

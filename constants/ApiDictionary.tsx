@@ -39,6 +39,7 @@ export default {
     getGlobalFeed: {destination: '/api/feedposts/globalFeed', type: 'POST'},
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
     getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
+    getBlogs: {destination: '/api/feedposts/blogs', type: 'POST'},
 
     getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
     changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},
