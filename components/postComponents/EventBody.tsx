@@ -34,7 +34,7 @@ export class EventBody extends React.Component<Props> {
     state = {
         isLoading: false,
         attendButtonPressed: false,
-        attendance: 0
+        attendance: this.props.attendance
     };
 
     editPost() {
@@ -101,7 +101,7 @@ export class EventBody extends React.Component<Props> {
                 <Text style={this.styles.bodyText}>{this.props.text}</Text>
                 <View style={this.styles.bottomContent}>
                     <View style={this.styles.attendanceContainer}>
-                        <Text style={this.styles.attendance}>{this.props.attendance}  aanmeldingen</Text>
+                        <Text style={this.styles.attendance}>totaal aanmeldingen {this.state.attendance}</Text>
                     </View>
 
                     { (this.props.doesAttend == 0 && !this.state.attendButtonPressed) &&
