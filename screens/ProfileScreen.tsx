@@ -15,7 +15,6 @@ import {StartupWithFollow} from '../models/StartupWithFollow';
 import {ContactInfo} from '../models/ContactInfo';
 import {ActivityIndicator} from 'react-native-paper';
 import {ListItem} from "react-native-elements";
-import Contacts from 'react-native-contacts';
 
 export interface Props {
     navigation: any
