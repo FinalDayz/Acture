@@ -66,6 +66,10 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
         this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
 
+    showAttendance= (eventId: any) => {
+        this.props.navigation.navigate('Attendance', {eventId: eventId})
+    }
+
     handleDelete(postId: string) {
         const newData = this.state.data.filter(
             (post) => post.postId.toString() != postId
@@ -98,6 +102,8 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => item.postId.toString()}
                         renderItem={itemData =>
                             <Post
+                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                navigation={this.props.navigation}
                                 data={itemData.item}
                                 onEdit={this.handleEdit.bind(this)}
                                 onDelete={this.handleDelete.bind(this)}

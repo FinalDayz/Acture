@@ -5,6 +5,7 @@ import AllEventsScreen from '../screens/AllEventsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 import PostAddScreen from '../screens/PostAddScreen';
+import AttendanceScreen from '../screens/AttendanceScreen';
 
 const EventsScreenNavigation = createStackNavigator(
     {
@@ -16,6 +17,9 @@ const EventsScreenNavigation = createStackNavigator(
         },
         PostAddScreen:{
             screen: PostAddScreen
+        },
+        Attendance: {
+            screen: AttendanceScreen
         }
     },
     {
