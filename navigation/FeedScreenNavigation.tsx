@@ -22,7 +22,10 @@ const FeedScreenNavigation = createStackNavigator(
             screen: PostAddScreen
         },
         userPrivacyScreen: {
-            screen: userPrivacyScreen
+            screen: userPrivacyScreen,
+            navigationOptions: {
+                headerTitle: 'Instellingen',
+            }
         },
         Attendance: {
             screen: AttendanceScreen

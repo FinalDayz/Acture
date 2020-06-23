@@ -40,6 +40,7 @@ export default {
     getEvents: {destination: '/api/feedposts/events', type: 'POST'},
     getGuides: {destination: '/api/feedposts/guides', type: 'POST'},
     getBlogs: {destination: '/api/feedposts/blogs', type: 'POST'},
+    getUserPosts: {destination:'/api/feedposts/getUserPosts/', type: 'GET'},
 
     getPrivacySettings: {destination: '/api/privacy/', type: 'GET'},
     getUserDetails: {destination: '/api/users/getUserDetails', type: 'GET'},
