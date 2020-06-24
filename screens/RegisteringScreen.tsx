@@ -52,7 +52,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                 "Invoer niet geldig",
                 'Zijn alle velden met een * ingevuld? Komen de wachtwoorden overeen?',
                 [
-                    {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
+                    {text: 'OK', style: 'cancel'},
                 ],
                 { cancelable: false })
         }
@@ -80,22 +80,18 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     }
 
     register = () => {
-        console.log(this.state.firstName + ' ' + this.state.insertion + ' ' + this.state.lastName + ', ' + this.state.email, ', ' + this.state.password + ', '+ this.state.role + ', ' + this.registerDate());
-
         bodyfull(ApiDictionary.register, {'firstname': this.state.firstName, 'tussenvoegsel': this.state.insertion, 'lastname': this.state.lastName, 'email': this.state.email, 'password': this.state.password, 'role': this.state.role, 'register_date': this.registerDate()}).then((data) => {
             if(data.success) {
                 Alert.alert(
                     "Succes!",
                     'Je bent geregistreerd, log nu in.',
                     [
-                        {text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel'},
+                        {text: 'OK', style: 'cancel'},
                     ],
                     { cancelable: false })
                     this.returnToLoginScreen();
             }
-        }).catch(err => {
-            console.log("fetch error" + err.message);
-        })
+        }).catch(err => {})
     }
     
     checkInputFields = () => {
