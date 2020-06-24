@@ -1,11 +1,7 @@
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import colors from "../constants/colors";
-import {ExploreUsersScreen} from "../screens/Explore/ExploreUsersScreen";
 import FeedScreen from '../screens/FeedScreen';
 import GlobalFeedScreen from '../screens/GlobalFeedScreen';
-import { createAppContainer } from "react-navigation";
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import HeaderButton from '../components/HeaderButton';
 
 const FeedScreenTabs = createMaterialTopTabNavigator(
     {

@@ -10,9 +10,11 @@ import {IconInput} from "../components/IconInput";
 import {AccountRow} from '../components/account/AccountRow';
 import {Hr} from '../components/Hr';
 import {Ionicons} from '@expo/vector-icons';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 export interface Props {
-
+    navigation: any
 }
 
 interface State {
@@ -118,9 +120,10 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             if(data.success) {
                 Alert.alert(
                     "Wachtwoord gereset",
-                    'Het wachtwoord is veranderd naar: ' + newPassword + ", ook is het gekopieerd naar je klembord.",
+                    'Het wachtwoord is veranderd naar: ' + newPassword,
                     [
-                        {text: 'OK', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
+                        {text: 'Kopieer wachtwoord', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
+                        {text: 'Ik onthoud het wachtwoord', style: 'cancel'}
                     ],
                     { cancelable: false })
             }
@@ -240,6 +243,13 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             </View>
         );
     }
+    
+    //options for header bar. Default options are in the navigator.
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Gebruikers beheren'
+        }
+    };
 }
 
 const rolePickerStyle = StyleSheet.create({

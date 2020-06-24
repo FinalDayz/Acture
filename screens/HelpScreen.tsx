@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import {bodyfull} from '../components/HttpClient';
@@ -90,7 +90,6 @@ export default class HelpScreen extends React.Component<Props, State> {
         return(
             <View style={this.styles.screen}>
                 <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
-                
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
@@ -110,7 +109,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                                 {!this.state.isLoading ? (
                                     <View style={this.styles.postloader}>
                                         <TouchableOpacity onPress={() => {this.increaseOffset(); this.getGuides() }}>
-                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                            <Text style={this.styles.postloaderText}>Meer guides laden</Text>
                                         </TouchableOpacity>
                                     </View>
                                 ) : null }

@@ -7,6 +7,7 @@ const state = {
 };
 
 export default async function bodyless(details: { destination: string; type: string; }) {
+
     const response = await Promise.race([
         fetch(ApiDictionary.apiIp + details.destination, {
             method: details.type,
