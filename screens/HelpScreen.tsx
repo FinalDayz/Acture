@@ -10,6 +10,7 @@ import {PostModel} from '../models/PostModel';
 import { Post } from '../components/Post';
 import { NewPostButton } from '../components/NewPostButton';
 import { User } from '../models/User';
+import { UserRole } from '../models/UserRole';
 
 export interface Props {
     navigation: any
@@ -89,7 +90,10 @@ export default class HelpScreen extends React.Component<Props, State> {
     render() {
         return(
             <View style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
+                {
+                    User.getRole() !== UserRole.user && 
+                    <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
+                }
                 <View style={this.styles.scrollable}>
                 <FlatList
                         refreshing={this.state.isLoading}
