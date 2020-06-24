@@ -243,7 +243,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 return (
                     <View style={{marginHorizontal: "7%"}}>
                         <View style={{flexDirection: 'row'}}>
-                            <View style={{flex: 1}}>
+                            <View style={{flex: 2}}>
                                 <Text style={[this.styles.contactText]}>E-mail adres:</Text>
                                 {this.state.currentUser.telephone ? (
                                     <Text style={[this.styles.contactText]}>Telefoon:</Text>
@@ -253,7 +253,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                 ) : null}
 
                             </View>
-                            <View style={{flex: 1}}>
+                            <View style={{flex: 3}}>
                                 <Text style={[this.styles.contactValue, this.styles.textClickable]}
                                       onPress={() => Linking.openURL('mailto:' + this.state.currentUser.email)}>
                                     {this.state.currentUser.email}

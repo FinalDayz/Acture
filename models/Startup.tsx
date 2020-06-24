@@ -17,6 +17,12 @@ export class Startup {
         );
     }
 
+    static toURL(url: string): string {
+        if(!(url.toString().includes("http://") || url.toString().includes('https://'))) {
+            return "http://" + url;
+        }
+        return url;
+    }
 }
 
 

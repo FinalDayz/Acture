@@ -80,7 +80,7 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
                             iconName={'md-search'}
                             inputPlaceholder={'Zoek startup...'}
                         />
-                    </View> &&              
+                    </View> &&
                     <FlatList
                         refreshing={this.state.isLoading}
                         onRefresh={() => this.fetchStartups()}
@@ -91,6 +91,8 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
                         keyExtractor={(item, index) => item.startupId.toString()}
                         renderItem={({item}) =>
                             <AccountRow
+                                navigation={this.props.navigation}
+                                navigable={true}
                                 isExpandable={false}
                                 account={item}>
                                 <Ionicons onPress={() => this.clickedFollowStar(item)}

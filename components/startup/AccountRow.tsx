@@ -6,12 +6,14 @@ import colors from "../../constants/colors";
 interface Props {
     account: Startup,
     isExpandable: boolean,
-
+    navigable?: boolean,
+    navigation?: any
 }
 
 interface State {
     account: Startup,
     isExpanded: boolean,
+    navigable: boolean,
 }
 
 export class AccountRow extends React.Component<Props, State> {
@@ -24,6 +26,7 @@ export class AccountRow extends React.Component<Props, State> {
             ...state,
             account: props.account,
             isExpanded: false,
+            navigable: props.navigable === true,
         };
 
     }
@@ -32,13 +35,16 @@ export class AccountRow extends React.Component<Props, State> {
         if (this.props.isExpandable)
             this.setState({
                 isExpanded: !this.state.isExpanded
-            })
+            });
+        if(this.state.navigable) {
+            this.props.navigation.navigate('Startup', {id: this.state.account.startupId})
+        }
     }
 
     render() {
         return (
             <TouchableOpacity
-                activeOpacity={this.props.isExpandable ? 0.2 : 1}
+                activeOpacity={this.props.isExpandable || this.state.navigable ? 0.2 : 1}
                 onPress={() => this.pressedAccount()}>
                 <View style={[
                     styles.accountWrapper,
