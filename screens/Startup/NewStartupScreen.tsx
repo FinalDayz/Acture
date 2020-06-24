@@ -29,7 +29,7 @@ export interface State {
     isValid: boolean
 }
 
-export default class newStartupScreen extends React.Component<Props, State> {
+export default class NewStartupScreen extends React.Component<Props, State> {
     constructor(props: Props, state: State) {
         super(props, state);
         this.state = {
@@ -148,7 +148,6 @@ export default class newStartupScreen extends React.Component<Props, State> {
                             this.successMessage();
                         }
                         else {
-                            console.log("hier1: " + JSON.stringify(result))
                             this.failMessage()
                         }
                     }
@@ -156,7 +155,6 @@ export default class newStartupScreen extends React.Component<Props, State> {
                     console.log(err)
                     this.setState({isLoading:false}, () => {
                         this.failMessage()
-                        console.log("hier 2:" + err.toString())
                     })
                 });
             })

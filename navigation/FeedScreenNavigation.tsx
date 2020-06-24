@@ -7,7 +7,8 @@ import colors from '../constants/colors';
 import PostAddScreen from "../screens/PostAddScreen";
 import AttendanceScreen from '../screens/AttendanceScreen';
 import userPrivacyScreen from "../screens/userPrivacyScreen";
-import newStartupScreen from '../screens/Startup/newStartupScreen';
+import NewStartupScreen from '../screens/Startup/NewStartupScreen';
+import StartupList from '../screens/Startup/StartupList';
 
 
 
@@ -28,8 +29,11 @@ const FeedScreenNavigation = createStackNavigator(
         Attendance: {
             screen: AttendanceScreen
         },
-        newStartupScreen: {
-            screen: newStartupScreen
+        NewStartupScreen: {
+            screen: NewStartupScreen
+        },        
+        StartupList: {
+            screen: StartupList
         }        
 
     },

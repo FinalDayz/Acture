@@ -100,6 +100,10 @@ export default class ProfileScreen extends React.Component<Props, State> {
         headerTitle: 'Profiel'
     };
 
+    toStartupList() {
+        this.props.navigation.navigate('StartupList', {startups: this.state.startups});
+    }
+
     render() {
         if(this.state.isLoading) {
             return (
@@ -120,7 +124,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             </TouchableOpacity>
                             <View style={this.styles.privacyDivider}></View>
                             <TouchableOpacity style={this.styles.privacyButton}
-                                              onPress = {() => this.props.navigation.navigate('newStartupScreen')}>
+                                              onPress = {() => this.props.navigation.navigate('NewStartupScreen')}>
                                 <Text style={this.styles.privacyText}>Nieuwe startup</Text>
                                 <Ionicons name={'md-add'} size={30}
                                           color={"grey"} style={this.styles.privacyIcon}/>
@@ -145,9 +149,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                 />
                             }
                         />
-                        {this.state.currentUser.userId === User.getUserId() && this.state.startups.length > 0 &&
-                        <Button title={'Startups beheren'} onPress={this.props.navigation.navigate('startupList')}/>
-                        }
                     </View>
                 </View>
             );
@@ -190,8 +191,18 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
             case 'Startups':
                 return (
-                    <View style={{marginHorizontal: "7%"}}>
-                        <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>{this.state.currentUser.firstname + " is aangesloten bij deze startups:"}</Text>
+                    <View style={{marginHorizontal: "7%", marginTop: 10}}>
+                        {this.state.currentUser.userId !== User.getUserId() &&
+                        <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>
+                            {this.state.currentUser.firstname + " is aangesloten bij deze startups:"}</Text>
+                        }
+                        {this.state.currentUser.userId === User.getUserId() && this.state.startups.length > 0 &&
+                        <Button title={'Startups beheren'} onPress={this.toStartupList.bind(this)}/>
+                        }
+                        {this.state.startups.length === 0 &&
+                        <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>
+                            Er zijn geen startups om weer te geven</Text>
+                        }
                         <FlatList
                             refreshing={this.state.isLoading}
                             onRefresh={() => this.fetchUserLinkedStartups()}
