@@ -1,18 +1,23 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
-import HelpPlaceholderScreen from '../screens/HelpPlaceholderScreen';
+import HelpScreen from '../screens/HelpScreen';
 import colors from '../constants/colors';
 import ProfileScreen from '../screens/ProfileScreen';
+
+import PostAddScreen from "../screens/PostAddScreen";
 
 const HelpScreenNavigation = createStackNavigator(
     {
         Help: {
-            screen: HelpPlaceholderScreen
+            screen: HelpScreen
         },
         Profile: {
             screen: ProfileScreen
-        }
+        },
+        PostAddScreen:{
+            screen: PostAddScreen
+        },
     },
     {
         defaultNavigationOptions: {

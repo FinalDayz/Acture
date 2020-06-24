@@ -1,6 +1,5 @@
 import {Alert} from "react-native";
 import ApiDictionary from '../constants/ApiDictionary';
-import environmentVars from "../constants/environmentVars";
 
 const state = {
     jwt: "",
@@ -32,8 +31,6 @@ export default async function bodyless(details: { destination: string; type: str
 
 export async function bodyfull(details: { destination: string; type: string; }, bodyattributes: Object) {
 
-    console.log(ApiDictionary.apiIp + details.destination)
-
     const response = await Promise.race([
         fetch(ApiDictionary.apiIp + details.destination , {
         method: details.type,
@@ -42,29 +39,36 @@ export async function bodyfull(details: { destination: string; type: string; }, 
             'authorization': 'bearer:' + state.jwt,
         },
         body: JSON.stringify(bodyattributes)
-        })
-        .then(response => {
+        }
+        ).then(response => {
             if(response.ok) {
                 state.getjwt = true;
             } else {
                 state.getjwt= false;
             }
-          return response.json();})
-        .then(responseData => {
+          return response.json();}
+        ).then(responseData => {
             return responseData;}),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Timeout')), ApiDictionary.timeoutTimings)
-        )
-      ]).catch(err => {
+        )]
+        ).catch(err => {
         alert(err.message);
     });
         const resData = await response;
 
         if(state.getjwt && resData.token) {
+            // console.log(resData.token)
             state.jwt = resData.token;
         }
+
         return resData;
   }
+
+export function expireJWT(){
+    state.jwt = "";
+    state.getjwt = false;
+}
 
   function alert(err: string) {
 
@@ -77,8 +81,3 @@ export async function bodyfull(details: { destination: string; type: string; }, 
             ],
             {cancelable: false}
          ))}
-
-    export function expireJWT(){
-        state.jwt = "";
-        state.getjwt = false;
-    }

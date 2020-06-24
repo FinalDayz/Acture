@@ -1,14 +1,19 @@
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import colors from "../constants/colors";
-import {ExploreUsersScreen} from "../screens/Explore/ExploreUsersScreen";
-import {ExploreStartupsScreen} from "../screens/Explore/ExploreStartupsScreen";
+import FeedScreen from '../screens/FeedScreen';
+import GlobalFeedScreen from '../screens/GlobalFeedScreen';
 
-const exploreTabs = createMaterialTopTabNavigator(
+const FeedScreenTabs = createMaterialTopTabNavigator(
     {
-        Personen: ExploreUsersScreen,
-        Startups: ExploreStartupsScreen
+        myFeed: {
+            screen: FeedScreen
+        },
+        globalFeed: {
+            screen: GlobalFeedScreen
+        },
+        
     }, {
-        initialRouteName: 'Personen',
+        initialRouteName: 'myFeed',
         tabBarOptions: {
             inactiveTintColor: colors.textGrey,
             activeTintColor: colors.textGrey,
@@ -23,8 +28,8 @@ const exploreTabs = createMaterialTopTabNavigator(
                 borderTopRightRadius: 20,
             },
         },
-        navigationOptions: ExploreUsersScreen.navigationOptions
+        navigationOptions: FeedScreen.navigationOptions
     }
 );
 
-export default exploreTabs;
+export default FeedScreenTabs;

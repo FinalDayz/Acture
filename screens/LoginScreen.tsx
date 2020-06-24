@@ -1,11 +1,12 @@
 
-import React, { Props } from 'react';
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert, Button } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import ApiDictionary from '../constants/ApiDictionary';
-import bodyless, { bodyfull, expireJWT } from '../components/HttpClient';
+import { bodyfull } from '../components/HttpClient';
+import {User} from "../models/User";
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -21,16 +22,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this._isMounted = false;
     }
 
-    // componentWillMount(): void {
-    //     this.setState({
-    //         password: 'test',
-    //         email: 'test@gmail.com'
-    //     }, () => {
-    //         console.log("blabla") ;
-    //         this.login()
-    //     });
-    // }
-
     state={
         email:"",
         password:"",
@@ -44,9 +35,15 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         this.state.password = "";
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-    }
+    // componentDidMount() {
+    //     this.setState({
+    //         password: 'test',
+    //         email: 'test@gmail.com'
+    //     }, () => {
+    //         this.login()
+    //     });
+    //     this._isMounted = true;
+    // }
 
     componentWillUnmount() {
         this._isMounted = false;
@@ -61,10 +58,9 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
       };
 
     login = () => {
-        console.log({'password': this.state.password, 'email': this.state.email});
         this.setState({isLoading:true});
             bodyfull(ApiDictionary.login, {'password': this.state.password, 'email': this.state.email}).then((data) => {
-                console.log(JSON.stringify(data))
+                User.setLoggedInUser(data.user);
                 if(data.success === 1) {
                     this.setState({isLoading:false});
                     this.state.wrongInputs = false;

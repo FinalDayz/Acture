@@ -6,14 +6,16 @@ import bodyless from "../../components/HttpClient";
 import {HttpHelper} from "../../components/HttpHelper";
 import ApiDictionary from "../../constants/ApiDictionary";
 import {AccountRow} from "../../components/account/AccountRow";
-import {Hr} from "../../components/Hr";
 import {Ionicons} from "@expo/vector-icons";
 import {UserWithFollow} from "../../models/UserWithFollow";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import HeaderButton from "../../components/HeaderButton";
+import { User } from "../../models/User";
+import { ManageUsersButton } from "../../components/ManageUsersButton";
+import { UserRole } from "../../models/UserRole";
 
 export interface Props {
-
+    navigation: any
 }
 
 interface State {
@@ -52,10 +54,6 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
         });
     }
 
-    navigationOptions() {
-
-    }
-
     private searchFilter(account: UserWithFollow) {
         return UserWithFollow.searchFilter(account, this.state.searchQuery);
     }
@@ -69,10 +67,22 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
         );
     }
 
+    private checkForAdmin(){
+        if(User.getRole() === UserRole.admin){
+            return true;
+        } else {return false;}
+    }
+    
+    private checkForUser(){
+        return User.getRole() !== UserRole.user;
+    }
+    
+
     render() {
         return (
             <View style={styles.wrapper}>
-                <View style={{paddingHorizontal: '7%'}}>
+                {this.checkForUser() &&
+                <View style={styles.searchBar}>
                     <IconInput
                         onChangeText={text => {
                             this.setState({searchQuery: text})
@@ -80,8 +90,13 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                         iconName={'md-search'}
                         inputPlaceholder={'Zoek gebruiker...'}
                     />
-                </View>
-                <FlatList
+                </View> }
+                {this.checkForAdmin() ? (
+                    <ManageUsersButton onPress={() => this.props.navigation.navigate('ManageUsers', {edit: false}) }/>
+                ) : null }
+
+                {this.checkForUser() ? (
+                    <FlatList
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.fetchUsers()}
                     contentContainerStyle={styles.flatList}
@@ -91,6 +106,8 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
                         <AccountRow
+                            navigation={this.props.navigation}
+                            navigable={true}
                             isExpandable={false}
                             account={item}>
                             <Ionicons onPress={() => this.clickedFollowStar(item)}
@@ -99,21 +116,32 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                                           styles.followStar : styles.notFollowStar
                                       }/>
                         </AccountRow>
-                    }/>
+                    }
+                    ListFooterComponent={
+                        <View style={styles.footer}></View>
+                    }
+                    />
+                ) : (
+                    <View style={styles.postloader}>
+                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
+                                <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
+                            {/* </TouchableOpacity> */}
+                        </View>
+                )} 
             </View>
         );
     }
 
     static navigationOptions = (navData:any) => {
         return {
-            headerTitle: 'Explore',
+            headerTitle: 'Ontdekken',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
                     <Item
                         title='profile'
-                        iconName='md-person' //TODO: change to profile picture
+                        iconName='md-person'
                         onPress={() => {
-                            navData.navigation.navigate('Profile');
+                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
                         }}/>
                 </HeaderButtons>
             ),
@@ -149,7 +177,25 @@ const styles = StyleSheet.create ({
         paddingTop: 20,
         flex: 1,
         width: '100%',
-    }
+        backgroundColor: colors.backgroundPrimary
+    },
+    searchBar: {
+        paddingHorizontal: '7%',
+        marginBottom: 8
+    },
+    footer: {
+        minHeight: 40,
+        width: '100%'
+    },
+    postloader: {
+        width: '100%',
+        marginVertical: 10,
+        alignItems: 'center'
+    },
+    postloaderText: {
+        color: colors.textDark,
+        textDecorationLine: 'underline'
+    },
 });
 
 

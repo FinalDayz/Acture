@@ -11,7 +11,7 @@ export class User {
     register: Date = new Date();
     unregister: Date = new Date();
     password: string = '';
-    role: UserRole = UserRole.user;
+    role: UserRole = UserRole.member;
     email: string = '';
     image: string = '';
     telephone: number = 0;
@@ -26,8 +26,26 @@ export class User {
         return User.loggedInUser;
     }
 
+    static setLoggedInUser(user: User) {
+        User.loggedInUser = user;
+    }
+
+    setUser(data: any) {
+        this.userId = data.userId
+        this.firstname = data.firstname;
+        this.lastname = data.lastname;
+        this.role = data.role;
+        this.tussenvoegsel = data.tussenvoegsel;
+        this.email = data.email;
+        this.image = data.image;
+        this.telephone = data.telephone;
+        this.description = data.description;
+        this.address = data.address;
+    }
+
     public static getRole() {
         return User.getLoggedInUser().role;
+
     }
 
     public static getUserId() {

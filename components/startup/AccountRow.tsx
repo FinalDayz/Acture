@@ -1,17 +1,17 @@
 import React from "react";
 import {StyleSheet, View, Image, Text, TouchableOpacity} from "react-native";
-import {User} from "../../models/User";
+import {Startup} from "../../models/Startup";
 import colors from "../../constants/colors";
 
 interface Props {
-    account: User,
+    account: Startup,
     isExpandable: boolean,
     navigable?: boolean,
-    navigation?: any,
+    navigation?: any
 }
 
 interface State {
-    account: User,
+    account: Startup,
     isExpanded: boolean,
     navigable: boolean,
 }
@@ -26,21 +26,18 @@ export class AccountRow extends React.Component<Props, State> {
             ...state,
             account: props.account,
             isExpanded: false,
-            navigable: !!this.props.navigable,
+            navigable: props.navigable === true,
         };
 
     }
 
     pressedAccount() {
-        if (this.props.isExpandable) {
+        if (this.props.isExpandable)
             this.setState({
                 isExpanded: !this.state.isExpanded
-            })
-        } else if (this.state.navigable) {
-            this.props.navigation.navigate(
-                'Profile',
-                {id: this.state.account.userId}
-            );
+            });
+        if(this.state.navigable) {
+            this.props.navigation.navigate('Startup', {id: this.state.account.startupId})
         }
     }
 
@@ -63,9 +60,7 @@ export class AccountRow extends React.Component<Props, State> {
                             <Text
                                 style={styles.accountName}>
                                 {/*TODO: make this use getFullName() once working with User objects*/}
-                                {this.state.account.firstname +
-                                (this.state.account.tussenvoegsel ? " " + this.state.account.tussenvoegsel : "")
-                                + " " + this.state.account.lastname}
+                                {this.state.account.name}
                             </Text>
                             <Text
                                 style={styles.accountEmail}>
