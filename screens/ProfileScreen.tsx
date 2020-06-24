@@ -124,7 +124,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>
                         {this.state.isOwnProfile &&
-                        <View style={{flexDirection: 'row', paddingHorizontal: 15}}>
+                        <View style={{flexDirection: 'row', paddingHorizontal: 15, borderBottomWidth: 1, borderColor: colors.backgroundSecondary}}>
                             <TouchableOpacity style={this.styles.privacyButton}
                                               onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}>
                                 <Ionicons name={'md-settings'} size={30}
