@@ -1,7 +1,6 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 
-import FeedScreen from '../screens/FeedScreen';
 import FeedScreenTabs from './FeedScreenTabs'
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
@@ -23,7 +22,10 @@ const FeedScreenNavigation = createStackNavigator(
             screen: PostAddScreen
         },
         userPrivacyScreen: {
-            screen: userPrivacyScreen
+            screen: userPrivacyScreen,
+            navigationOptions: {
+                headerTitle: 'Instellingen',
+            }
         },
         Attendance: {
             screen: AttendanceScreen

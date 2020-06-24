@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, View, Text, RefreshControl, TextInput} from "react-native";
+import {StyleSheet, View, Text, RefreshControl, TextInput, Alert} from "react-native";
 import colors from "../constants/colors";
 import {CheckBox, ListItem} from "react-native-elements";
 import {Hr} from "../components/Hr";
@@ -28,6 +28,12 @@ export interface State {
         tussenvoegsel: string,
         lastname: string,
         description: string,
+    }
+    newUserDetails: {
+        firstname: string,
+        tussenvoegsel: string,
+        lastname: string,
+        description: string
     }
 }
 
@@ -77,7 +83,8 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                 if (Object.keys(data).length > 0) {
                     this.setState({
                         isLoading: false,
-                        userDetails: data
+                        userDetails: data,
+                        newUserDetails: data
                     });
                 } else {
                     this.setState({
@@ -88,7 +95,61 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
     }
 
     postDetails(){
-        bodyfull(ApiDictionary.updateUserDetails, this.state.userDetails);
+        bodyfull(ApiDictionary.updateUserDetails, this.state.newUserDetails).then((data) => {
+            if(!data.success) {
+                Alert.alert(
+                    'Details geupdate',
+                    "Je details zijn bijgewerkt",
+                    [
+                        {
+                            text: 'OK',
+                            onPress: () => this.fetchDetails(),
+                            style: 'cancel'
+                        },
+                    ],
+                    {cancelable: false}
+                );
+            }
+        }).catch(err => {
+            console.log("fetch error" + err.message);
+        })
+    }
+
+    postDetailsPressed(){
+        if(this.state.userDetails == this.state.newUserDetails){
+            Alert.alert(
+                'Details updaten',
+                "Er is niets veranderd, probeer het nog eens",
+                [
+                    {
+                        text: 'Probeer het nogmaals',
+                        style: 'cancel'
+                    },
+                ],
+                {cancelable: false}
+            );
+        } else {
+            Alert.alert(
+                'Details updaten',
+                "U veranderd de volgende gegevens: \n" + 
+                "Voornaam: " + this.state.newUserDetails.firstname +
+                "\n Tussenvoegsel: " + this.state.newUserDetails.tussenvoegsel + 
+                "\n Achternaam: " + this.state.newUserDetails.lastname + 
+                "\n Beschrijving: \n" + this.state.newUserDetails.description
+                ,
+                [
+                    {
+                        text: 'Wijzigen',
+                        onPress: () => this.postDetails(),
+                    },
+                    {
+                        text: 'Annuleren',
+                        style: 'cancel'
+                    },
+                ],
+                {cancelable: false}
+            );
+        }
     }
 
     getDefaultSettings(): {
@@ -122,6 +183,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
 
     postSettings() {
         bodyfull(ApiDictionary.changePrivacySettings, this.state.settings);
+
     }
 
     render() {
@@ -176,47 +238,47 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                         <View>
                             <View style={styles.inputView} >
                                 <TextInput
-                                    value={this.state.userDetails.firstname}
+                                    value={this.state.newUserDetails.firstname}
                                     style={styles.inputText}
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={text => this.setState({userDetails: {
-                                        ...this.state.userDetails, firstname: text
+                                    onChangeText={text => this.setState({newUserDetails: {
+                                        ...this.state.newUserDetails, firstname: text
                                     }})}
                                     />
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
                                     style={styles.inputText}
-                                    value={this.state.userDetails.tussenvoegsel}
+                                    value={this.state.newUserDetails.tussenvoegsel}
                                     placeholder="Tussenvoegsel.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={text => this.setState({userDetails: {
-                                        ...this.state.userDetails, tussenvoegsel: text
+                                    onChangeText={text => this.setState({newUserDetails: {
+                                        ...this.state.newUserDetails, tussenvoegsel: text
                                     }})}
                                     />
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
-                                    value={this.state.userDetails.lastname}
+                                    value={this.state.newUserDetails.lastname}
                                     style={styles.inputText}
                                     placeholder="Achternaam.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={text => this.setState({userDetails: {
-                                        ...this.state.userDetails, lastname: text
+                                    onChangeText={text => this.setState({newUserDetails: {
+                                        ...this.state.newUserDetails, lastname: text
                                     }})}
                                     />
                             </View>
                             <View style={styles.bigInputView} >
                                 <TextInput
-                                    value={this.state.userDetails.description}
+                                    value={this.state.newUserDetails.description}
                                     style={styles.bigInputText}
                                     multiline
                                     numberOfLines={4}
                                     placeholder="Description.."
                                     placeholderTextColor="#003f5c"
-                                    onChangeText={text => this.setState({userDetails: {
-                                        ...this.state.userDetails, description: text
+                                    onChangeText={text => this.setState({newUserDetails: {
+                                        ...this.state.newUserDetails, description: text
                                     }})}
                                     />
                             </View>
@@ -224,7 +286,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                     ): null }
                         <TouchableOpacity
                                     style={styles.confirmButton}
-                                    onPress={this.postDetails.bind(this)}>
+                                    onPress={this.postDetailsPressed.bind(this)}>
                                     <Text style={styles.confirmText}>Update gegevens</Text>
                         </TouchableOpacity>
                 </ScrollView>

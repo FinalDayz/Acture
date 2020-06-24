@@ -212,7 +212,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return data;
     }
 
-    checkTitleInput(title: string) {
+     checkTitleInput(title: string) {
         this.setState({
             titleValid: (title.trim().length > 0),
             title: title
@@ -342,7 +342,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     successMessage() {
         Alert.alert(
             'Succes!',
-            'Uw post is succesvol opgeslagen.',
+            'Uw post is succesvol opgeslagen. Refresh om de wijzigingen te zien.',
             [{text: 'OK', onPress: () => this.props.navigation.pop()}],)
     }
 
@@ -574,7 +574,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         <Text style={styles.headLine}>Kosten toegang</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Bedrag..."
+                            placeholder="Kosten..."
                             value={this.state.eventPrice}
                             onChangeText={price => this.setState({eventPrice: price})}
                             returnKeyType='next'

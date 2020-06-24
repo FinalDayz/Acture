@@ -11,15 +11,18 @@ import {ManageUsersScreen} from "../screens/ManageUsersScreen";
 import ManageUserNavigation from "./ManagerUserNavigation";
 import returnToLoginScreen from './ReturnToLoginScreen';
 
-const MenuNavigation = createStackNavigator({
-    Menu: MenuScreen
-})
 
 const HamburgerNavigation = createDrawerNavigator({
-    BottomNav: BottomNavigation,
-    Menu: MenuNavigation,
-    manageUsers: ManageUserNavigation,
-    logOutUser: returnToLoginScreen,
+    BottomNav: { screen: BottomNavigation,
+        navigationOptions: {
+            title: "Menu Sluiten"
+        }
+    },
+    logOutUser: { screen: returnToLoginScreen,
+        navigationOptions: {
+            title: "Uitloggen"
+        }
+    },
 }, {
     drawerBackgroundColor: colors.primary,
     contentOptions: {
