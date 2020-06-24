@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {User} from '../models/User'
-import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, PanResponder, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Button, Alert, ActivityIndicator } from 'react-native';
 import colors from '../constants/colors';
 import Image from 'react-native-scalable-image';
 import { userInfo } from 'os';
@@ -25,6 +25,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         password1: "",
         password2: "",
         passwordValid: true,
+        isLoading: false
     }
 
     checkPassword = () => {
@@ -41,11 +42,10 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
     };
 
     saveUserData = () => {
+        this.setState({isLoading:true});
         if(this.state.passwordValid && this.checkInputFields()){
             this.registerDate();
-            const user = new User(this.state.firstName, this.state.insertion, this.state.lastName, this.state.email, this.state.password);
-            var role = 'user';
-            this.state.role = role;
+            this.state.role = 'user';
             this.register();
         } else {
             Alert.alert(
@@ -83,7 +83,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
         console.log(this.state.firstName + ' ' + this.state.insertion + ' ' + this.state.lastName + ', ' + this.state.email, ', ' + this.state.password + ', '+ this.state.role + ', ' + this.registerDate());
 
         bodyfull(ApiDictionary.register, {'firstname': this.state.firstName, 'tussenvoegsel': this.state.insertion, 'lastname': this.state.lastName, 'email': this.state.email, 'password': this.state.password, 'role': this.state.role, 'register_date': this.registerDate()}).then((data) => {
-            if(!data.success) {
+            if(data.success) {
                 Alert.alert(
                     "Succes!",
                     'Je bent geregistreerd, log nu in.',
@@ -104,7 +104,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
 
     render(){
         return (
-            <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+            <ScrollView style={styles.container}>
                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.container}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.contentContainer}>
@@ -121,7 +121,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     placeholder="*Voornaam.."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({firstName:text})}
-                                    // changed={(text, isValid) => {this.setState({firstName:text});}}
                                     />
                             </View>
 
@@ -175,11 +174,19 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                     />
                             </View>
 
-                            <TouchableOpacity
-                                style={styles.loginBtn}
-                                onPress={this.saveUserData}>
-                                <Text style={styles.loginText}>Registreer</Text>
-                            </TouchableOpacity>
+                            {!this.state.isLoading ? (
+                                <TouchableOpacity
+                                    style={styles.loginBtn}
+                                    onPress={this.saveUserData}>
+                                    <Text style={styles.loginText}>Registreer</Text>
+                                </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                    style={styles.loginBtn}
+                                    onPress={this.saveUserData}>
+                                    <ActivityIndicator size="large" color={colors.textLight}/>
+                                    </TouchableOpacity>
+                                )}
                         </View>
                     </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>     
