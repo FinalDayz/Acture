@@ -279,8 +279,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             base64: true,
-            aspect: [4, 3],
-            quality: 0.01,
+            aspect: [1, 1],
+            quality: 0.02,
 
         }).then(result => {
             if (!result.cancelled) {
