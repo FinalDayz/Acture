@@ -83,7 +83,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                 {User.getRole() === UserRole.admin ? (
                     <ManageUsersButton onPress={() => this.props.navigation.navigate('ManageUsers', {edit: false}) }/>
                 ) : null }
-                
+
                 <FlatList
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.fetchUsers()}
@@ -94,6 +94,8 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
                         <AccountRow
+                            navigation={this.props.navigation}
+                            navigable={true}
                             isExpandable={false}
                             account={item}>
                             <Ionicons onPress={() => this.clickedFollowStar(item)}
@@ -102,7 +104,11 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                                           styles.followStar : styles.notFollowStar
                                       }/>
                         </AccountRow>
-                    }/>
+                    }
+                    ListFooterComponent={
+                        <View style={styles.footer}></View>
+                    }
+                    />
             </View>
         );
     }
@@ -157,6 +163,10 @@ const styles = StyleSheet.create ({
     searchBar: {
         paddingHorizontal: '7%',
         marginBottom: 8
+    },
+    footer: {
+        minHeight: 40,
+        width: '100%'
     }
 });
 

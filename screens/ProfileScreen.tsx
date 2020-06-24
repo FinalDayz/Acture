@@ -4,17 +4,19 @@ import colors from '../constants/colors';
 import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
 import { PostModel } from "../models/PostModel";
-import { Container } from "native-base";
+import {Container } from "native-base";
 import { Post } from "../components/Post";
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { HttpHelper } from '../components/HttpHelper';
-import { User } from '../models/User';
-import { Ionicons } from '@expo/vector-icons';
-import { AccountRow } from '../components/startup/AccountRow';
-import { StartupWithFollow } from '../models/StartupWithFollow';
-import { ContactInfo } from '../models/ContactInfo';
-import { ActivityIndicator } from 'react-native-paper';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {HttpHelper} from '../components/HttpHelper';
+import {User} from '../models/User';
+import {Ionicons} from '@expo/vector-icons';
+import {AccountRow} from '../components/startup/AccountRow';
+import {StartupWithFollow} from '../models/StartupWithFollow';
+import {ContactInfo} from '../models/ContactInfo';
+import {ActivityIndicator} from 'react-native-paper';
 import { ListItem } from "react-native-elements";
+import * as ImagePicker from "expo-image-picker";
+import {error} from "util";
 
 export interface Props {
     navigation: any
@@ -26,28 +28,29 @@ interface State {
     currentUser: User,
     selectedTab: string,
     startups: StartupWithFollow[],
-    contactItems: ContactInfo[]
+    contactItems: ContactInfo[],
+    isOwnProfile: boolean,
 };
 
-const OpenURLButton = ( url: string, children: string ) => {
+const OpenURLButton = (url: string, children: string) => {
     const handlePress = useCallback(async () => {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        Alert.alert(`Don't know how to open this URL: ${url}`);
-      }
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            await Linking.openURL(url);
+        } else {
+            Alert.alert(`Don't know how to open this URL: ${url}`);
+        }
     }, [url]);
-  
-    return <Button title={children} onPress={handlePress} />;
-  };
+
+    return <Button title={children} onPress={handlePress}/>;
+};
 
 export default class ProfileScreen extends React.Component<Props, State> {
 
     private windowWidth = Dimensions.get('window').width;
     _isMounted: boolean;
 
-    constructor(props: Props, state: State){
+    constructor(props: Props, state: State) {
         super(props);
 
         this.state = {
@@ -57,6 +60,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             isLoading: false,
             selectedTab: 'Over',
             startups: [],
+            isOwnProfile: false,
         }
 
         this._isMounted = false;
@@ -69,6 +73,10 @@ export default class ProfileScreen extends React.Component<Props, State> {
         this.getCurrentUser()
         this.fetchUserLinkedStartups()
         this.getBlogs()
+
+        this.setState({
+            isOwnProfile: this.state.currentUser.userId === User.getLoggedInUser().userId
+        });
 
         this._isMounted = true;
     }
@@ -88,7 +96,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
         this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
     handleEdit(data: any) {
-        this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
+        this.props.navigation.navigate('PostAddScreen', {edit: true, data: data})
     }
 
     componentWillUnmount() {
@@ -105,7 +113,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
 
     render() {
-        if(this.state.isLoading) {
+        if (this.state.isLoading) {
             return (
                 <View style={this.styles.screen}>
                     <ActivityIndicator size="large" color={colors.textLight}/>
@@ -115,6 +123,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             return(
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>
+                        {this.state.isOwnProfile &&
                         <View style={{flexDirection: 'row', paddingHorizontal: 15}}>
                             <TouchableOpacity style={this.styles.privacyButton}
                                               onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}>
@@ -131,6 +140,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             </TouchableOpacity>
 
                         </View>
+                        }
                         <FlatList
                             ListHeaderComponent={(
                                 this.headerBinder()
@@ -141,12 +151,12 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             keyExtractor={(item, index) => item.postId.toString()}
                             renderItem={itemData =>
                                 <Post
-                                    handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
-                                    navigation={this.props.navigation}
                                     data={itemData.item}
                                     onEdit={this.handleEdit.bind(this)}
                                     onDelete={this.handleDelete.bind(this)}
-                                />
+                                    handlePress={() => {
+                                    }}
+                                    navigation={this.props.navigation}/>
                             }
                         />
                     </View>
@@ -156,36 +166,39 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
 
     headerBinder() {
-        return(
+        return (
             <View>
-            <Container style={this.styles.topScrollable}>
+                <Container style={this.styles.topScrollable}>
                     <View style={this.styles.imagestyling}>
-                        <View>
+                        <TouchableWithoutFeedback
+                            onPress={() => this.tappedProfileImage()}>
                             <Image
-                            style={this.styles.image}
-                            source={{uri: 'https://frc.research.vub.be/sites/default/files/styles/large/public/thumbnails/image/basic-profile-picture_5.jpg'}}
-                            resizeMode="cover"
+                                style={this.styles.image}
+                                source={{uri: "data:image/png;base64," + this.state.currentUser.image}}
+
+                                resizeMode="cover"
                             />
-                        </View>
+                        </TouchableWithoutFeedback>
                         <Container style={this.styles.nameBox}>
-                            <Text style={[this.styles.text, {textAlign: "center"}]} adjustsFontSizeToFit numberOfLines={2}>{this.state.currentUser.getFullName()}</Text>
+                            <Text style={[this.styles.text, {textAlign: "center", fontSize: 25}]} adjustsFontSizeToFit
+                                  numberOfLines={3}>{this.state.currentUser.getFullName()}</Text>
                         </Container>
                     </View>
-            </Container>
-            {this.tabGenerator(['Over', 'Startups', 'Contact'])}
-            {this.tabRouter()}
+                </Container>
+                {this.tabGenerator(['Over', 'Startups', 'Contact'])}
+                {this.tabRouter()}
             </View>
         )
     }
 
     tabRouter() {
-        switch(this.state.selectedTab) {
+        switch (this.state.selectedTab) {
 
             case 'Over':
                 return (
                     <View style={{marginHorizontal: "7%"}}>
                         <Text style={this.styles.descriptionText}>{this.state.currentUser.description}</Text>
-                        <View style={this.styles.separator} />
+                        <View style={this.styles.separator}/>
                     </View>
                 );
 
@@ -214,25 +227,86 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                     isExpandable={false}
                                     account={item}>
                                     <Ionicons onPress={() => this.clickedFollowStar(item)}
-                                        name={'md-star'} size={35}
-                                            style={this.isFollowing(item)}/>
+                                              name={'md-star'} size={35}
+                                              style={this.isFollowing(item)}/>
                                 </AccountRow>
-                        }/>
-                        <View style={this.styles.separator} />
+                            }/>
+                        <View style={this.styles.separator}/>
                     </View>
                 );
 
             case 'Contact':
                 return (
                     <View style={{marginHorizontal: "7%"}}>
-                        <View style={this.styles.separator} />
+                        <View style={{flexDirection: 'row'}}>
+                            <View style={{flex: 1}}>
+                                <Text style={[this.styles.contactText]}>E-mail adres:</Text>
+                                {this.state.currentUser.telephone ? (
+                                    <Text style={[this.styles.contactText]}>Telefoon:</Text>
+                                ) : null}
+                                {this.state.currentUser.address ? (
+                                    <Text style={[this.styles.contactText]}>Adres:</Text>
+                                ) : null}
+
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text style={[this.styles.contactValue, this.styles.textClickable]}
+                                      onPress={() => Linking.openURL('mailto:' + this.state.currentUser.email)}>
+                                    {this.state.currentUser.email}
+                                </Text>
+                                {this.state.currentUser.telephone ? (
+                                    <Text style={[this.styles.contactValue, this.styles.textClickable]}
+                                          onPress={() => Linking.openURL('https://wa.me/31' + this.state.currentUser.telephone)}>
+                                        {"" + this.state.currentUser.telephone}
+                                    </Text>
+                                ) : null}
+                                {this.state.currentUser.address ? (
+                                    <Text style={[this.styles.contactValue]}>{this.state.currentUser.address}</Text>
+                                ) : null}
+                            </View>
+                        </View>
+                        <View style={this.styles.separator}/>
                     </View>
                 );
         }
     }
 
+    tappedProfileImage() {
+        if (!this.state.isOwnProfile) {
+            return;
+        }
+        ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            base64: true,
+            aspect: [4, 3],
+            quality: 0.01,
+
+        }).then(result => {
+            if (!result.cancelled) {
+                const base64Image = result.base64;
+                if (base64Image !== undefined) {
+                    this.changeProfilePic(base64Image);
+                }
+            }
+        });
+    }
+
+    changeProfilePic(base64Image: string) {
+        bodyfull(ApiDictionary.uploadProfileImage,
+            {
+                imageBase64: base64Image
+            }).then(x => {
+
+            this.state.currentUser.image = base64Image;
+            this.setState({
+                currentUser: this.state.currentUser
+            });
+        });
+    }
+
     contentAction(action: string, user: User) {
-        switch(action) {
+        switch (action) {
             case 'email':
                 break;
             case 'whatsapp':
@@ -241,7 +315,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
 
     isFollowing(item: StartupWithFollow) {
-        if(item.isFollowingThem.toString() === 'true') {
+        if (item.isFollowingThem.toString() === 'true') {
             return this.styles.followStar
         } else {
             return this.styles.notFollowStar
@@ -249,30 +323,29 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
 
     fetchUserLinkedStartups() {
-        if(this.state.isLoading == false) {
-            this.setState({isLoading:true}, () => {
+        if (this.state.isLoading == false) {
+            this.setState({isLoading: true}, () => {
                 bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])).then(result => {
-                    if(result.success === 1) {
+                    if (result.success === 1) {
                         this.setState({
                             isLoading: false,
                             startups: result.data
-                            });
+                        });
                     } else {
-                        console.log("bigoof", result)
                         this.setState({isLoading: false})
                     }
                 })
-                .catch ((error) => {
-                    console.log(error);
-                    this.setState({isLoading : false});
-                })
+                    .catch((error) => {
+                        console.log(error);
+                        this.setState({isLoading: false});
+                    })
             })
 
         }
     }
 
     private clickedFollowStar(account: StartupWithFollow) {
-        if(account.isFollowingThem.toString() === 'true') {
+        if (account.isFollowingThem.toString() === 'true') {
             account.isFollowingThem = false
         } else {
             account.isFollowingThem = true
@@ -285,40 +358,42 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
 
     getCurrentUser() {
-        if(this.state.isLoading == false) {
-            this.setState({isLoading:true}, () => {
+        if (this.state.isLoading == false) {
+            this.setState({isLoading: true}, () => {
                 bodyless(HttpHelper.addUrlParameter(ApiDictionary.getUserById, [this.state.currentUser.userId])).then((data) => {
-                    if(data.success === 1) {
-                        this.state.currentUser.setUser(data.data)
+                    if (data.success === 1) {
+                        this.state.currentUser.setUser(data.data);
                         this.setState({isLoading: false})
                     } else {
                         console.log("bigoof", data)
                         this.setState({isLoading: false})
                     }
                 })
-                .catch ((error) => {
-                    console.log(error);
-                    this.setState({isLoading : false});
-                })
+                    .catch((error) => {
+                        console.log(error);
+                        this.setState({isLoading: false});
+                    })
             })
         }
     }
 
     telephoneComposer() {
-      if(this.state.currentUser.telephone.toString()[0] === '0') {
-          return this.state.currentUser.telephone
-      }
-      return "0" + this.state.currentUser.telephone
+        if (this.state.currentUser.telephone.toString()[0] === '0') {
+            return this.state.currentUser.telephone
+        }
+        return "0" + this.state.currentUser.telephone
     }
 
     tabGenerator(category: string[]) {
-        let categoryWidth = ((1/category.length) * 100).toString() + '%'
+        let categoryWidth = ((1 / category.length) * 100).toString() + '%'
         let categoryList = category.map((name) => {
-                return(
+                return (
                     <View style={[this.styles.category, {width: categoryWidth, backgroundColor: this.IstabSelected(name)}]}
-                    key={name}>
-                        <TouchableWithoutFeedback onPress={() => {this.setState({selectedTab:name})}}>
-                        <Text style={this.styles.tabText} adjustsFontSizeToFit>{name}</Text>
+                          key={name}>
+                        <TouchableWithoutFeedback onPress={() => {
+                            this.setState({selectedTab: name})
+                        }}>
+                            <Text style={this.styles.tabText} adjustsFontSizeToFit>{name}</Text>
                         </TouchableWithoutFeedback>
                     </View>
                 )
@@ -327,7 +402,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
         return (
             <View style={{width: '100%', height: 50, flexDirection: 'row', backgroundColor: '#e3e8eb'}}>
-                    {categoryList}
+                {categoryList}
             </View>
         )
     }
@@ -336,34 +411,58 @@ export default class ProfileScreen extends React.Component<Props, State> {
         const selected = 'white'
         const notSelected = '#e3e8eb'
 
-        if(name === this.state.selectedTab) {
+        if (name === this.state.selectedTab) {
             return selected
         } else
-        return notSelected
+            return notSelected
     }
 
     getBlogs() {
-        if(!this.state.isLoading) {
-            this.setState({isLoading:true}, () => {
-                bodyfull(ApiDictionary.getUserBlogs, {
-                    userId: this.state.currentUser.userId
-                })
-                   .then((result) => {
-                    if(result.success === 1) {
-                        this.setState({blogs: result.data, isLoading: false})
-                    } else {
-                        this.setState({isLoading: false})
-                    }})
-                .catch ((error) => {
-                    console.log(error);
-                    this.setState({isLoading : false});
-                })
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true}, () => {
+                bodyless(
+                    HttpHelper.addUrlParameter(ApiDictionary.getUserPosts,
+                        [this.state.currentUser.userId, 0]
+                    ))
+                    .then((result) => {
+                        if (result.success === 1) {
+                            this.setState({blogs: result.data, isLoading: false})
+                        } else {
+                            this.setState({isLoading: false})
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        this.setState({isLoading: false});
+                    })
             })
         }
     }
 
+    handleDelete(postId: string) {
+        const newData = this.state.blogs.filter(
+            (post) => post.postId.toString() != postId
+        );
 
-    styles = StyleSheet.create ({
+        this.setState({
+            blogs: newData
+        })
+    };
+
+    styles = StyleSheet.create({
+        textClickable: {
+            color: 'blue',
+            textDecorationLine: 'underline',
+        },
+        contactValue: {
+            padding: 10,
+            fontSize: 17,
+        },
+        contactText: {
+            fontSize: 17,
+            fontWeight: 'bold',
+            padding: 10,
+        },
         privacyButton: {
             flex: 15,
             flexDirection: 'row',
@@ -404,15 +503,15 @@ export default class ProfileScreen extends React.Component<Props, State> {
         },
         contactLeftTable: {
             color: colors.textPostContent,
-            alignSelf: "auto", 
+            alignSelf: "auto",
             textAlignVertical: "center",
-            textAlign: "left", 
-            fontWeight: 'bold', 
+            textAlign: "left",
+            fontWeight: 'bold',
             marginTop: 5
         },
         contactRightTable: {
             color: colors.textPostContent,
-            alignSelf: "auto", 
+            alignSelf: "auto",
             textAlignVertical: "center",
             textAlign: "left",
             marginTop: 5
@@ -422,7 +521,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             fontSize: 15,
             margin: 10,
             color: colors.textPostContent,
-            alignSelf: "auto", 
+            alignSelf: "auto",
             textAlignVertical: "center",
             textAlign: "center",
         },
@@ -432,18 +531,18 @@ export default class ProfileScreen extends React.Component<Props, State> {
             borderTopRightRadius: 10
         },
         nameBox: {
-            height: this.windowWidth/2.5, 
-            width: this.windowWidth/2, 
-            margin: 5, 
+            height: this.windowWidth / 2.5,
+            width: this.windowWidth / 2,
+            margin: 5,
             alignContent: "center",
             backgroundColor: "#e3e8eb",
             marginTop: 50,
         },
         image: {
-            height: this.windowWidth/2.5,
-            width: this.windowWidth/2.5,
+            height: this.windowWidth / 2.5,
+            width: this.windowWidth / 2.5,
             borderWidth: 5,
-            borderRadius: this.windowWidth/5,
+            borderRadius: this.windowWidth / 5,
             marginLeft: 10, marginTop: 30,
             backgroundColor: "white",
             borderColor: 'white',
@@ -485,14 +584,14 @@ export default class ProfileScreen extends React.Component<Props, State> {
         },
         text: {
             color: colors.textPostContent,
-            alignSelf: "auto", 
+            alignSelf: "auto",
             textAlignVertical: "center"
         },
         tabText: {
             fontSize: 17,
             margin: 10,
             color: colors.textPostContent,
-            alignSelf: "auto", 
+            alignSelf: "auto",
             textAlignVertical: "center",
             textAlign: "center",
         }

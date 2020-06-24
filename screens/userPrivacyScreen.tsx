@@ -28,12 +28,16 @@ export interface State {
         tussenvoegsel: string,
         lastname: string,
         description: string,
+        telephone: number,
+        address: string
     }
     newUserDetails: {
         firstname: string,
         tussenvoegsel: string,
         lastname: string,
-        description: string
+        description: string,
+        telephone: number,
+        address: string
     }
 }
 
@@ -96,7 +100,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
 
     postDetails(){
         bodyfull(ApiDictionary.updateUserDetails, this.state.newUserDetails).then((data) => {
-            if(!data.success) {
+            if(data.success) {
                 Alert.alert(
                     'Details geupdate',
                     "Je details zijn bijgewerkt",
@@ -117,39 +121,43 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
 
     postDetailsPressed(){
         if(this.state.userDetails == this.state.newUserDetails){
-            Alert.alert(
-                'Details updaten',
-                "Er is niets veranderd, probeer het nog eens",
-                [
-                    {
-                        text: 'Probeer het nogmaals',
-                        style: 'cancel'
-                    },
-                ],
-                {cancelable: false}
-            );
+            this.detailsNotOk();
         } else {
-            Alert.alert(
-                'Details updaten',
-                "U veranderd de volgende gegevens: \n" + 
-                "Voornaam: " + this.state.newUserDetails.firstname +
-                "\n Tussenvoegsel: " + this.state.newUserDetails.tussenvoegsel + 
-                "\n Achternaam: " + this.state.newUserDetails.lastname + 
-                "\n Beschrijving: \n" + this.state.newUserDetails.description
-                ,
-                [
-                    {
-                        text: 'Wijzigen',
-                        onPress: () => this.postDetails(),
-                    },
-                    {
-                        text: 'Annuleren',
-                        style: 'cancel'
-                    },
-                ],
-                {cancelable: false}
-            );
+                this.detailsOk();
         }
+    }
+
+    detailsOk(){
+        Alert.alert(
+            'Details updaten',
+            "Weet u zeker dat u de ingevoerde gegevens wilt opslaan?"
+            ,
+            [
+                {
+                    text: 'Wijzigen',
+                    onPress: () => this.postDetails(),
+                },
+                {
+                    text: 'Annuleren',
+                    style: 'cancel'
+                },
+            ],
+            {cancelable: false}
+        );
+    }
+
+    detailsNotOk(){
+        Alert.alert(
+            'Details updaten',
+            "Er is niets veranderd, probeer het nog eens",
+            [
+                {
+                    text: 'Probeer het nogmaals',
+                    style: 'cancel'
+                },
+            ],
+            {cancelable: false}
+        );
     }
 
     getDefaultSettings(): {
@@ -266,6 +274,31 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({newUserDetails: {
                                         ...this.state.newUserDetails, lastname: text
+                                    }})}
+                                    />
+                            </View>
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    value={this.state.newUserDetails.address}
+                                    style={styles.inputText}
+                                    placeholder="Adres.."
+                                    placeholderTextColor="#003f5c"
+                                    onChangeText={text => this.setState({newUserDetails: {
+                                        ...this.state.newUserDetails, address: text
+                                    }})}
+                                    />
+                            </View>
+                            <View style={styles.inputView} >
+                                <TextInput
+                                    value={
+                                        this.state.newUserDetails.telephone.toString() == 'NaN' ? 
+                                        '' : this.state.newUserDetails.telephone.toString()
+                                    }
+                                    style={styles.inputText}
+                                    placeholder="Telefoonnummer, zonder 0: 612345678.."
+                                    placeholderTextColor="#003f5c"
+                                    onChangeText={text => this.setState({newUserDetails: {
+                                         ...this.state.newUserDetails, telephone: parseInt(text)
                                     }})}
                                     />
                             </View>

@@ -40,6 +40,7 @@ export class User {
         this.image = data.image;
         this.telephone = data.telephone;
         this.description = data.description;
+        this.address = data.address;
     }
 
     public static getRole() {
