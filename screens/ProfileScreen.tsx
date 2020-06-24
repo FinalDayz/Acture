@@ -113,6 +113,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 </View>
             )
         } else {
+            // @ts-ignore
             return (
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>
@@ -232,7 +233,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                 {this.state.currentUser.telephone ? (
                                     <Text style={[this.styles.contactValue, this.styles.textClickable]}
                                           onPress={() => Linking.openURL('https://wa.me/31' + this.state.currentUser.telephone)}>
-                                        {this.state.currentUser.telephone}
+                                        {"" + this.state.currentUser.telephone}
                                     </Text>
                                 ) : null}
                                 {this.state.currentUser.address ? (
