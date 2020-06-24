@@ -28,8 +28,9 @@ export default {
 
 
     followUsers: {destination: '/api/follow/', type: 'GET'},
+    followStartups: {destination: '/api/startup/startuplist/', type: 'GET'},
     changeFollow: {destination: '/api/follow/', type: 'PATCH'},
-    changeStartupFollow: {destination: '/api/startup/', type: 'PATCH'},
+    changeStartupFollow: {destination: '/api/follow/startup/', type: 'PATCH'},
 
     deletePost: {destination: '/api/feedposts/', type: 'DELETE'},
     getUserBlogs: {destination: '/api/feedposts/user-blogs/', type: 'POST'},
