@@ -10,6 +10,7 @@ import {PostModel} from '../models/PostModel';
 import { Post } from '../components/Post';
 import { NewPostButton } from '../components/NewPostButton';
 import { User } from '../models/User';
+import { UserRole } from '../models/UserRole';
 
 export interface Props {
     navigation: any
@@ -89,35 +90,50 @@ export default class HelpScreen extends React.Component<Props, State> {
     render() {
         return(
             <View style={this.styles.screen}>
-                <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
+                {
+                    User.getRole() !== UserRole.user && 
+                    <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
+                }
                 
-                <View style={this.styles.scrollable}>
-                <FlatList
-                        refreshing={this.state.isLoading}
-                        onRefresh={() => {this.resetOffset(); this.getBlogs()}}
-                        contentContainerStyle={this.styles.list}
-                        data={this.state.data}
-                        keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={itemData =>
-                            <Post
-                                data={itemData.item}
-                                onDelete={this.handleDelete.bind(this)}
-                                onEdit={this.handleEdit}
-                            />
-                        }
-                        ListFooterComponent={
-                            <View>
-                                {!this.state.isLoading ? (
-                                    <View style={this.styles.postloader}>
-                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getBlogs() }}>
-                                            <Text style={this.styles.postloaderText}>Meer blogs laden</Text>
-                                        </TouchableOpacity>
+                    {User.getRole() !== UserRole.user ? (
+                        <View style={this.styles.scrollable}>
+                        <FlatList
+                                refreshing={this.state.isLoading}
+                                onRefresh={() => {this.resetOffset(); this.getBlogs()}}
+                                contentContainerStyle={this.styles.list}
+                                data={this.state.data}
+                                keyExtractor={(item, index) => item.postId.toString()}
+                                renderItem={itemData =>
+                                    <Post
+                                        data={itemData.item}
+                                        onDelete={this.handleDelete.bind(this)}
+                                        onEdit={this.handleEdit}
+                                    />
+                                }
+                                ListFooterComponent={
+                                    <View>
+                                        {!this.state.isLoading ? (
+                                            <View style={this.styles.postloader}>
+                                                <TouchableOpacity onPress={() => {this.increaseOffset(); this.getBlogs() }}>
+                                                    <Text style={this.styles.postloaderText}>Meer blogs laden</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        ) : null }
                                     </View>
-                                ) : null }
-                            </View>
-                        }
-                    />
-                </View>
+                                }
+                            />
+                        </View>
+                    ) : (
+                        <View style={this.styles.postloader}>
+                                        {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
+                                            <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
+                                        {/* </TouchableOpacity> */}
+                                    </View>
+                        )
+                    }
+                
+
+
             </View>
         );
     }

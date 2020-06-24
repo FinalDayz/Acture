@@ -67,9 +67,21 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
         );
     }
 
+    private checkForAdmin(){
+        if(User.getRole() === UserRole.admin){
+            return true;
+        } else {return false;}
+    }
+    
+    private checkForUser(){
+        return User.getRole() !== UserRole.user;
+    }
+    
+
     render() {
         return (
             <View style={styles.wrapper}>
+                {this.checkForUser() &&
                 <View style={styles.searchBar}>
                     <IconInput
                         onChangeText={text => {
@@ -78,12 +90,13 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                         iconName={'md-search'}
                         inputPlaceholder={'Zoek gebruiker...'}
                     />
-                </View>
-                {User.getRole() === UserRole.admin ? (
+                </View> }
+                {this.checkForAdmin() ? (
                     <ManageUsersButton onPress={() => this.props.navigation.navigate('ManageUsers', {edit: false}) }/>
                 ) : null }
 
-                <FlatList
+                {this.checkForUser() ? (
+                    <FlatList
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.fetchUsers()}
                     contentContainerStyle={styles.flatList}
@@ -108,6 +121,13 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                         <View style={styles.footer}></View>
                     }
                     />
+                ) : (
+                    <View style={styles.postloader}>
+                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
+                                <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
+                            {/* </TouchableOpacity> */}
+                        </View>
+                )} 
             </View>
         );
     }
@@ -166,7 +186,16 @@ const styles = StyleSheet.create ({
     footer: {
         minHeight: 40,
         width: '100%'
-    }
+    },
+    postloader: {
+        width: '100%',
+        marginVertical: 10,
+        alignItems: 'center'
+    },
+    postloaderText: {
+        color: colors.textDark,
+        textDecorationLine: 'underline'
+    },
 });
 
 
