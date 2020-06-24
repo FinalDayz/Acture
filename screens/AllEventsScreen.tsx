@@ -10,6 +10,7 @@ import {bodyfull} from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import { PostModel } from '../models/PostModel';
 import { User } from '../models/User';
+import { UserRole } from '../models/UserRole';
 
 export interface Props {
     navigation: any
@@ -94,35 +95,45 @@ export default class AllEventsScreen extends React.Component<Props, State> {
     render() {
         return(
             <Container style={this.styles.screen}>
-                <View style={this.styles.scrollable}>
-                    <FlatList
-                        refreshing={this.state.isLoading}
-                        onRefresh={() => {this.resetOffset(); this.getEvents()}}
-                        contentContainerStyle={this.styles.list}
-                        data={this.state.data}
-                        keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={itemData =>
-                            <Post
-                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
-                                navigation={this.props.navigation}
-                                data={itemData.item}
-                                onEdit={this.handleEdit.bind(this)}
-                                onDelete={this.handleDelete}
-                            />
-                        }
-                        ListFooterComponent={
-                            <View>
-                                {!this.state.isLoading ? (
-                                    <View style={this.styles.postloader}>
-                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getEvents() }}>
-                                            <Text style={this.styles.postloaderText}>Oudere evenementen laden</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                ) : null }
-                            </View>
-                        }
-                    />
-                </View>
+                {User.getRole() !== UserRole.user ?(
+                    <View style={this.styles.scrollable}>
+                        <FlatList
+                            refreshing={this.state.isLoading}
+                            onRefresh={() => {this.resetOffset(); this.getEvents()}}
+                            contentContainerStyle={this.styles.list}
+                            data={this.state.data}
+                            keyExtractor={(item, index) => item.postId.toString()}
+                            renderItem={itemData =>
+                                <Post
+                                    handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                    navigation={this.props.navigation}
+                                    data={itemData.item}
+                                    onEdit={this.handleEdit.bind(this)}
+                                    onDelete={this.handleDelete}
+                                />
+                            }
+                            ListFooterComponent={
+                                <View>
+                                    {!this.state.isLoading ? (
+                                        <View style={this.styles.postloader}>
+                                            <TouchableOpacity onPress={() => {this.increaseOffset(); this.getEvents() }}>
+                                                <Text style={this.styles.postloaderText}>Oudere evenementen laden</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ) : null }
+                                </View>
+                            }
+                        />
+                    </View>
+
+                    ) : (
+                        <View style={this.styles.postloader}>
+                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
+                                <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
+                            {/* </TouchableOpacity> */}
+                        </View>
+                    )
+                }       
             </Container>
         );
     }

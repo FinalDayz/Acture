@@ -99,34 +99,34 @@ export default class GlobalFeedScreen extends React.Component<Props, State> {
                     <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
                 }
                 <View style={this.styles.scrollable}>
-                    <FlatList
-                        refreshing={this.state.isLoading}
-                        onRefresh={() => {this.resetOffset(); this.getFeed()}}
-                        contentContainerStyle={this.styles.list}
-                        data={this.state.data}
-                        keyExtractor={(item, index) => item.postId.toString()}
-                        renderItem={itemData =>
-                            <Post
-                                handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
-                                navigation={this.props.navigation}
-                                data={itemData.item}
-                                onEdit={this.handleEdit.bind(this)}
-                                onDelete={this.handleDelete.bind(this)}
-                            />
-                            
-                        }
-                        ListFooterComponent={
-                            <View>
-                                {!this.state.isLoading ? (
-                                    <View style={this.styles.postloader}>
-                                        <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}>
-                                            <Text style={this.styles.postloaderText}>Meer posts laden</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                ) : null }
-                            </View>
-                        }
-                    />
+                        <FlatList
+                            refreshing={this.state.isLoading}
+                            onRefresh={() => {this.resetOffset(); this.getFeed()}}
+                            contentContainerStyle={this.styles.list}
+                            data={this.state.data}
+                            keyExtractor={(item, index) => item.postId.toString()}
+                            renderItem={itemData =>
+                                <Post
+                                    handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                    navigation={this.props.navigation}
+                                    data={itemData.item}
+                                    onEdit={this.handleEdit.bind(this)}
+                                    onDelete={this.handleDelete.bind(this)}
+                                />
+                                
+                            }
+                            ListFooterComponent={
+                                <View>
+                                    {!this.state.isLoading ? (
+                                        <View style={this.styles.postloader}>
+                                            <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}>
+                                                <Text style={this.styles.postloaderText}>Meer posts laden</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ) : null }
+                                </View>
+                            }
+                        />
                 </View>
             </Container>
         );
