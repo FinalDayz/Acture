@@ -1,16 +1,5 @@
-import React, {useState} from "react";
-import {
-    Alert,
-    Image,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
-    Text,
-    Dimensions,
-    Platform,
-    TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, ScrollView, Button
-} from "react-native";
+import React from "react";
+import {Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import colors from "../constants/colors";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -21,15 +10,13 @@ import ApiDictionary from "../constants/ApiDictionary";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
-// import {error} from "util";
-import {Input} from "../components/input/standardInput";
-import { Container } from "native-base";
-import { HttpHelper } from "../components/HttpHelper";
-import { User } from "../models/User";
+import {HttpHelper} from "../components/HttpHelper";
+import {User} from "../models/User";
+import {UserRole} from "../models/UserRole";
 
 
 export interface Props {
-    navigation:any
+    navigation: any
 }
 
 interface State {
@@ -169,12 +156,16 @@ export default class PostAddScreen extends React.Component<Props, State> {
             });
             if (result && !result.cancelled) {
                 console.log(result.uri);
-                const bas64 = result.base64;
-                if(bas64){
-                    this.setState({image: bas64.toString()})
+                const base64 = result.base64;
+                if(base64 && base64.length <= 20000){
+                    this.setState({image: base64.toString()})
                     this.setState({imageName: result.uri.substring(result.uri.lastIndexOf("/")+1)})
                 }
-
+                else {
+                    Alert.alert('Kon afbeelding niet laden',
+                        'Probeer een abfeelding van een kleiner formaat...',
+                        [{text: 'OK'}])
+                }
             }
 
         } catch (E) {
@@ -268,6 +259,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     'Invoer onjuist',
                     'Controleer of alle velden correct zijn ingevuld.',
                     [{text: 'OK'}])
+                this.forceUpdate();
                 return;
             }
             else {
@@ -282,7 +274,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
 
     submitHandler() {
         this.updateValid()
-
     }
 
 
@@ -342,7 +333,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     successMessage() {
         Alert.alert(
             'Succes!',
-            'Uw post is succesvol opgeslagen. Refresh om de wijzigingen te zien.',
+            'Uw post is succesvol opgeslagen. Ververs om de wijzigingen te zien.',
             [{text: 'OK', onPress: () => this.props.navigation.pop()}],)
     }
 
@@ -352,9 +343,17 @@ export default class PostAddScreen extends React.Component<Props, State> {
             bodyless(ApiDictionary.getAllCategories)
                 .then(
                     (result) => {
+                        let lijst: Category[] = result.data;
+
+
+                        //controleer eerst of de gebruiker wel nieuws mag plaatsen...
+                        if (User.getRole() !== UserRole.admin){
+                            lijst.splice(1, 1)
+                        }
+                        
                         this.setState({
                             isLoading: false,
-                            categories: result.data
+                            categories: lijst
                         }, () => {
                             this.getAllStartups();
                         });
@@ -486,11 +485,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
                                 {this.state.imageName === '' ? (
                                     <Ionicons
                                         style={{width: "35%", paddingTop: 5, flex: 1}}
-                                        onPress={this.pickImage}
+                                        onPress={this.pickImage.bind(this)}
                                         name='md-camera' size={27} color={"grey"}/>
                                 ) : (
                                     <Ionicons style={{width: '35%', paddingTop: 5, flex: 1}}
-                                              onPress={this.deleteImage}
+                                              onPress={this.deleteImage.bind(this)}
                                               name='md-trash' size={27} color={"grey"}/>
                                 )}
                                 <Text style={{paddingTop: 12, marginLeft: 13, flex: 7, textAlign: 'right', }}
