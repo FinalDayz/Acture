@@ -81,7 +81,7 @@ export class PostBody extends React.Component<Props> {
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
-                <View style={{marginTop: 7.5,marginHorizontal: 15,flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
                     {this.state.goodImage ? (
                         <Image
                             // style={ { marginHorizontal: 10,width: '100%', backgroundColor: 'red'}}
