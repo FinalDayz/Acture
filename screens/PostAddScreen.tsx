@@ -10,14 +10,13 @@ import ApiDictionary from "../constants/ApiDictionary";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Category} from "../models/Category";
 import {Ionicons} from "@expo/vector-icons";
-// import {error} from "util";
 import {HttpHelper} from "../components/HttpHelper";
 import {User} from "../models/User";
 import {UserRole} from "../models/UserRole";
 
 
 export interface Props {
-    navigation:any
+    navigation: any
 }
 
 interface State {
@@ -259,6 +258,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                     'Invoer onjuist',
                     'Controleer of alle velden correct zijn ingevuld.',
                     [{text: 'OK'}])
+                this.forceUpdate();
                 return;
             }
             else {
@@ -272,8 +272,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     submitHandler() {
-        this.updateValid() 
-
+        this.updateValid()
     }
 
 

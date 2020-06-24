@@ -1,20 +1,20 @@
 import React, { useCallback } from 'react';
-import { View, StyleSheet, Text, Image, Dimensions, FlatList, Linking, Alert, Button } from 'react-native';
+import { View, StyleSheet, Text, Image, Dimensions, FlatList, Linking, Alert, Button, TouchableOpacity } from 'react-native';
 import colors from '../constants/colors';
 import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
-import {PostModel} from "../models/PostModel";
-import { Container} from "native-base";
-import {Post} from "../components/Post";
+import { PostModel } from "../models/PostModel";
+import { Container } from "native-base";
+import { Post } from "../components/Post";
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import  { HttpHelper } from '../components/HttpHelper';
+import { HttpHelper } from '../components/HttpHelper';
 import { User } from '../models/User';
 import { Ionicons } from '@expo/vector-icons';
 import { AccountRow } from '../components/startup/AccountRow';
 import { StartupWithFollow } from '../models/StartupWithFollow';
 import { ContactInfo } from '../models/ContactInfo';
 import { ActivityIndicator } from 'react-native-paper';
-import {ListItem} from "react-native-elements";
+import { ListItem } from "react-native-elements";
 
 export interface Props {
     navigation: any
@@ -73,6 +73,20 @@ export default class ProfileScreen extends React.Component<Props, State> {
         this._isMounted = true;
     }
 
+
+    handleDelete(postId: string) {
+        const newData = this.state.blogs.filter(
+            (post) => post.postId.toString() != postId
+        );
+
+        this.setState({
+            blogs: newData
+        })
+    };
+
+    showAttendance= (eventId: any) => {
+        this.props.navigation.navigate('Attendance', {eventId: eventId})
+    }
     handleEdit(data: any) {
         this.props.navigation.navigate('PostAddScreen', { edit: true, data: data})
     }
@@ -97,13 +111,22 @@ export default class ProfileScreen extends React.Component<Props, State> {
             return(
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>
-                        <ListItem
-                            style={this.styles.privacyButton}
-                            title={'Instellingen'}
-                            leftIcon={{ name: 'settings'}}
-                            chevron
-                            onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}
-                        />
+                        <View style={{flexDirection: 'row', paddingHorizontal: 15}}>
+                            <TouchableOpacity style={this.styles.privacyButton}
+                                              onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}>
+                                <Ionicons name={'md-settings'} size={30}
+                                          color={"grey"} style={this.styles.privacyIcon}/>
+                                <Text style={this.styles.privacyText}>Instellingen</Text>
+                            </TouchableOpacity>
+                            <View style={this.styles.privacyDivider}></View>
+                            <TouchableOpacity style={this.styles.privacyButton}
+                                              onPress = {() => this.props.navigation.navigate('newStartupScreen')}>
+                                <Text style={this.styles.privacyText}>Nieuwe startup</Text>
+                                <Ionicons name={'md-add'} size={30}
+                                          color={"grey"} style={this.styles.privacyIcon}/>
+                            </TouchableOpacity>
+
+                        </View>
                         <FlatList
                             ListHeaderComponent={(
                                 this.headerBinder()
@@ -114,22 +137,27 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             keyExtractor={(item, index) => item.postId.toString()}
                             renderItem={itemData =>
                                 <Post
+                                    handlePress= {()=>{this.showAttendance(itemData.item.evenementId)}}
+                                    navigation={this.props.navigation}
                                     data={itemData.item}
                                     onEdit={this.handleEdit.bind(this)}
                                     onDelete={this.handleDelete.bind(this)}
                                 />
                             }
                         />
+                        {this.state.currentUser.userId === User.getUserId() && this.state.startups.length > 0 &&
+                        <Button title={'Startups beheren'} onPress={this.props.navigation.navigate('startupList')}/>
+                        }
                     </View>
                 </View>
             );
-        } 
+        }
     }
 
     headerBinder() {
         return(
             <View>
-            <Container style={this.styles.topScrollable}>                
+            <Container style={this.styles.topScrollable}>
                     <View style={this.styles.imagestyling}>
                         <View>
                             <Image
@@ -159,7 +187,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         <View style={this.styles.separator} />
                     </View>
                 );
-                
+
             case 'Startups':
                 return (
                     <View style={{marginHorizontal: "7%"}}>
@@ -185,7 +213,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
             case 'Contact':
                 return (
-                    <View style={{marginHorizontal: "7%"}}>   
+                    <View style={{marginHorizontal: "7%"}}>
                         <View style={this.styles.separator} />
                     </View>
                 );
@@ -226,9 +254,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 .catch ((error) => {
                     console.log(error);
                     this.setState({isLoading : false});
-                })  
+                })
             })
-            
+
         }
     }
 
@@ -262,13 +290,13 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     this.setState({isLoading : false});
                 })
             })
-        }   
+        }
     }
 
     telephoneComposer() {
       if(this.state.currentUser.telephone.toString()[0] === '0') {
           return this.state.currentUser.telephone
-      }  
+      }
       return "0" + this.state.currentUser.telephone
     }
 
@@ -276,7 +304,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
         let categoryWidth = ((1/category.length) * 100).toString() + '%'
         let categoryList = category.map((name) => {
                 return(
-                    <View style={[this.styles.category, {width: categoryWidth, backgroundColor: this.IstabSelected(name)}]} 
+                    <View style={[this.styles.category, {width: categoryWidth, backgroundColor: this.IstabSelected(name)}]}
                     key={name}>
                         <TouchableWithoutFeedback onPress={() => {this.setState({selectedTab:name})}}>
                         <Text style={this.styles.tabText} adjustsFontSizeToFit>{name}</Text>
@@ -292,14 +320,14 @@ export default class ProfileScreen extends React.Component<Props, State> {
             </View>
         )
     }
- 
+
     IstabSelected(name: string) {
         const selected = 'white'
         const notSelected = '#e3e8eb'
 
         if(name === this.state.selectedTab) {
             return selected
-        } else 
+        } else
         return notSelected
     }
 
@@ -319,24 +347,39 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     console.log(error);
                     this.setState({isLoading : false});
                 })
-            })  
+            })
         }
     }
 
-    handleDelete(postId: string) {
-        const newData = this.state.blogs.filter(
-            (post) => post.postId.toString() != postId
-        );
-
-        this.setState({
-            blogs: newData
-        })
-    };
 
     styles = StyleSheet.create ({
         privacyButton: {
-            marginHorizontal: 15
+            flex: 15,
+            flexDirection: 'row',
+            paddingVertical: 5,
+            justifyContent: 'center',
+            alignItems: 'center'
         },
+        privacyIcon: {
+            width: '35%',
+            paddingTop: 5,
+            flex: 1
+        },
+        privacyText: {
+            color: 'grey',
+            fontSize: 15,
+            flex: 6,
+            textAlign: 'center',
+            fontWeight: 'bold'
+        },
+
+        privacyDivider: {
+            flex: 1,
+            borderColor: '#D3D3D3',
+            borderLeftWidth: 1,
+            borderRightWidth:1,
+        },
+
         notFollowStar: {
             color: colors.favoriteStarInactive
         },
