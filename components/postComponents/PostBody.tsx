@@ -84,8 +84,12 @@ export class PostBody extends React.Component<Props> {
                 <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
                     {this.state.goodImage ? (
                         <Image
-                            // style={ { marginHorizontal: 10,width: '100%', backgroundColor: 'red'}}
-                            source={{uri: "data:image/png;base64," + this.props.image, width: 500,height: 500}}
+                            source={{uri: "data:image/png;base64," + this.props.image, scale:1,}}
+                            resizeMode='contain'
+                            style={{
+                                maxHeight: 350,
+                                maxWidth: 350
+                            }}
                         />
                     ) : null }
                 </View>
