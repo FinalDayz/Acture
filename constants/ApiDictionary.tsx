@@ -46,6 +46,7 @@ export default {
     getUserDetails: {destination: '/api/users/getUserDetails', type: 'GET'},
     changePrivacySettings: {destination: '/api/privacy/', type: 'POST'},
     updateUserDetails: {destination: '/api/users/updateUserDetails', type: 'PATCH'},
+    uploadProfileImage: {destination: '/api/users/uploadImage', type: 'PATCH'},
 
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
