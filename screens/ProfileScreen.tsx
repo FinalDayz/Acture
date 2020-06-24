@@ -212,7 +212,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                 {this.state.currentUser.telephone ? (
                                     <Text style={[this.styles.contactValue, this.styles.textClickable]}
                                           onPress={() => Linking.openURL('tel://' + this.state.currentUser.telephone)}>
-                                        {this.state.currentUser.telephone}
+                                        {"" + this.state.currentUser.telephone}
                                     </Text>
                                 ) : null}
                                 {this.state.currentUser.address ? (
