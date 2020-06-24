@@ -150,8 +150,8 @@ export default class PostAddScreen extends React.Component<Props, State> {
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
                 base64: true,
-                aspect: [4, 3],
-                quality: 0.01,
+                aspect: [1, 1],
+                quality: 0.14,
             });
             if (result && !result.cancelled) {
                 console.log(result.uri);

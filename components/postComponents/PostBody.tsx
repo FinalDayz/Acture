@@ -81,15 +81,12 @@ export class PostBody extends React.Component<Props> {
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
+                <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:5}}>
                     {this.state.goodImage ? (
                         <Image
-                            source={{uri: "data:image/png;base64," + this.props.image, scale:1,}}
+                            source={{uri: "data:image/png;base64," + this.props.image}}
                             resizeMode='contain'
-                            style={{
-                                maxHeight: 350,
-                                maxWidth: 350
-                            }}
+                            style={this.styles.imageStyles}
                         />
                     ) : null }
                 </View>
@@ -126,6 +123,12 @@ export class PostBody extends React.Component<Props> {
         //     width: 50,
         //     height: 50
         // },
+        imageStyles:{
+            maxHeight: 350,
+            maxWidth: 350,
+            flex: 1,
+            resizeMode: 'cover'
+        },
         body: {
             flex: 1,
             backgroundColor: colors.postBody,
