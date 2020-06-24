@@ -16,6 +16,13 @@ export class Startup {
             startup.email.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
+
+    static toURL(url: string): string {
+        if(!(url.toString().includes("http://") || url.toString().includes('https://'))) {
+            return "http://" + url;
+        }
+        return url;
+    }
 }
 
 

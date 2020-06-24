@@ -37,11 +37,10 @@ export class AccountRow extends React.Component<Props, State> {
                 isExpanded: !this.state.isExpanded
             })
         } else if (this.state.navigable) {
-            this.props.navigation.navigate('Startup', {id: 2})
-            // this.props.navigation.navigate(
-            //     'Profile',
-            //     {id: this.state.account.userId}
-            // );
+            this.props.navigation.navigate(
+                'Profile',
+                {id: this.state.account.userId}
+            );
         }
     }
 

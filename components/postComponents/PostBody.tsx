@@ -51,7 +51,7 @@ export class PostBody extends React.Component<Props> {
     }
 
 
-    
+
     editPost() {
         this.props.onEdit();
     }
@@ -93,7 +93,7 @@ export class PostBody extends React.Component<Props> {
                         />
                     ) : null }
                 </View>
-               
+
             </View>
 
 

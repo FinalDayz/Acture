@@ -4,7 +4,7 @@ import {StartupWithFollow} from "../models/StartupWithFollow";
 import {ContactInfo} from "../models/ContactInfo";
 import {Startup} from "../models/Startup";
 import React from "react";
-import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
+import {Dimensions, FlatList, Image, Linking, ScrollView, StyleSheet, Text, View} from "react-native";
 import ApiDictionary from "../constants/ApiDictionary";
 import {HttpHelper} from "../components/HttpHelper";
 import bodyless from "../components/HttpClient";
@@ -13,6 +13,8 @@ import colors from "../constants/colors";
 import {Container, List} from "native-base";
 import {TouchableWithoutFeedback} from "react-native-gesture-handler";
 import {Post} from "../components/Post";
+import {Hr} from "../components/Hr";
+import {AccountRow} from "../components/account/AccountRow";
 
 export interface Props {
     navigation: any,
@@ -20,9 +22,9 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    blogs: PostModel[],
+    leden?: User[],
     currentStartup: Startup,
-    startupPosts: undefined|PostModel[]
+    startupPosts: undefined | any[]
     startupId: number,
     selectedTab: string,
     isOwnStartup: boolean,
@@ -40,7 +42,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
             selectedTab: 'Over',
             isOwnStartup: false,
             startupId: this.props.navigation.state.params.id,
-            startupPosts: undefined
+            startupPosts: undefined,
+            leden: undefined
         };
 
         this._isMounted = false;
@@ -76,6 +79,14 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 startupPosts: result.data
             });
         });
+
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.getStartupById, [this.state.startupId]
+        )).then(result => {
+            this.setState({
+                leden: result.data
+            });
+        });
     }
 
     render() {
@@ -87,7 +98,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         <ActivityIndicator size="large" color={colors.textLight}/>
                     </View>
                 ) : (
-                    <View>
+                    <ScrollView style={[styles.background, {height: '100%'}]}>
                         <View style={styles.top}>
                             <Image source={{uri: "data:image/png;base64," + this.state.currentStartup.image, scale: 1}}
                                    style={styles.startupImage}/>
@@ -100,51 +111,110 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                       numberOfLines={3}>{this.state.currentStartup.name}</Text>
                             </View>
                         </View>
-                        {this.tabGenerator(['Over', 'Contact'])}
+                        {this.tabGenerator(['Over', 'Contact', 'Leden'])}
                         {this.tabRouter()}
+                        <Hr/>
                         {this.renderPosts()}
-                    </View>
+                    </ScrollView>
                 )
                 }
             </View>
         );
     }
+
     tabRouter() {
         switch (this.state.selectedTab) {
             case 'Over':
                 return this.renderOver();
             case 'Contact':
                 return this.renderContact();
+            case 'Leden':
+                return this.renderLeden();
         }
+    }
+
+    renderLeden() {
+        const members = [];
+        if (this.state.leden)
+            for (const member of this.state.leden) {
+                members.push(
+                    <View key={member.userId}>
+                        <AccountRow account={member} isExpandable={false} navigation={this.props.navigation} navigable={true}/>
+                    </View>
+                );
+                console.log("MEMBER");
+            }
+
+        return (
+            <View style={styles.tabContent}>
+                {members}
+            </View>
+        );
     }
 
     renderOver() {
         return (
-            <View>
-                <Text>About</Text>
+            <View style={styles.tabContent}>
+                <Text style={styles.companyDescription}>{this.state.currentStartup.description}</Text>
+                {this.state.currentStartup.website ? (
+                    <View style={{flexDirection: 'row', marginTop: 20}}>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.propertyKey}>Website: </Text>
+                        </View>
+                        <View style={{flex: 2}}>
+
+                            <Text style={[styles.propertyValue, styles.link]}
+                                  onPress={() => {
+                                      // @ts-ignore
+                                      Linking.openURL(Startup.toURL(this.state.currentStartup.website))
+                                  }}>
+                                {this.state.currentStartup.website}</Text>
+                        </View>
+                    </View>
+                ) : null}
             </View>
         );
     }
 
     renderContact() {
         return (
-            <View>
-                <Text>Contact</Text>
+            <View style={styles.tabContent}>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 2}}>
+                        <Text style={[styles.propertyKey]}>E-mail adres:</Text>
+                        {this.state.currentStartup.telephone ? (
+                            <Text style={[styles.propertyKey]}>Telefoon:</Text>
+                        ) : null}
+                    </View>
+                    <View style={{flex: 3}}>
+                        <Text style={[styles.propertyValue, styles.link]}
+                              onPress={() => Linking.openURL('mailto:' + this.state.currentStartup.email)}>
+                            {this.state.currentStartup.email}
+                        </Text>
+                        {this.state.currentStartup.telephone ? (
+                            <Text style={[styles.propertyValue, styles.link]}
+                                  onPress={() => Linking.openURL('https://wa.me/31' + this.state.currentStartup.telephone)}>
+                                {"" + this.state.currentStartup.telephone}
+                            </Text>
+                        ) : null}
+                    </View>
+                </View>
             </View>
         );
     }
 
     renderPosts() {
         const posts = [];
-        if(this.state.startupPosts)
-            for(const post of this.state.startupPosts) {
+        if (this.state.startupPosts)
+            for (const post of this.state.startupPosts) {
                 posts.push(
-                    <View>
+                    <View key={post.postId}>
                         <Post
-                            key={post.postId}
                             data={post}
-                            onEdit={() => {}}
-                            onDelete={() => {}}
+                            onEdit={() => {
+                            }}
+                            onDelete={() => {
+                            }}
                             handlePress={() => {
                             }}
                             navigation={this.props.navigation}/>
@@ -188,6 +258,34 @@ export default class ProfileScreen extends React.Component<Props, State> {
 }
 const width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
+    propertyKey: {
+        margin: 10,
+        fontSize: 17,
+        fontWeight: 'bold',
+    },
+    propertyValue: {
+        margin: 10,
+        fontSize: 17,
+    },
+    link: {
+        color: 'blue',
+        textDecorationLine: 'underline',
+    },
+    background: {
+        backgroundColor: colors.backgroundPrimary
+    },
+    companyDescription: {
+        fontStyle: 'italic',
+        fontSize: 15,
+        margin: 10,
+        color: colors.textPostContent,
+        alignSelf: "auto",
+        textAlignVertical: "center",
+        textAlign: "center",
+    },
+    tabContent: {
+        padding: 20,
+    },
     tabText: {
         fontSize: 17,
         margin: 10,
