@@ -2,8 +2,11 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 import colors from '../../constants/colors';
+import {AccountImage} from "../account/AccountImage";
 
 export interface Props {
+    profileImage: string
+    startupImage: string
     userId: String
     category: String
     categoryId: String
@@ -11,6 +14,7 @@ export interface Props {
     firstName: String
     LastName: String
     insertion: String //tussenvoegsel
+    startupName: String
 }
 
 export class PostHeader extends React.Component<Props> {
@@ -55,20 +59,29 @@ export class PostHeader extends React.Component<Props> {
     }
 
     render() {
-        return (   
+        return (
             <View style={this.styles.headerBackground}>
                 <View style={this.styles.header}>
                     <View style={this.styles.horizontalFlex}>
                         <View>
-                            <View style={this.styles.profileImage}/>
+                            { this.props.categoryId == '1' ? (
+                                <AccountImage image={this.props.startupImage}/>
+                                ) : (
+                                <AccountImage image={this.props.profileImage}/>
+                                )
+                            }
                         </View>
-                        <View style={this.styles.verticalFlex}>
-                            <Text style={this.styles.name}>{this.makeName()}</Text>
-                            <Text style={this.styles.topic}>Vakgebied</Text>
+                        <View style={this.styles.nameContainer}>
+                            { this.props.categoryId == '1' ? (
+                                <Text style={this.styles.name}>{this.props.startupName}</Text>
+                                ) : (
+                                <Text style={this.styles.name}>{this.makeName()}</Text>
+                                )
+                            }
                         </View>
                         <View style={this.styles.verticalFlex}>
                             <View style={this.styles.textContainer}>
-                                <Text style={this.styles.postType}>{this.props.category}</Text>
+                                <Text style={this.styles.postType} adjustsFontSizeToFit numberOfLines={2}>{this.props.category}</Text>
                             </View>
                             <Text style={this.styles.date}>{this.props.postDate.toLocaleDateString()}</Text>
                         </View>
@@ -113,16 +126,14 @@ export class PostHeader extends React.Component<Props> {
             justifyContent: 'center',
             marginRight: 5
         },
+        nameContainer: {
+            flex: 4,
+            justifyContent: 'center'
+        },
         name: {
             marginLeft: 10,
             color: colors.textLight,
-            fontSize: 16
-        },
-        topic: {
-            marginLeft: 10,
-            color: colors.textLight,
             fontSize: 16,
-            fontStyle: 'italic'
         },
         postType: {
             paddingHorizontal: 15,

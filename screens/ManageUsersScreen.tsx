@@ -1,29 +1,20 @@
 import React from 'react';
-import {
-    ActivityIndicator,
-    Alert,
-    Button,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
-import colors from "../constants/colors";
+import {Alert, Clipboard, Button, FlatList, StyleSheet, Text, View} from 'react-native';
 import {User} from "../models/User";
 import RNPickerSelect from 'react-native-picker-select';
 import {UserRole} from "../models/UserRole";
-import bodyless from '../components/HttpClient';
+import bodyless, { bodyfull } from '../components/HttpClient';
 import ApiDictionary from '../constants/ApiDictionary';
 import {HttpHelper} from "../components/HttpHelper";
 import {IconInput} from "../components/IconInput";
 import {AccountRow} from '../components/account/AccountRow';
 import {Hr} from '../components/Hr';
 import {Ionicons} from '@expo/vector-icons';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 export interface Props {
-
+    navigation: any
 }
 
 interface State {
@@ -46,11 +37,13 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             searchQuery: '',
         };
     }
+
     componentDidMount() {
         this.fetchUsers();
     }
 
     fetchUsers() {
+        console.log('role:' , User.getLoggedInUser().role);
         this.setState({
             isLoading: true
         });
@@ -63,6 +56,7 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             });
         });
     }
+
     private askDeleteUser(account: User) {
         const fullName = account.firstname +
             (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
@@ -97,11 +91,70 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             });
     }
 
-    private changeRole(account: User, newRole: UserRole) {
-        bodyless(HttpHelper.addUrlParameter(ApiDictionary.changeUserRole, [account.userId, newRole]))
-            .then((result) => {
+    private confirmPasswordReset(account: User){
+        const fullName = account.firstname +
+            (account.tussenvoegsel ? " " + account.tussenvoegsel : "")
+            + " " + account.lastname;
+        Alert.alert(
+            'Wachtwoord resetten',
+            'Weet u zeker dat u het het wachtwoord van ' + fullName + " wilt resetten?",
+            [
+                {
+                    text: 'Resetten',
+                    onPress: () => this.resetPassword(account),
+                    style: 'destructive'
+                },
+                {
+                    text: 'Annuleren',
+                    style: 'cancel'
+                },
+            ],
+            {cancelable: false}
+        );
+    }
 
-            });
+    private resetPassword(account:User){
+        const newPassword= this.makeid(10);
+
+        bodyfull(ApiDictionary.resetPassword, {'email': account.email,'newpassword': newPassword}).then((data) => {
+            if(data.success) {
+                Alert.alert(
+                    "Wachtwoord gereset",
+                    'Het wachtwoord is veranderd naar: ' + newPassword,
+                    [
+                        {text: 'Kopieer wachtwoord', onPress: () => Clipboard.setString(newPassword), style: 'cancel'},
+                        {text: 'Ik onthoud het wachtwoord', style: 'cancel'}
+                    ],
+                    { cancelable: false })
+            }
+        }).catch(err => {
+            console.log("fetch error" + err.message);
+            Alert.alert(
+                "Wachtwoord niet gereset",
+                'Het wachtwoord is niet veranderd vanwege een fout, probeer het later nog eens',
+                [
+                    {text: 'OK', onPress: () => console.log(''), style: 'cancel'},
+                ],
+                { cancelable: false })
+        })
+
+       
+    }
+
+    private makeid(length: number) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+     }
+
+    private changeRole(account: User, newRole: UserRole) {
+        bodyless(HttpHelper.addUrlParameter(
+            ApiDictionary.changeUserRole, [account.userId, newRole])
+        );
     }
 
     private searchFilter(account: User): boolean {
@@ -171,6 +224,17 @@ export class ManageUsersScreen extends React.Component<Props, State> {
                                     />
                                 </View>
                             </View>
+                            <View style={[styles.flexRow, styles.controlElement]}>
+                                <Text style={{flex: 2, fontSize: 18}}>Reset wachtwoord</Text>
+                                <View style={{flex: 1}}>
+
+                                    <Button
+                                        title={'Reset'}
+                                        color={'red'}
+                                        onPress={() => this.confirmPasswordReset(item)}
+                                    />
+                                </View>
+                            </View>
 
                         </AccountRow>
 
@@ -179,6 +243,13 @@ export class ManageUsersScreen extends React.Component<Props, State> {
             </View>
         );
     }
+    
+    //options for header bar. Default options are in the navigator.
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Gebruikers beheren'
+        }
+    };
 }
 
 const rolePickerStyle = StyleSheet.create({

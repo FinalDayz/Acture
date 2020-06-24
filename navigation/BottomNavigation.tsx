@@ -5,19 +5,23 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 import FeedScreenNavigation from './FeedScreenNavigation';
 import EventsScreenNavigation from './EventsScreenNavigation';
-import MessagesScreenNavigation from './MessagesScreenNavigation';
+import BlogScreenNavigation from './BlogScreenNavigation';
 import HelpScreenNavigation from './HelpScreenNavigation';
 import ExploreScreenNavigation from './ExploreScreenNavigation';
 
 import colors from '../constants/colors';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'
+
+export interface Props {
+accounts: []
+}
 
 const BottomNavigation = createMaterialBottomTabNavigator({
     Help: {screen: HelpScreenNavigation,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return(
-                    <Ionicons name='md-home' size={27} color={tabInfo.tintColor}/>
+                    <Ionicons name='md-help-circle' size={27} color={tabInfo.tintColor}/>
                 );
             }
         }
@@ -49,11 +53,11 @@ const BottomNavigation = createMaterialBottomTabNavigator({
             }
         }
     },
-    Messages: {screen: MessagesScreenNavigation,
+    Blogs: {screen: BlogScreenNavigation,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return(
-                    <Ionicons name='md-mail' size={27} color={tabInfo.tintColor}/>
+                    <Ionicons name='md-book' size={27} color={tabInfo.tintColor}/>
                 );
             }
         }

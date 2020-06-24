@@ -101,10 +101,11 @@ export class Input extends React.Component<Props, State> {
 
     render() {
         return (
+            <View style={styles.twoColumn}>
+                <Text style={styles.halve}>{this.props.type}:</Text>
                 <View style={styles.halve}>
                     <TextInput
                         {...this.props}
-                        // style={[styles.input]}
                         onChangeText={text => this.changeHandler(text)}
                         value={this.state.text}
                         onBlur={() => this.finishText}
@@ -114,6 +115,8 @@ export class Input extends React.Component<Props, State> {
                         {this.state.isValid ? '' : this.state.error}
                     </Text>
                 </View>
+
+            </View>
         );
     }
 }
@@ -122,10 +125,6 @@ const styles = StyleSheet.create({
     error: {
         color: 'red',
         fontSize: 12,
-    },
-    input: {
-        borderBottomColor: '#000000',
-        borderBottomWidth: 1
     },
     halve: {
         //flex: 1

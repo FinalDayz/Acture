@@ -1,13 +1,12 @@
-import React from "react";
 import {ManageUsersScreen} from "../screens/ManageUsersScreen";
 import {ActivateUsersScreen} from "../screens/ActivateUsersScreen";
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import colors from "../constants/colors";
 
-export default createMaterialTopTabNavigator(
+const ManageUsersTabs = createMaterialTopTabNavigator(
     {
-        'Beheren': ManageUsersScreen,
-        'Activeren': ActivateUsersScreen,
+        Beheren: {screen: ManageUsersScreen },
+        Activeren: {screen: ActivateUsersScreen },
     }, {
         initialRouteName: 'Beheren',
         tabBarOptions: {
@@ -19,10 +18,13 @@ export default createMaterialTopTabNavigator(
             tabStyle: {},
             style: {
 
-                backgroundColor: 'white',
+                backgroundColor: colors.backgroundPrimary,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
             },
-        }
+        },
+        navigationOptions: ManageUsersScreen.navigationOptions
     }
 );
+
+export default ManageUsersTabs;
