@@ -151,7 +151,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                 allowsEditing: true,
                 base64: true,
                 aspect: [1, 1],
-                quality: 0.14,
+                quality: 0.01,
             });
             if (result && !result.cancelled) {
                 console.log(result.uri);
