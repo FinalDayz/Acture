@@ -81,9 +81,10 @@ export class PostBody extends React.Component<Props> {
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
-                <View style={ {marginTop: 10}}>
+                <View style={{marginTop: 7.5,marginHorizontal: 15,flexDirection: 'row'}}>
                     {this.state.goodImage ? (
                         <Image
+                            // style={ { marginHorizontal: 10,width: '100%', backgroundColor: 'red'}}
                             source={{uri: "data:image/png;base64," + this.props.image, width: 500,height: 500}}
                         />
                     ) : null }
