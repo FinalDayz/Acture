@@ -23,8 +23,10 @@ export default {
 
     //vergeet niet id in de header te pompen
     getUserById: {destination: '/api/users/byid/', type: 'GET'},
-    getStartupById: {destination: '/api/startup/byid/', type: 'GET'},
+    getStartupById: {destination: '/api/startup/bystartupid/', type: 'GET'},
+    getStartupByStartupId: {destination: '/api/startup/getstartup/', type: 'GET'},
     getStartupsByUserId: {destination: '/api/startup/byuserid/', type: 'GET'},
+    getStartupsPosts: {destination: '/api/startup/getposts/', type: 'GET'},
 
 
     followUsers: {destination: '/api/follow/', type: 'GET'},
