@@ -1,5 +1,16 @@
 import React, {useCallback} from 'react';
-import {View, StyleSheet, Text, Image, Dimensions, FlatList, Linking, Alert, Button} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Image,
+    Dimensions,
+    FlatList,
+    Linking,
+    Alert,
+    Button,
+    TouchableHighlight
+} from 'react-native';
 import colors from '../constants/colors';
 import bodyless, {bodyfull} from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
@@ -15,6 +26,8 @@ import {StartupWithFollow} from '../models/StartupWithFollow';
 import {ContactInfo} from '../models/ContactInfo';
 import {ActivityIndicator} from 'react-native-paper';
 import {ListItem} from "react-native-elements";
+import * as ImagePicker from "expo-image-picker";
+import {error} from "util";
 
 export interface Props {
     navigation: any
@@ -135,13 +148,15 @@ export default class ProfileScreen extends React.Component<Props, State> {
             <View>
                 <Container style={this.styles.topScrollable}>
                     <View style={this.styles.imagestyling}>
-                        <View>
+                        <TouchableWithoutFeedback
+                            onPress={() => this.tappedProfileImage()}>
                             <Image
                                 style={this.styles.image}
                                 source={{uri: "data:image/png;base64," + this.state.currentUser.image}}
+
                                 resizeMode="cover"
                             />
-                        </View>
+                        </TouchableWithoutFeedback>
                         <Container style={this.styles.nameBox}>
                             <Text style={[this.styles.text, {textAlign: "center", fontSize: 25}]} adjustsFontSizeToFit
                                   numberOfLines={3}>{this.state.currentUser.getFullName()}</Text>
@@ -210,7 +225,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                 </Text>
                                 {this.state.currentUser.telephone ? (
                                     <Text style={[this.styles.contactValue, this.styles.textClickable]}
-                                          onPress={() => Linking.openURL('tel://' + this.state.currentUser.telephone)}>
+                                          onPress={() => Linking.openURL('https://wa.me/31' + this.state.currentUser.telephone)}>
                                         {this.state.currentUser.telephone}
                                     </Text>
                                 ) : null}
@@ -223,6 +238,35 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     </View>
                 );
         }
+    }
+
+    tappedProfileImage() {
+        let result = ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            base64: true,
+            aspect: [4, 3],
+            quality: 0.01,
+
+        }).then(result => {
+            if (!result.cancelled) {
+                const base64Image = result.base64;
+                if (base64Image !== undefined) {
+                    bodyfull(ApiDictionary.uploadProfileImage,
+                        {
+                            imageBase64: base64Image
+                        }).then(x => {
+
+                        this.state.currentUser.image = base64Image;
+                        this.setState({
+                            currentUser: this.state.currentUser
+                        });
+                    });
+                }
+
+
+            }
+        });
     }
 
     contentAction(action: string, user: User) {
@@ -282,7 +326,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             this.setState({isLoading: true}, () => {
                 bodyless(HttpHelper.addUrlParameter(ApiDictionary.getUserById, [this.state.currentUser.userId])).then((data) => {
                     if (data.success === 1) {
-                        this.state.currentUser.setUser(data.data)
+                        this.state.currentUser.setUser(data.data);
                         this.setState({isLoading: false})
                     } else {
                         console.log("bigoof", data)
