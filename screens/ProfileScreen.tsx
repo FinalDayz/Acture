@@ -1,22 +1,11 @@
-import React, {useCallback} from 'react';
-import {
-    View,
-    StyleSheet,
-    Text,
-    Image,
-    Dimensions,
-    FlatList,
-    Linking,
-    Alert,
-    Button,
-    TouchableHighlight
-} from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet, Text, Image, Dimensions, FlatList, Linking, Alert, Button, TouchableOpacity } from 'react-native';
 import colors from '../constants/colors';
-import bodyless, {bodyfull} from "../components/HttpClient";
+import bodyless, { bodyfull } from "../components/HttpClient";
 import ApiDictionary from "../constants/ApiDictionary";
-import {PostModel} from "../models/PostModel";
-import {Container} from "native-base";
-import {Post} from "../components/Post";
+import { PostModel } from "../models/PostModel";
+import {Container } from "native-base";
+import { Post } from "../components/Post";
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {HttpHelper} from '../components/HttpHelper';
 import {User} from '../models/User';
@@ -25,7 +14,7 @@ import {AccountRow} from '../components/startup/AccountRow';
 import {StartupWithFollow} from '../models/StartupWithFollow';
 import {ContactInfo} from '../models/ContactInfo';
 import {ActivityIndicator} from 'react-native-paper';
-import {ListItem} from "react-native-elements";
+import { ListItem } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import {error} from "util";
 
@@ -92,6 +81,20 @@ export default class ProfileScreen extends React.Component<Props, State> {
         this._isMounted = true;
     }
 
+
+    handleDelete(postId: string) {
+        const newData = this.state.blogs.filter(
+            (post) => post.postId.toString() != postId
+        );
+
+        this.setState({
+            blogs: newData
+        })
+    };
+
+    showAttendance= (eventId: any) => {
+        this.props.navigation.navigate('Attendance', {eventId: eventId})
+    }
     handleEdit(data: any) {
         this.props.navigation.navigate('PostAddScreen', {edit: true, data: data})
     }
@@ -105,6 +108,10 @@ export default class ProfileScreen extends React.Component<Props, State> {
         headerTitle: 'Profiel'
     };
 
+    toStartupList() {
+        this.props.navigation.navigate('StartupList', {startups: this.state.startups});
+    }
+
     render() {
         if (this.state.isLoading) {
             return (
@@ -113,19 +120,27 @@ export default class ProfileScreen extends React.Component<Props, State> {
                 </View>
             )
         } else {
-            // @ts-ignore
-            return (
+            return(
                 <View style={this.styles.screen}>
                     <View style={this.styles.lowerScrollable}>
-                        {this.state.isOwnProfile ? (
-                            <ListItem
-                                style={this.styles.privacyButton}
-                                title={'Instellingen'}
-                                leftIcon={{name: 'settings'}}
-                                chevron
-                                onPress={() => this.props.navigation.navigate('userPrivacyScreen')}
-                            />
-                        ) : null}
+                        {this.state.isOwnProfile &&
+                        <View style={{flexDirection: 'row', paddingHorizontal: 15, borderBottomWidth: 1, borderColor: colors.backgroundSecondary}}>
+                            <TouchableOpacity style={this.styles.privacyButton}
+                                              onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}>
+                                <Ionicons name={'md-settings'} size={30}
+                                          color={"grey"} style={this.styles.privacyIcon}/>
+                                <Text style={this.styles.privacyText}>Instellingen</Text>
+                            </TouchableOpacity>
+                            <View style={this.styles.privacyDivider}></View>
+                            <TouchableOpacity style={this.styles.privacyButton}
+                                              onPress = {() => this.props.navigation.navigate('NewStartupScreen')}>
+                                <Text style={this.styles.privacyText}>Nieuwe startup</Text>
+                                <Ionicons name={'md-add'} size={30}
+                                          color={"grey"} style={this.styles.privacyIcon}/>
+                            </TouchableOpacity>
+
+                        </View>
+                        }
                         <FlatList
                             ListHeaderComponent={(
                                 this.headerBinder()
@@ -189,9 +204,18 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
             case 'Startups':
                 return (
-                    <View style={{marginHorizontal: "7%"}}>
-                        <Text
-                            style={[this.styles.descriptionText, {textAlign: 'center'}]}>{this.state.currentUser.firstname + " is aangesloten bij deze startups:"}</Text>
+                    <View style={{marginHorizontal: "7%", marginTop: 10}}>
+                        {this.state.currentUser.userId !== User.getUserId() &&
+                        <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>
+                            {this.state.currentUser.firstname + " is aangesloten bij deze startups:"}</Text>
+                        }
+                        {this.state.currentUser.userId === User.getUserId() && this.state.startups.length > 0 &&
+                        <Button title={'Startups beheren'} onPress={this.toStartupList.bind(this)}/>
+                        }
+                        {this.state.startups.length === 0 &&
+                        <Text style={[this.styles.descriptionText, {textAlign: 'center'}]}>
+                            Er zijn geen startups om weer te geven</Text>
+                        }
                         <FlatList
                             refreshing={this.state.isLoading}
                             onRefresh={() => this.fetchUserLinkedStartups()}
@@ -440,8 +464,32 @@ export default class ProfileScreen extends React.Component<Props, State> {
             padding: 10,
         },
         privacyButton: {
-            marginHorizontal: 15
+            flex: 15,
+            flexDirection: 'row',
+            paddingVertical: 5,
+            justifyContent: 'center',
+            alignItems: 'center'
         },
+        privacyIcon: {
+            width: '35%',
+            paddingTop: 5,
+            flex: 1
+        },
+        privacyText: {
+            color: 'grey',
+            fontSize: 15,
+            flex: 6,
+            textAlign: 'center',
+            fontWeight: 'bold'
+        },
+
+        privacyDivider: {
+            flex: 1,
+            borderColor: '#D3D3D3',
+            borderLeftWidth: 1,
+            borderRightWidth:1,
+        },
+
         notFollowStar: {
             color: colors.favoriteStarInactive
         },

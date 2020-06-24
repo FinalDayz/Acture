@@ -5,14 +5,15 @@ import {IconInput} from "../../components/IconInput";
 import bodyless from "../../components/HttpClient";
 import {HttpHelper} from "../../components/HttpHelper";
 import ApiDictionary from "../../constants/ApiDictionary";
-import {AccountRow} from "../../components/account/AccountRow";
+import {AccountRow} from "../../components/startup/AccountRow";
 import {Ionicons} from "@expo/vector-icons";
-import {UserWithFollow} from "../../models/UserWithFollow";
+import {StartupWithFollow} from "../../models/StartupWithFollow";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import HeaderButton from "../../components/HeaderButton";
 import { User } from "../../models/User";
 import { ManageUsersButton } from "../../components/ManageUsersButton";
 import { UserRole } from "../../models/UserRole";
+import { Startup } from "../../models/Startup";
 
 export interface Props {
     navigation: any
@@ -20,50 +21,50 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    accounts: UserWithFollow[],
-    selectedUser: number,
+    startups: StartupWithFollow[],
+    selectedStartup: number,
     searchQuery: string,
 }
 
-export class ExploreUsersScreen extends React.Component<Props, State> {
+export class ExploreStartupsScreen extends React.Component<Props, State> {
 
     constructor(props: Props, state: State) {
         super(props, state);
         this.state = {
             ...state,
-            accounts: [],
+            startups: [],
             isLoading: true,
             searchQuery: '',
         };
     }
     componentDidMount() {
-        this.fetchUsers();
+        this.fetchStartups();
     }
 
-    fetchUsers() {
+    fetchStartups() {
         this.setState({
             isLoading: true
         });
         bodyless(HttpHelper.addUrlParameter(
-            ApiDictionary.followUsers, ['all'])
+            ApiDictionary.followStartups, [])
         ).then(result => {
             this.setState({
                 isLoading: false,
-                accounts: result.data
+                startups: result.data
             });
         });
     }
 
-    private searchFilter(account: UserWithFollow) {
-        return UserWithFollow.searchFilter(account, this.state.searchQuery);
+    private searchFilter(startup: Startup) {
+        return StartupWithFollow.searchFilter(startup, this.state.searchQuery);
     }
 
-    private clickedFollowStar(account: UserWithFollow) {
-        account.isFollowingThem = !account.isFollowingThem;
+    private clickedFollowStar(startup: StartupWithFollow) {
+        startup.isFollowingThem = !startup.isFollowingThem;
         this.forceUpdate();
         bodyless(HttpHelper.addUrlParameter(
-            ApiDictionary.changeFollow,
-            [account.userId, account.isFollowingThem ? 1 : 0])
+            ApiDictionary.changeStartupFollow,
+            [startup.startupId, startup.isFollowingThem ? 1 : 0])
         );
     }
 
@@ -76,25 +77,19 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                             this.setState({searchQuery: text})
                         }}
                         iconName={'md-search'}
-                        inputPlaceholder={'Zoek gebruiker...'}
+                        inputPlaceholder={'Zoek startup...'}
                     />
-                </View>
-                {User.getRole() === UserRole.admin ? (
-                    <ManageUsersButton onPress={() => this.props.navigation.navigate('ManageUsers', {edit: false}) }/>
-                ) : null }
-
+                </View>                
                 <FlatList
                     refreshing={this.state.isLoading}
-                    onRefresh={() => this.fetchUsers()}
+                    onRefresh={() => this.fetchStartups()}
                     contentContainerStyle={styles.flatList}
-                    data={this.state.accounts.filter((user) => {
-                        return this.searchFilter(user)
+                    data={this.state.startups.filter((startup) => {
+                        return this.searchFilter(startup)
                     })}
-                    keyExtractor={(item, index) => item.userId.toString()}
+                    keyExtractor={(item, index) => item.startupId.toString()}
                     renderItem={({item}) =>
                         <AccountRow
-                            navigation={this.props.navigation}
-                            navigable={true}
                             isExpandable={false}
                             account={item}>
                             <Ionicons onPress={() => this.clickedFollowStar(item)}
@@ -111,34 +106,6 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
             </View>
         );
     }
-
-    static navigationOptions = (navData:any) => {
-        return {
-            headerTitle: 'Ontdekken',
-            headerRight: () => (
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item
-                        title='profile'
-                        iconName='md-person'
-                        onPress={() => {
-                            navData.navigation.navigate('Profile', {id: User.getLoggedInUser().userId})
-                        }}/>
-                </HeaderButtons>
-            ),
-            headerLeft: () => (
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item
-                        title='menu'
-                        iconName='md-menu'
-                        onPress={() => {
-                            navData.navigation.toggleDrawer();
-                        }}
-                    />
-                </HeaderButtons>
-            )
-        };
-    }
-
 }
 
 const styles = StyleSheet.create ({

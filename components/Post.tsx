@@ -63,13 +63,15 @@ export class Post extends React.Component<Props> {
                     <View style={this.styles.postContainer} >
                         <PostHeader
                             profileImage={this.props.data.profileImage}
+                            startupImage={this.props.data.startupImage}
                             userId={this.props.data.userId}
                             category={this.props.data.categoryname}
                             categoryId={this.props.data.categoryId}
                             postDate={new Date(this.props.data.postDate)}
                             firstName={this.props.data.firstname}
                             LastName={this.props.data.lastname}
-                            insertion={this.props.data.tussenvoegsel}/>
+                            insertion={this.props.data.tussenvoegsel}
+                            startupName={this.props.data.startupName}/>
                         <EventBody
                             text={this.props.data.text}
                             title={this.props.data.title}
@@ -95,13 +97,15 @@ export class Post extends React.Component<Props> {
                     <View style={this.styles.postContainer}>
                         <PostHeader
                             profileImage={this.props.data.profileImage}
+                            startupImage={this.props.data.startupImage}
                             userId={this.props.data.userId}
                             category={this.props.data.categoryname}
                             categoryId={this.props.data.categoryId}
                             postDate={new Date(this.props.data.postDate)}
                             firstName={this.props.data.firstname}
                             LastName={this.props.data.lastname}
-                            insertion={this.props.data.tussenvoegsel}/>
+                            insertion={this.props.data.tussenvoegsel}
+                            startupName={this.props.data.startupName}/>
                         <PostBody
                             image={this.props.data.image}
                             text={this.props.data.text}
