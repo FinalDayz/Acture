@@ -17,6 +17,7 @@ import {ActivityIndicator} from 'react-native-paper';
 import { ListItem } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import {error} from "util";
+import { UserRole } from '../models/UserRole';
 
 export interface Props {
     navigation: any
@@ -131,13 +132,16 @@ export default class ProfileScreen extends React.Component<Props, State> {
                                           color={"grey"} style={this.styles.privacyIcon}/>
                                 <Text style={this.styles.privacyText}>Instellingen</Text>
                             </TouchableOpacity>
-                            <View style={this.styles.privacyDivider}></View>
-                            <TouchableOpacity style={this.styles.privacyButton}
-                                              onPress = {() => this.props.navigation.navigate('NewStartupScreen')}>
-                                <Text style={this.styles.privacyText}>Nieuwe startup</Text>
-                                <Ionicons name={'md-add'} size={30}
-                                          color={"grey"} style={this.styles.privacyIcon}/>
-                            </TouchableOpacity>
+
+                            {User.getRole() !== UserRole.user &&
+                                <View style={this.styles.privacyDivider}></View> &&
+                                <TouchableOpacity style={this.styles.privacyButton}
+                                                onPress = {() => this.props.navigation.navigate('NewStartupScreen')}>
+                                    <Text style={this.styles.privacyText}>Nieuwe startup</Text>
+                                    <Ionicons name={'md-add'} size={30}
+                                            color={"grey"} style={this.styles.privacyIcon}/>
+                                </TouchableOpacity>
+                            }
 
                         </View>
                         }
@@ -279,8 +283,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             base64: true,
-            aspect: [4, 3],
-            quality: 0.01,
+            aspect: [1, 1],
+            quality: 0.02,
 
         }).then(result => {
             if (!result.cancelled) {
@@ -327,6 +331,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             this.setState({isLoading: true}, () => {
                 bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])).then(result => {
                     if (result.success === 1) {
+                        console.log("Succes")
                         this.setState({
                             isLoading: false,
                             startups: result.data
@@ -438,16 +443,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
             })
         }
     }
-
-    handleDelete(postId: string) {
-        const newData = this.state.blogs.filter(
-            (post) => post.postId.toString() != postId
-        );
-
-        this.setState({
-            blogs: newData
-        })
-    };
 
     styles = StyleSheet.create({
         textClickable: {

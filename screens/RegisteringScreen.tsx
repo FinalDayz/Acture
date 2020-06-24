@@ -183,7 +183,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                                 ) : (
                                     <TouchableOpacity
                                     style={styles.loginBtn}
-                                    onPress={this.saveUserData}>
+                                    >
                                     <ActivityIndicator size="large" color={colors.textLight}/>
                                     </TouchableOpacity>
                                 )}

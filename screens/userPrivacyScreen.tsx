@@ -290,8 +290,9 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                             </View>
                             <View style={styles.inputView} >
                                 <TextInput
+                                    
                                     value={
-                                        this.state.newUserDetails.telephone.toString() == 'NaN' ? 
+                                        !this.state.newUserDetails.telephone || this.state.newUserDetails.telephone.toString() == 'NaN' ? 
                                         '' : this.state.newUserDetails.telephone.toString()
                                     }
                                     style={styles.inputText}
