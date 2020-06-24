@@ -71,38 +71,46 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.wrapper}>
-                <View style={styles.searchBar}>
-                    <IconInput
-                        onChangeText={text => {
-                            this.setState({searchQuery: text})
-                        }}
-                        iconName={'md-search'}
-                        inputPlaceholder={'Zoek startup...'}
-                    />
-                </View>                
-                <FlatList
-                    refreshing={this.state.isLoading}
-                    onRefresh={() => this.fetchStartups()}
-                    contentContainerStyle={styles.flatList}
-                    data={this.state.startups.filter((startup) => {
-                        return this.searchFilter(startup)
-                    })}
-                    keyExtractor={(item, index) => item.startupId.toString()}
-                    renderItem={({item}) =>
-                        <AccountRow
-                            isExpandable={false}
-                            account={item}>
-                            <Ionicons onPress={() => this.clickedFollowStar(item)}
-                                name={'md-star'} size={35}
-                                      style={ item.isFollowingThem ?
-                                          styles.followStar : styles.notFollowStar
-                                      }/>
-                        </AccountRow>
-                    }
-                    ListFooterComponent={
-                        <View style={styles.footer}></View>
-                    }
-                    />
+                {User.getRole() !== UserRole.user ? (
+                    <View style={styles.searchBar}>
+                        <IconInput
+                            onChangeText={text => {
+                                this.setState({searchQuery: text})
+                            }}
+                            iconName={'md-search'}
+                            inputPlaceholder={'Zoek startup...'}
+                        />
+                    </View> &&              
+                    <FlatList
+                        refreshing={this.state.isLoading}
+                        onRefresh={() => this.fetchStartups()}
+                        contentContainerStyle={styles.flatList}
+                        data={this.state.startups.filter((startup) => {
+                            return this.searchFilter(startup)
+                        })}
+                        keyExtractor={(item, index) => item.startupId.toString()}
+                        renderItem={({item}) =>
+                            <AccountRow
+                                isExpandable={false}
+                                account={item}>
+                                <Ionicons onPress={() => this.clickedFollowStar(item)}
+                                    name={'md-star'} size={35}
+                                        style={ item.isFollowingThem ?
+                                            styles.followStar : styles.notFollowStar
+                                        }/>
+                            </AccountRow>
+                        }
+                        ListFooterComponent={
+                            <View style={styles.footer}></View>
+                        }
+                        />
+                ) : (
+                    <View style={styles.postloader}>
+                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
+                                <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
+                            {/* </TouchableOpacity> */}
+                        </View>
+                )}
             </View>
         );
     }
@@ -133,7 +141,16 @@ const styles = StyleSheet.create ({
     footer: {
         minHeight: 40,
         width: '100%'
-    }
+    },
+    postloader: {
+        width: '100%',
+        marginVertical: 10,
+        alignItems: 'center'
+    },
+    postloaderText: {
+        color: colors.textDark,
+        textDecorationLine: 'underline'
+    },
 });
 
 
