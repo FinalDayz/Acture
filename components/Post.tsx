@@ -107,6 +107,7 @@ export class Post extends React.Component<Props> {
                             insertion={this.props.data.tussenvoegsel}
                             startupName={this.props.data.startupName}/>
                         <PostBody
+                            image={this.props.data.image}
                             text={this.props.data.text}
                             title={this.props.data.title}
                             userId={this.props.data.userId}

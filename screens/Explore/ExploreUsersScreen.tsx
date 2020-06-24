@@ -82,7 +82,7 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                 {User.getRole() === UserRole.admin ? (
                     <ManageUsersButton onPress={() => this.props.navigation.navigate('ManageUsers', {edit: false}) }/>
                 ) : null }
-                
+
                 <FlatList
                     refreshing={this.state.isLoading}
                     onRefresh={() => this.fetchUsers()}
@@ -93,6 +93,8 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                     keyExtractor={(item, index) => item.userId.toString()}
                     renderItem={({item}) =>
                         <AccountRow
+                            navigation={this.props.navigation}
+                            navigable={true}
                             isExpandable={false}
                             account={item}>
                             <Ionicons onPress={() => this.clickedFollowStar(item)}

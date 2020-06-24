@@ -22,7 +22,13 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "nu.lugus.lugussocialapp",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "nu.lugus.lugussocialapp",
+      "versionCode": 1
     }
   }
 }
