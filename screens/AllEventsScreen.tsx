@@ -128,9 +128,7 @@ export default class AllEventsScreen extends React.Component<Props, State> {
 
                     ) : (
                         <View style={this.styles.postloader}>
-                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
                                 <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
-                            {/* </TouchableOpacity> */}
                         </View>
                     )
                 }       

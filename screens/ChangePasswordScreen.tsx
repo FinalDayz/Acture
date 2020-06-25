@@ -45,7 +45,6 @@ export default class ChangePasswordScreen extends React.Component<{navigation:an
         this.setState({isLoading:true});
         if(this.state.newpassword === this.state.newpasswordconfirmation && this.state.newpassword.length !== 0) {
             bodyfull(ApiDictionary.changePassword, {'password': this.state.password, 'email': this.state.email, 'newpassword': this.state.newpassword}).then((data) => {
-                // console.log(JSON.stringify(data))
                 if(data.success === 1) {
                     this.setState({isLoading:false});
                     this.state.wrongInputs = false;
