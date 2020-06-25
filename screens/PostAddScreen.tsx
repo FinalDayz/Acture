@@ -99,7 +99,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     fillStateOnEdit(data: any) {
-        console.log("sfsg");
         this.setState({
             postId: data.postId,
             title: data.title,
