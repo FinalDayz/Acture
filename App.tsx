@@ -6,6 +6,7 @@ import PostAddScreen from "./screens/PostAddScreen";
 
 
 export default function App() {
+    console.disableYellowBox = true;
     return (
         <MainNavigation/>
     );
