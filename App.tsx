@@ -1,9 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import MainNavigation from './navigation/MainNavigation';
-import Firstattempt from './screens/firstattempt';
 import PostAddScreen from "./screens/PostAddScreen";
-
 
 export default function App() {
     console.disableYellowBox = true;

@@ -110,10 +110,8 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
                     </View>
                 ) : (
                     <View style={styles.postloader}>
-                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
-                                <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
-                            {/* </TouchableOpacity> */}
-                        </View>
+                        <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
+                    </View>
                 )}
             </View>
         );
