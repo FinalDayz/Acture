@@ -4,7 +4,7 @@ import { createAppContainer } from 'react-navigation';
 import HelpScreen from '../screens/HelpScreen';
 import colors from '../constants/colors';
 import ProfileScreen from '../screens/ProfileScreen';
-
+import AboutScreen from '../screens/AboutScreen';
 import PostAddScreen from "../screens/PostAddScreen";
 
 const HelpScreenNavigation = createStackNavigator(
@@ -18,6 +18,9 @@ const HelpScreenNavigation = createStackNavigator(
         PostAddScreen:{
             screen: PostAddScreen
         },
+        About: {
+            screen: AboutScreen
+        }
     },
     {
         defaultNavigationOptions: {
