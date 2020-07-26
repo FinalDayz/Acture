@@ -228,6 +228,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             keyExtractor={(item, index) => item.startupId.toString()}
                             renderItem={({item}) =>
                                 <AccountRow
+                                    navigation={this.props.navigation}
+                                    navigable={true}
                                     isExpandable={false}
                                     account={item}>
                                     <Ionicons onPress={() => this.clickedFollowStar(item)}
