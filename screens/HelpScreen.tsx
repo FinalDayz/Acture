@@ -52,6 +52,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                             isLoading: false,
                             data: addedData
                         })
+                        console.log("Dit is de helpscreen state: " + this.state.data)
                     } else {
                         this.setState({isLoading:false})
                         }

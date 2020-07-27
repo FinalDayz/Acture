@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, Text, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, ScrollView, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Image from 'react-native-scalable-image';
 
 import colors from '../constants/colors';
 import HeaderButton from '../components/HeaderButton';
-import {PostModel} from '../models/PostModel';
+import { PartnerModel } from '../models/PartnerModel';
 import { User } from '../models/User';
 import { Ionicons } from '@expo/vector-icons';
+import bodyless, { bodyfull } from '../components/HttpClient';
+import ApiDictionary from '../constants/ApiDictionary';
+import { PartnerImage } from '../components/PartnerImage';
 
 export interface Props {
     navigation: any
@@ -15,7 +18,7 @@ export interface Props {
 
 interface State {
     isLoading: boolean,
-    data: PostModel[]
+    data: PartnerModel[]
 }
 
 const windowWidth = Dimensions.get('window').width;
@@ -29,6 +32,33 @@ export default class AboutScreen extends React.Component<Props, State> {
         this.state = {
             data: [],
             isLoading: false
+        }
+    }
+
+    componentDidMount() {
+        this.getPartners()
+    }
+
+    getPartners() {
+        if(!this.state.isLoading) {
+            this.setState({isLoading:true}, () => {
+                bodyless(ApiDictionary.getPartners)
+                .then((result) => {
+                    if(result.success === 1) {
+                        var addedData = this.state.data.concat(result.data);
+                        this.setState({
+                            isLoading: false,
+                            data: addedData
+                        })
+                    } else {
+                        this.setState({isLoading:false})
+                        }
+                    })
+                .catch ((error) => {
+                    console.log(error);
+                    this.setState({isLoading : false});
+                })
+            })
         }
     }
 
@@ -85,7 +115,18 @@ export default class AboutScreen extends React.Component<Props, State> {
                         </View>
                         <View style={this.styles.infoContainer}>
                             <Text style={this.styles.infoTitle}>Onze Partners</Text>
-                            <Text style={this.styles.infoText}>Logo van partner</Text>
+                            <View style={this.styles.imageContainer}>
+                                <FlatList
+                                    data={this.state.data}
+                                    keyExtractor={(item, index) => item.toString() + Math.random }
+                                    renderItem={itemData =>
+                                        <PartnerImage
+                                            image={itemData.item}
+                                            style={this.styles.imageStyles}
+                                        />
+                                    }
+                                />
+                            </View>
                         </View>
                     </View>
                 </ScrollView>
@@ -180,6 +221,14 @@ export default class AboutScreen extends React.Component<Props, State> {
         },
         socialmediaLogo: {
             marginRight: 20
+        },
+        imageContainer: {
+            alignItems: 'center'
+        },
+        imageStyles:{
+            maxWidth: "100%",
+            flex: 1,
+            resizeMode: 'contain'
         }
     });
 }    
