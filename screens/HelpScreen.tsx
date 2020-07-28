@@ -109,6 +109,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                                 keyExtractor={(item, index) => item.postId.toString()}
                                 renderItem={itemData =>
                                     <Post
+                                        navigation={this.props.navigation}
                                         data={itemData.item}
                                         onDelete={this.handleDelete.bind(this)}
                                         onEdit={this.handleEdit}

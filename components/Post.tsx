@@ -16,7 +16,7 @@ export interface Props {
     data: any
     onDelete(postId: string): void
     onEdit(postId: string): void
-    handlePress: () => void
+    handlePress?: () => void
     
 }
 
