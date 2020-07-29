@@ -47,9 +47,14 @@ export default class NewStartupScreen extends React.Component<Props, State> {
             startupDescriptionValid: true,
 
             isValid: false,
-
         };
+
+        const navigation = this.props.navigation;
     }
+
+    navigationOptions = {
+        headerTitle: 'Nieuwe startu'
+    };
 
     componentDidMount() {
         this.getPermissionAsync();
@@ -190,6 +195,7 @@ export default class NewStartupScreen extends React.Component<Props, State> {
     submitHandler() {
         this.updateValid()
     }
+
     
     
     render() {

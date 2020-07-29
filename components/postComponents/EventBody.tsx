@@ -45,6 +45,8 @@ export class EventBody extends React.Component<Props> {
         this.props.onDelete()
     }
 
+    cancel(){}
+
     addUserToEvent() {
         if(!this.state.isLoading) {
             this.state.attendButtonPressed = true;
@@ -81,8 +83,8 @@ export class EventBody extends React.Component<Props> {
                             />
                         )}
                         destructiveIndex={1}
-                        options={["Bewerken", "Verwijderen"]}
-                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this)]}/>
+                        options={["Bewerken", "Verwijderen", "Cancel"]}
+                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this), this.cancel]}/>
                     }
                 </View>
                 <View style={this.styles.line}/>

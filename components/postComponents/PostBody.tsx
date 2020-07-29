@@ -60,6 +60,8 @@ export class PostBody extends React.Component<Props> {
         this.props.onDelete();
     }
 
+    cancel(){}
+
     render() {
         return(
             <View style={this.styles.body}>
@@ -76,8 +78,8 @@ export class PostBody extends React.Component<Props> {
                             />
                         )}
                         destructiveIndex={1}
-                        options={["Bewerken", "Verwijderen"]}
-                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this)]}/>
+                        options={["Bewerken", "Verwijderen", "Cancel"]}
+                        actions={[this.editPost.bind(this), this.createConfirmAlert.bind(this), this.cancel]}/>
                     }
                 </View>
                 <Text style={this.styles.bodyText} >{this.props.text}</Text>
