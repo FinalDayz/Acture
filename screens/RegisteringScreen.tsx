@@ -48,6 +48,7 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
             this.state.role = 'user';
             this.register();
         } else {
+            this.setState({isLoading:false});
             Alert.alert(
                 "Invoer niet geldig",
                 'Zijn alle velden met een * ingevuld? Komen de wachtwoorden overeen?',
