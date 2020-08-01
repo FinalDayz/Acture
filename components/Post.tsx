@@ -50,7 +50,6 @@ export class Post extends React.Component<Props> {
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 alert(err.message);
-                console.log("hierooo");
                 this.setState({isLoading:false})
             })
         }

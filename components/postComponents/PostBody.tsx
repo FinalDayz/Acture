@@ -120,10 +120,6 @@ export class PostBody extends React.Component<Props> {
     }
 
     styles = StyleSheet.create ({
-        // postImage:{
-        //     width: 50,
-        //     height: 50
-        // },
         imageStyles:{
             maxHeight: 350,
             maxWidth: 350,

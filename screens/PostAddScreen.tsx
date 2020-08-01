@@ -99,7 +99,6 @@ export default class PostAddScreen extends React.Component<Props, State> {
     }
 
     fillStateOnEdit(data: any) {
-        console.log("sfsg");
         this.setState({
             postId: data.postId,
             title: data.title,
@@ -647,7 +646,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         width: '100%',
         height: 400,
-        // backgroundColor: '#F4F4F4',
         backgroundColor: 'white',
         borderRadius: 10,
         shadowColor: "#000",
@@ -667,7 +665,6 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         width: '100%',
-        // backgroundColor: 'blue',
         paddingVertical: 5,
         paddingHorizontal: 10,
     },
@@ -768,6 +765,5 @@ const styles = StyleSheet.create({
         paddingHorizontal: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // marginTop: 30,
     }
 });

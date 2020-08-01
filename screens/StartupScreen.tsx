@@ -142,7 +142,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         <AccountRow account={member} isExpandable={false} navigation={this.props.navigation} navigable={true}/>
                     </View>
                 );
-                console.log("MEMBER");
             }
 
         return (
