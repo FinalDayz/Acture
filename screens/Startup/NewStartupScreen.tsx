@@ -292,6 +292,12 @@ export default class NewStartupScreen extends React.Component<Props, State> {
         );
     }
 
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Startup aanmaken'
+        };
+    }
+
 }
 
 const styles = StyleSheet.create({

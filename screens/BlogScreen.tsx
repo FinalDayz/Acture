@@ -108,7 +108,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                                         navigation={this.props.navigation}
                                         data={itemData.item}
                                         onDelete={this.handleDelete.bind(this)}
-                                        onEdit={this.handleEdit}
+                                        onEdit={this.handleEdit.bind(this)}
                                     />
                                 }
                                 ListFooterComponent={
