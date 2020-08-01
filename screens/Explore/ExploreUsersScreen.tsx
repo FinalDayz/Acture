@@ -182,7 +182,7 @@ const styles = StyleSheet.create ({
         marginBottom: 8
     },
     footer: {
-        minHeight: 40,
+        minHeight: 80,
         width: '100%'
     },
     postloader: {
