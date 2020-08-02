@@ -200,7 +200,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                 <ScrollView>
                     <Text style={styles.header}>Privacy instellingen</Text>
                     <View style={styles.break}/>
-                    <Text>Bewerk hier welke informatie andere van u kunnen zien.</Text>
+                    <Text>Bewerk hier welke informatie anderen van u kunnen zien.</Text>
                     <View style={styles.break}/>
                     <Hr/>
                     <View style={styles.break}/>

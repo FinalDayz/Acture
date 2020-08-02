@@ -53,6 +53,7 @@ export default {
     updateUserDetails: {destination: '/api/users/updateUserDetails', type: 'PATCH'},
     uploadProfileImage: {destination: '/api/users/uploadImage', type: 'PATCH'},
 
+    getPartners: {destination: '/api/partners/allPartners', type: 'GET'},
 
     apiIp: environmentVars.address + ":" + environmentVars.port,
     timeoutTimings: 20000, //in miliseconds

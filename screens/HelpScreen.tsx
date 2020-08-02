@@ -52,6 +52,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                             isLoading: false,
                             data: addedData
                         })
+                        console.log("Dit is de helpscreen state: " + this.state.data)
                     } else {
                         this.setState({isLoading:false})
                         }
@@ -108,9 +109,10 @@ export default class HelpScreen extends React.Component<Props, State> {
                                 keyExtractor={(item, index) => item.postId.toString()}
                                 renderItem={itemData =>
                                     <Post
+                                        navigation={this.props.navigation}
                                         data={itemData.item}
                                         onDelete={this.handleDelete.bind(this)}
-                                        onEdit={this.handleEdit}
+                                        onEdit={this.handleEdit.bind(this)}
                                     />
                                 }
                                 ListFooterComponent={

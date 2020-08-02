@@ -64,7 +64,6 @@ export default class LoginScreen extends React.Component<{navigation:any}> {
                     this.setState({isLoading:false})
                 }
             }).catch(err => {
-                console.log("fetch error" + err.message);
                 this.setState({isLoading:false})
             });
 

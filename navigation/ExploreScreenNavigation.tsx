@@ -6,6 +6,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import ExploreScreenTabs from "./ExploreScreenTabs";
 import ManageUsersTabs from './ManageUsersTabs';
 import StartupScreen from "../screens/StartupScreen";
+import AboutScreen from '../screens/AboutScreen';
 
 const ExploreScreenNavigation = createStackNavigator(
     {
@@ -16,7 +17,12 @@ const ExploreScreenNavigation = createStackNavigator(
         Startup: {
             screen: StartupScreen
         },
-        ManageUsers: {screen: ManageUsersTabs}
+        ManageUsers: {
+            screen: ManageUsersTabs
+        },
+        About: {
+            screen: AboutScreen
+        }
     },
     {
         defaultNavigationOptions: {
