@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Dimensions, ScrollView, FlatList } from 'react-native';
+import {View, StyleSheet, Text, Dimensions, ScrollView, FlatList, Linking} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Image from 'react-native-scalable-image';
 
@@ -94,23 +94,27 @@ export default class AboutScreen extends React.Component<Props, State> {
                             <Text style={this.styles.infoTitle}>Openingstijden</Text>
                             <Text style={this.styles.infoText}>Elke werkdag: 08:30 – 17:00</Text>
                             <Text style={this.styles.infoText}>Voor onze community: 24/7 toegangelijk</Text>
-                            
+
                             <Text style={this.styles.infoTitle}>Volg Ons</Text>
                             <View style={this.styles.socialmediaFlex}>
-                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-instagram' size={30} color={colors.textDark}/></View>                    
-                                <Text style={this.styles.infoTextBold}> @Lugus</Text>
+                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-instagram' size={30} color={colors.textDark}/></View>
+                                <Text style={this.styles.infoTextBold}
+                                      onPress={() => Linking.openURL('https://www.instagram.com/lugusleiden')}> @lugusleiden</Text>
                             </View>
                             <View style={this.styles.socialmediaFlex}>
-                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-twitter' size={30} color={colors.textDark}/></View>                    
-                                <Text style={this.styles.infoTextBold}>@Lugus</Text>
+                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-twitter' size={30} color={colors.textDark}/></View>
+                                <Text style={this.styles.infoTextBold}
+                                      onPress={() => Linking.openURL('https://www.twitter.com/lugusleiden')}>@lugusleiden</Text>
                             </View>
                             <View style={this.styles.socialmediaFlex}>
-                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-facebook' size={30} color={colors.textDark}/></View>                    
-                                <Text style={this.styles.infoTextBold}> @Lugus</Text>
+                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-facebook' size={30} color={colors.textDark}/></View>
+                                <Text style={this.styles.infoTextBold}
+                                      onPress={() => Linking.openURL('https://www.facebook.com/lugusleiden')}> @lugusleiden</Text>
                             </View>
                             <View style={this.styles.socialmediaFlex}>
-                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-linkedin' size={30} color={colors.textDark}/></View>                    
-                                <Text style={this.styles.infoTextBold}> @Lugus</Text>
+                                <View style={this.styles.socialmediaLogo}><Ionicons name='logo-linkedin' size={30} color={colors.textDark}/></View>
+                                <Text style={this.styles.infoTextBold}
+                                      onPress={() => Linking.openURL('https://www.linkedin.com/company/lugus')}> @lugus</Text>
                             </View>
                         </View>
                         <View style={this.styles.infoContainer}>
@@ -131,7 +135,7 @@ export default class AboutScreen extends React.Component<Props, State> {
                     </View>
                 </ScrollView>
             </View>
-            
+
         );
     }
 
@@ -142,7 +146,7 @@ export default class AboutScreen extends React.Component<Props, State> {
             headerTitle: 'Over ons',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
+                    <Item
                     title='profile'
                     iconName='md-person' //TODO: change to profile picture
                     onPress={() => {
@@ -211,8 +215,9 @@ export default class AboutScreen extends React.Component<Props, State> {
         infoTextBold: {
             fontSize: 16,
             fontWeight: 'bold',
-            color: colors.textDark,
-            marginVertical: 4
+            // color: colors.postHeaderBlue,
+            color: 'blue',
+            marginVertical: 4,
         },
         socialmediaFlex: {
             flexDirection: 'row',
@@ -231,4 +236,4 @@ export default class AboutScreen extends React.Component<Props, State> {
             resizeMode: 'contain'
         }
     });
-}    
+}

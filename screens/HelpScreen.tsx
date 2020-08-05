@@ -51,8 +51,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                         this.setState({
                             isLoading: false,
                             data: addedData
-                        })
-                        console.log("Dit is de helpscreen state: " + this.state.data)
+                        });
                     } else {
                         this.setState({isLoading:false})
                         }
@@ -93,7 +92,7 @@ export default class HelpScreen extends React.Component<Props, State> {
 
             <View style={this.styles.screen}>
                 {
-                    User.getRole() !== UserRole.user && 
+                    User.getRole() !== UserRole.user &&
                     <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
                 }
 
@@ -129,7 +128,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                             />
                         </View>
                     ): (
-                        <View style={this.styles.postloader}> 
+                        <View style={this.styles.postloader}>
                             <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
                         </View>
                     )
@@ -145,7 +144,7 @@ export default class HelpScreen extends React.Component<Props, State> {
             headerTitle: 'Guides',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
+                    <Item
                     title='profile'
                     iconName='md-person' //TODO: change to profile picture
                     onPress={() => {
@@ -155,12 +154,12 @@ export default class HelpScreen extends React.Component<Props, State> {
             ),
             headerLeft: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
+                    <Item
                         title='menu'
                         iconName='md-menu'
                         onPress={() => {
                             navData.navigation.toggleDrawer();
-                        }} 
+                        }}
                     />
                 </HeaderButtons>
             )
@@ -193,4 +192,4 @@ export default class HelpScreen extends React.Component<Props, State> {
             width: '100%',
         }
     });
-}    
+}

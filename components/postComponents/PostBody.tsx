@@ -61,7 +61,6 @@ export class PostBody extends React.Component<Props> {
     }
 
     render() {
-        console.log("De foto: " + this.props.image)
         return(
             <View style={this.styles.body}>
                 <View style={{flexDirection: 'row'}}>
