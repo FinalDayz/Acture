@@ -10,7 +10,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
 
 export interface Props {
-
+navigation: any
 }
 
 export interface State {
@@ -50,6 +50,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
 
         };
     }
+    
 
     componentDidMount() {
         this.fetchSettings();
@@ -77,6 +78,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
             });
     }
 
+    
     fetchDetails(){
         this.setState({
             isLoading: true
@@ -88,7 +90,8 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                     this.setState({
                         isLoading: false,
                         userDetails: data,
-                        newUserDetails: data
+                        newUserDetails: data,
+
                     });
                 } else {
                     this.setState({
@@ -99,8 +102,11 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
     }
 
     postDetails(){
+        let userData = new Object()
         bodyfull(ApiDictionary.updateUserDetails, this.state.newUserDetails).then((data) => {
             if(data.success) {
+                userData = this.state.newUserDetails
+                this.props.navigation.state.params.onRefresh(userData);
                 Alert.alert(
                     'Details geupdate',
                     "Je details zijn bijgewerkt",
@@ -135,7 +141,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
             [
                 {
                     text: 'Wijzigen',
-                    onPress: () => this.postDetails(),
+                    onPress: () => this.postDetails(), 
                 },
                 {
                     text: 'Annuleren',
@@ -200,7 +206,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                 <ScrollView>
                     <Text style={styles.header}>Privacy instellingen</Text>
                     <View style={styles.break}/>
-                    <Text>Bewerk hier welke informatie andere van u kunnen zien.</Text>
+                    <Text>Bewerk hier welke informatie anderen van u kunnen zien.</Text>
                     <View style={styles.break}/>
                     <Hr/>
                     <View style={styles.break}/>
@@ -237,7 +243,7 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                     <View style={styles.break}/>
                     <Text style={styles.header}>Profiel instellingen</Text>
                     <View style={styles.break}/>
-                    <Text>Bewerk hier persoonlijke informatie</Text>
+                    <Text>Bewerk hier uw persoonlijke informatie</Text>
                     <View style={styles.break}/>
                     <Hr/>
                     
@@ -251,8 +257,8 @@ export default class userPrivacyScreen extends React.Component<Props, State> {
                                     placeholder="Voornaam.."
                                     placeholderTextColor="#003f5c"
                                     onChangeText={text => this.setState({newUserDetails: {
-                                        ...this.state.newUserDetails, firstname: text
-                                    }})}
+                                            ...this.state.newUserDetails, firstname: text
+                                        }})}
                                     />
                             </View>
                             <View style={styles.inputView} >

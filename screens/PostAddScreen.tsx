@@ -32,7 +32,7 @@ interface State {
     categories: Array<Category>
     startups: Array<any>
     image: string
-   
+
     imageName: string
     eventName: string
     eventCity: string
@@ -77,7 +77,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
             eventAddress: '',
             eventDate: new Date(),
             eventPrice: 'Gratis',
-            
+
             categories: [],
             startups: [],
 
@@ -97,6 +97,11 @@ export default class PostAddScreen extends React.Component<Props, State> {
             this.fillStateOnEdit(this.props.navigation.state.params.data);
         }
     }
+    
+    // componentWillUnmount(){
+    //     console.log("unmounting")
+    //     this.props.navigation.state.params.onRefresh();
+    // }
 
     fillStateOnEdit(data: any) {
         console.log("sfsg");
@@ -202,13 +207,13 @@ export default class PostAddScreen extends React.Component<Props, State> {
         return data;
     }
 
-     checkTitleInput(title: string) {
+    checkTitleInput(title: string) {
         this.setState({
             titleValid: (title.trim().length > 0),
             title: title
         });
     }
-    
+
     checkTextInput(text: string) {
         this.setState({
             textValid: (text.trim().length > 0),
@@ -329,11 +334,16 @@ export default class PostAddScreen extends React.Component<Props, State> {
             [{text: 'OK'}])
     }
 
+    goBack(){
+        this.props.navigation.state.params.onRefresh();
+        this.props.navigation.pop()
+    }
+
     successMessage() {
         Alert.alert(
             'Succes!',
             'Uw post is succesvol opgeslagen. Ververs om de wijzigingen te zien.',
-            [{text: 'OK', onPress: () => this.props.navigation.pop()}],)
+            [{text: 'OK', onPress: () => this.goBack()}],)
     }
 
     getAllCategories () {
@@ -349,7 +359,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                         if (User.getRole() !== UserRole.admin){
                             lijst.splice(1, 1)
                         }
-                        
+
                         this.setState({
                             isLoading: false,
                             categories: lijst
@@ -404,7 +414,7 @@ export default class PostAddScreen extends React.Component<Props, State> {
                             maxLength={45}
                         />
                         {!this.state.titleValid &&
-                            <Text style={styles.error}>Veld mag niet leeg zijn</Text>
+                        <Text style={styles.error}>Veld mag niet leeg zijn</Text>
                         }
                     </View>
                     <View style={styles.inputBox}>

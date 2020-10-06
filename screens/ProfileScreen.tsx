@@ -46,6 +46,8 @@ const OpenURLButton = (url: string, children: string) => {
     return <Button title={children} onPress={handlePress}/>;
 };
 
+// let newBlogs: PostModel[];
+
 export default class ProfileScreen extends React.Component<Props, State> {
 
     private windowWidth = Dimensions.get('window').width;
@@ -96,8 +98,21 @@ export default class ProfileScreen extends React.Component<Props, State> {
     showAttendance= (eventId: any) => {
         this.props.navigation.navigate('Attendance', {eventId: eventId})
     }
+
+//     componentDidUpdate(prevProp: any){
+//        console.log("this is prevProp" + prevProp)
+//     if(prevProp.refresh != false){
+//         this.setState({blogs: this.getBlogs()})
+//     }
+// }
+    refresh(data: any){
+    let newBlogs =  this.getBlogs()
+        this.setState({blogs: newBlogs})
+     this.state.currentUser.setUser(data);
+    
+    }
     handleEdit(data: any) {
-        this.props.navigation.navigate('PostAddScreen', {edit: true, data: data})
+        this.props.navigation.navigate('PostAddScreen', {edit: true, data: data, onRefresh: () => this.refresh(data)});
     }
 
     componentWillUnmount() {
@@ -127,7 +142,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         {this.state.isOwnProfile &&
                         <View style={{flexDirection: 'row', paddingHorizontal: 15, borderBottomWidth: 1, borderColor: colors.backgroundSecondary}}>
                             <TouchableOpacity style={this.styles.privacyButton}
-                                              onPress = {() => this.props.navigation.navigate('userPrivacyScreen')}>
+                                              onPress = {() => this.props.navigation.navigate('userPrivacyScreen',{onRefresh: (data:any) => this.refresh(data)})}>
                                 <Ionicons name={'md-settings'} size={30}
                                           color={"grey"} style={this.styles.privacyIcon}/>
                                 <Text style={this.styles.privacyText}>Instellingen</Text>
@@ -422,7 +437,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
             return notSelected
     }
 
-    getBlogs() {
+    getBlogs(): any{
+        let newBlogs;
         if (!this.state.isLoading) {
             this.setState({isLoading: true}, () => {
                 bodyless(
@@ -432,9 +448,11 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     .then((result) => {
                         if (result.success === 1) {
                             this.setState({blogs: result.data, isLoading: false})
+                            newBlogs = result.data
                         } else {
                             this.setState({isLoading: false})
                         }
+                        // console.log(result.data[1])
                     })
                     .catch((error) => {
                         console.log(error);
@@ -442,6 +460,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                     })
             })
         }
+        return newBlogs
     }
 
     styles = StyleSheet.create({
