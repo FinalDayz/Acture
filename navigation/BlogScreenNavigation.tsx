@@ -5,6 +5,7 @@ import BlogScreen from '../screens/BlogScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import colors from '../constants/colors';
 import PostAddScreen from '../screens/PostAddScreen';
+import AboutScreen from '../screens/AboutScreen';
 
 const BlogScreenNavigation = createStackNavigator(
     {
@@ -17,6 +18,9 @@ const BlogScreenNavigation = createStackNavigator(
         PostAddScreen:{
             screen: PostAddScreen
         },
+        About: {
+            screen: AboutScreen
+        }
     },
     {
         defaultNavigationOptions: {

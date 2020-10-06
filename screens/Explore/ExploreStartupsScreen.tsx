@@ -72,6 +72,7 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
         return (
             <View style={styles.wrapper}>
                 {User.getRole() !== UserRole.user ? (
+                    <View>
                     <View style={styles.searchBar}>
                         <IconInput
                             onChangeText={text => {
@@ -80,7 +81,7 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
                             iconName={'md-search'}
                             inputPlaceholder={'Zoek startup...'}
                         />
-                    </View> &&
+                    </View>
                     <FlatList
                         refreshing={this.state.isLoading}
                         onRefresh={() => this.fetchStartups()}
@@ -106,12 +107,11 @@ export class ExploreStartupsScreen extends React.Component<Props, State> {
                             <View style={styles.footer}></View>
                         }
                         />
+                    </View>
                 ) : (
                     <View style={styles.postloader}>
-                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
-                                <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
-                            {/* </TouchableOpacity> */}
-                        </View>
+                        <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
+                    </View>
                 )}
             </View>
         );
@@ -141,7 +141,7 @@ const styles = StyleSheet.create ({
         marginBottom: 8
     },
     footer: {
-        minHeight: 40,
+        minHeight: 80,
         width: '100%'
     },
     postloader: {

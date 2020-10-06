@@ -51,7 +51,7 @@ export default class HelpScreen extends React.Component<Props, State> {
                         this.setState({
                             isLoading: false,
                             data: addedData
-                        })
+                        });
                     } else {
                         this.setState({isLoading:false})
                         }
@@ -92,7 +92,7 @@ export default class HelpScreen extends React.Component<Props, State> {
 
             <View style={this.styles.screen}>
                 {
-                    User.getRole() !== UserRole.user && 
+                    User.getRole() !== UserRole.user &&
                     <NewPostButton onPress={() => this.props.navigation.navigate('PostAddScreen', {edit: false})} />
                 }
 
@@ -108,9 +108,10 @@ export default class HelpScreen extends React.Component<Props, State> {
                                 keyExtractor={(item, index) => item.postId.toString()}
                                 renderItem={itemData =>
                                     <Post
+                                        navigation={this.props.navigation}
                                         data={itemData.item}
                                         onDelete={this.handleDelete.bind(this)}
-                                        onEdit={this.handleEdit}
+                                        onEdit={this.handleEdit.bind(this)}
                                     />
                                 }
                                 ListFooterComponent={
@@ -128,10 +129,8 @@ export default class HelpScreen extends React.Component<Props, State> {
                         </View>
                     ): (
                         <View style={this.styles.postloader}>
-                                        {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
-                                            <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
-                                        {/* </TouchableOpacity> */}
-                                    </View>
+                            <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
+                        </View>
                     )
                 }
             </View>
@@ -145,7 +144,7 @@ export default class HelpScreen extends React.Component<Props, State> {
             headerTitle: 'Guides',
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
+                    <Item
                     title='profile'
                     iconName='md-person' //TODO: change to profile picture
                     onPress={() => {
@@ -155,12 +154,12 @@ export default class HelpScreen extends React.Component<Props, State> {
             ),
             headerLeft: () => (
                 <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item 
+                    <Item
                         title='menu'
                         iconName='md-menu'
                         onPress={() => {
                             navData.navigation.toggleDrawer();
-                        }} 
+                        }}
                     />
                 </HeaderButtons>
             )
@@ -193,4 +192,4 @@ export default class HelpScreen extends React.Component<Props, State> {
             width: '100%',
         }
     });
-}    
+}

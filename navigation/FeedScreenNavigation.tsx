@@ -9,8 +9,7 @@ import AttendanceScreen from '../screens/AttendanceScreen';
 import userPrivacyScreen from "../screens/userPrivacyScreen";
 import NewStartupScreen from '../screens/Startup/NewStartupScreen';
 import StartupList from '../screens/Startup/StartupList';
-
-
+import AboutScreen from '../screens/AboutScreen';
 
 const FeedScreenNavigation = createStackNavigator(
     {
@@ -37,6 +36,9 @@ const FeedScreenNavigation = createStackNavigator(
         },        
         StartupList: {
             screen: StartupList
+        },
+        About: {
+            screen: AboutScreen
         }        
 
     },

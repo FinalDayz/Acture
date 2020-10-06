@@ -102,8 +102,8 @@ export class Input extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.twoColumn}>
-                <Text style={styles.halve}>{this.props.type}:</Text>
-                <View style={styles.halve}>
+                <Text >{this.props.type}:</Text>
+                <View >
                     <TextInput
                         {...this.props}
                         onChangeText={text => this.changeHandler(text)}
@@ -125,9 +125,6 @@ const styles = StyleSheet.create({
     error: {
         color: 'red',
         fontSize: 12,
-    },
-    halve: {
-        //flex: 1
     },
     twoColumn: {
         paddingTop: 5,

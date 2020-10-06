@@ -39,7 +39,6 @@ export default class AttendanceScreen extends React.Component<any, State> {
 
     componentDidMount() {
         this.fetchAttendance();
-        console.log("DID MOUNT")
     }
 
     componentDidUpdate(prevProps: any){
@@ -50,7 +49,6 @@ export default class AttendanceScreen extends React.Component<any, State> {
         }
     }
     componentWillUnmount() {
-        console.log("WILL UNMOUNT")
     }
 
     fetchAttendance() {

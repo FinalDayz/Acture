@@ -55,7 +55,7 @@ export class EventBody extends React.Component<Props> {
                 this.setState({attendance: this.state.attendance + 1})
             })
             .catch ((error) => {
-                    console.log("Dit is de error joehoeeee: " + error);
+                    console.log("Dit is de error: " + error);
             })
             this.setState({isLoading : false});
         }

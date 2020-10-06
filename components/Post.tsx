@@ -16,7 +16,7 @@ export interface Props {
     data: any
     onDelete(postId: string): void
     onEdit(postId: string): void
-    handlePress: () => void
+    handlePress?: () => void
     
 }
 
@@ -50,7 +50,6 @@ export class Post extends React.Component<Props> {
             }).catch(err => {
                 console.log("fetch error" + err.message);
                 alert(err.message);
-                console.log("hierooo");
                 this.setState({isLoading:false})
             })
         }

@@ -105,9 +105,10 @@ export default class HelpScreen extends React.Component<Props, State> {
                                 keyExtractor={(item, index) => item.postId.toString()}
                                 renderItem={itemData =>
                                     <Post
+                                        navigation={this.props.navigation}
                                         data={itemData.item}
                                         onDelete={this.handleDelete.bind(this)}
-                                        onEdit={this.handleEdit}
+                                        onEdit={this.handleEdit.bind(this)}
                                     />
                                 }
                                 ListFooterComponent={
@@ -125,10 +126,8 @@ export default class HelpScreen extends React.Component<Props, State> {
                         </View>
                     ) : (
                         <View style={this.styles.postloader}>
-                                        {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
-                                            <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
-                                        {/* </TouchableOpacity> */}
-                                    </View>
+                            <Text style={this.styles.postloaderText}>Word lid om dit te zien</Text>
+                        </View>
                         )
                     }
                 

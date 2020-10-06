@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Image } from 'react-native';
 
 import colors from '../../constants/colors';
 import {AccountImage} from "../account/AccountImage";
@@ -66,6 +66,8 @@ export class PostHeader extends React.Component<Props> {
                         <View>
                             { this.props.categoryId == '1' ? (
                                 <AccountImage image={this.props.startupImage}/>
+                                ) : this.props.categoryId == '2' ? (
+                                <Image source={require('../../assets/lugus_profile_image.png')} style={this.styles.profileImage}/>
                                 ) : (
                                 <AccountImage image={this.props.profileImage}/>
                                 )
@@ -74,6 +76,8 @@ export class PostHeader extends React.Component<Props> {
                         <View style={this.styles.nameContainer}>
                             { this.props.categoryId == '1' ? (
                                 <Text style={this.styles.name}>{this.props.startupName}</Text>
+                                ) : this.props.categoryId == '2' ? (
+                                <Text style={this.styles.name}>Lugus</Text>
                                 ) : (
                                 <Text style={this.styles.name}>{this.makeName()}</Text>
                                 )
@@ -114,9 +118,9 @@ export class PostHeader extends React.Component<Props> {
         },
         profileImage: {
             backgroundColor: colors.backgroundPrimary,
-            height: 36,
-            width: 36,
-            borderRadius: 18,
+            height: 40,
+            width: 40,
+            borderRadius: 40,
             margin: 'auto'
         },
         textContainer: {

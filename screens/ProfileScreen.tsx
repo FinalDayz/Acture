@@ -243,6 +243,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
                             keyExtractor={(item, index) => item.startupId.toString()}
                             renderItem={({item}) =>
                                 <AccountRow
+                                    navigation={this.props.navigation}
+                                    navigable={true}
                                     isExpandable={false}
                                     account={item}>
                                     <Ionicons onPress={() => this.clickedFollowStar(item)}
@@ -346,7 +348,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
             this.setState({isLoading: true}, () => {
                 bodyless(HttpHelper.addUrlParameter(ApiDictionary.getStartupsByUserId, [this.state.currentUser.userId])).then(result => {
                     if (result.success === 1) {
-                        console.log("Succes")
                         this.setState({
                             isLoading: false,
                             startups: result.data
@@ -385,7 +386,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
                         this.state.currentUser.setUser(data.data);
                         this.setState({isLoading: false})
                     } else {
-                        console.log("bigoof", data)
+                        console.log("iets is fout gegaan", data)
                         this.setState({isLoading: false})
                     }
                 })

@@ -123,10 +123,8 @@ export class ExploreUsersScreen extends React.Component<Props, State> {
                     />
                 ) : (
                     <View style={styles.postloader}>
-                            {/* <TouchableOpacity onPress={() => {this.increaseOffset(); this.getFeed() }}> */}
-                                <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
-                            {/* </TouchableOpacity> */}
-                        </View>
+                        <Text style={styles.postloaderText}>Word lid om dit te zien</Text>
+                    </View>
                 )} 
             </View>
         );
@@ -184,7 +182,7 @@ const styles = StyleSheet.create ({
         marginBottom: 8
     },
     footer: {
-        minHeight: 40,
+        minHeight: 80,
         width: '100%'
     },
     postloader: {

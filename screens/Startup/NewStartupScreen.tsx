@@ -292,6 +292,12 @@ export default class NewStartupScreen extends React.Component<Props, State> {
         );
     }
 
+    static navigationOptions = (navData:any) => {
+        return {
+            headerTitle: 'Startup aanmaken'
+        };
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -313,7 +319,6 @@ const styles = StyleSheet.create({
 
     inputBox: {
         width: '100%',
-        // backgroundColor: 'blue',
         paddingVertical: 5,
         paddingHorizontal: 10,
     },
