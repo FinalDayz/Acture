@@ -1,5 +1,7 @@
 React Native app for Social platform Ipsen5
 ===
+This project was made as class for Hogeschool leiden. This project was commissioned by https://lugus.nu/. They are a student entrepreneur society which requested a social platform where the members could communicate with each other. It was made using React native and Expo. The backend was build in node(https://github.com/FinalDayz/acture-backend).
+
 
 ## Setup
 
